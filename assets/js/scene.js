@@ -87,8 +87,10 @@ function start() {
   let pageMode = 'home';
 
   function progress() {
-    const max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
-    return Math.min(1, Math.max(0, scrollY / max));
+    /* On the overview, the pinned intro comes first; the graph's journey starts where the intro ends. */
+    const base = pageMode === 'home' && window.PFIntroBase ? window.PFIntroBase() : 0;
+    const max = Math.max(1, document.documentElement.scrollHeight - innerHeight - base);
+    return Math.min(1, Math.max(0, (scrollY - base) / max));
   }
   function updateTarget() {
     const p = progress();

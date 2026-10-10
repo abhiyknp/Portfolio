@@ -6,6 +6,7 @@ An interactive portfolio and BA knowledge base. It is a static site with no buil
 
 | Area | What it contains |
 |---|---|
+| Scroll intro (top of `#home`) | "A request's journey": a pinned stage where one stakeholder request ("Can we make fewer fields mandatory?") bursts into discovery notes, flips into a requirements baseline, lines up as a traced set (objective, requirement, function, story, test) with link threads, then is released along a night highway with km stones and test ticks, ending on the name card. It has a Skip intro button. With reduced motion, a static storyboard replaces it |
 | Overview (`#home`) | Executive view, readable in 60 to 90 seconds: positioning, a résumé-based summary, strongest capabilities, a traceability chain, case-study cards, career timeline, evidence legend and contact |
 | Skills Library (`#skills`) | 42 skills in 9 areas (A to I). Search and filter by area and evidence status. Each skill has a 15-part view, from definition and method through to an interview question, a model answer and how to explain it without overstating |
 | Case studies (`#cases`) | Rajmarg Pravesh, NHAI DataLake 3.0, Healthcare Management System, ATS and VMS. Each has 20 sections, with interactive swimlane workflows for three of them |
@@ -33,6 +34,7 @@ index.html                 page shell
 assets/css/main.css        design tokens (light and dark) and all styles
 assets/js/app.js           router, views, search, filters, tabs, modal, palette, progress
 assets/js/widgets.js       swimlane flows, decision table, KPI dashboard, ERD
+assets/js/intro.js         scroll intro: HTML cards in CSS 3D with a small JS camera
 assets/js/scene.js         scroll-linked Three.js traceability graph (ES module)
 assets/js/data/*.js        all content: skills-a/b/c, cases, flows, artifacts, scenarios
 tools/serve.sh             local server
@@ -52,7 +54,7 @@ PF_URL=http://localhost:8780/ node tools/test.js
 
 ## 3D scene and fallbacks
 
-The background graph shows traceability layers (objectives, requirements, stories, tests, releases). It moves from a scattered cloud to clusters, then to linked layers, then to a release route, as the reader scrolls the overview. Reading progress also appears as highway chainage in the corner chip.
+The background graph shows traceability layers (objectives, requirements, stories, tests, releases). It moves from a scattered cloud to clusters, then to linked layers, then to a release route, as the reader scrolls the overview after the intro. Reading progress also appears as highway chainage in the corner chip.
 
 - **Reduced motion**: the scene renders a single static frame for each formation.
 - **No WebGL, or a blocked CDN**: a static SVG version is shown instead.

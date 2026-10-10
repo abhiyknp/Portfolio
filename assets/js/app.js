@@ -66,8 +66,9 @@
   ];
   function home() {
     var counts = { s: PF.skills.length, a: PF.artifacts.length, c: PF.cases.length, sc: PF.scenarios.length };
-    return '<div class="wrap">' +
-      '<section class="hero" aria-labelledby="h-title">' +
+    return '<section class="intro" id="intro" aria-label="Introduction"></section>' +
+      '<div class="wrap">' +
+      '<section class="hero" id="hero" aria-labelledby="h-title">' +
         '<p class="kicker"><span class="km">km 0+000</span> Senior IT Business Analyst · Product Owner and Product Analyst readiness</p>' +
         '<h1 id="h-title">I turn policy and process into <em>traceable</em>, testable software.</h1>' +
         '<p class="lede">Seven years of business analysis across government, healthcare, HR tech and enterprise systems. Currently working on the Rajmarg Pravesh portal for Digital India Corporation (MeitY), across MoRTH and NHAI initiatives.</p>' +
@@ -330,7 +331,8 @@
     window.PFW.hydrate(main); hydrateTabs(main);
     if (view === 'skills') { drawLib(); }
     if (view === 'evidence') { drawEvidence(); }
-    if (view === 'home') { chain(0); }
+    if (view === 'home') { chain(0); if (window.PFIntro) window.PFIntro.mount(document.getElementById('intro')); }
+    else if (window.PFIntro) window.PFIntro.unmount();
     closeMenu();
     if (current !== h) { window.scrollTo(0, 0); main.focus({ preventScroll: true }); }
     var anchor = decodeURIComponent(location.hash.slice(1));
@@ -453,6 +455,7 @@
       case 'goto': var el = document.getElementById(t.getAttribute('data-target')); if (el) { el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); } break;
       case 'jump': e.preventDefault(); var b = document.getElementById(t.getAttribute('data-target')); if (b) { b.open = true; b.scrollIntoView(); b.querySelector('summary').focus({ preventScroll: true }); } break;
       case 'chain': chain(+t.getAttribute('data-i')); break;
+      case 'skip-intro': var hero = document.getElementById('hero'); if (hero) { window.scrollTo(0, hero.getBoundingClientRect().top + scrollY - 70); var h1 = document.getElementById('h-title'); h1.setAttribute('tabindex', '-1'); h1.focus({ preventScroll: true }); } break;
       case 'expand-all': var blocks = main.querySelectorAll('.blocks > details'), anyClosed = Array.prototype.some.call(blocks, function (d) { return !d.open; }); blocks.forEach(function (d) { d.open = anyClosed; }); t.textContent = anyClosed ? 'Collapse all' : 'Expand all'; break;
       case 'artifact-preview': artifactPreview(t.getAttribute('data-id')); break;
       case 'opt': showOption(t.getAttribute('data-sc'), t.getAttribute('data-o')); break;
@@ -479,17 +482,26 @@
   /* ---------------- Reading progress as chainage ---------------- */
   var kmEl = document.getElementById('ch-km'), phEl = document.getElementById('ch-phase'), fillEl = document.getElementById('ch-fill'), sceneEl = document.querySelector('.scene'), ticking = false;
   var PHASES = ['Discover', 'Specify', 'Trace', 'Release'];
+  /* Scroll offset where the pinned intro ends and the overview begins (0 when there is no animated intro). */
+  function introBase() { var el = document.getElementById('intro'); return el && !el.classList.contains('is-static') ? el.offsetTop + el.offsetHeight - innerHeight : 0; }
+  window.PFIntroBase = introBase;
   function onScroll() {
     if (ticking) return; ticking = true;
     requestAnimationFrame(function () {
       ticking = false;
-      var max = Math.max(1, document.documentElement.scrollHeight - innerHeight), p = Math.min(1, Math.max(0, scrollY / max));
+      /* On the overview the chip counts from the end of the intro, and hides while the intro plays. */
+      var b0 = document.body.getAttribute('data-route') === 'home' ? introBase() : 0;
+      var max = Math.max(1, document.documentElement.scrollHeight - innerHeight - b0), p = Math.min(1, Math.max(0, (scrollY - b0) / max));
+      document.getElementById('chainage').classList.toggle('is-hidden', b0 > 0 && scrollY < b0 - 2);
       var km = p * 12, whole = Math.floor(km), m = Math.round((km - whole) * 1000);
       if (m === 1000) { whole++; m = 0; }
       kmEl.textContent = 'km ' + whole + '+' + ('00' + m).slice(-3);
       phEl.textContent = PHASES[Math.min(3, Math.floor(p * 4))];
       fillEl.style.width = (p * 100).toFixed(1) + '%';
-      if (document.body.getAttribute('data-route') === 'home') sceneEl.style.setProperty('--scene-o', (1 - 0.8 * Math.min(1, scrollY / (innerHeight * 0.9))).toFixed(3));
+      if (document.body.getAttribute('data-route') === 'home') {
+        var base = introBase(), past = scrollY - base;
+        sceneEl.style.setProperty('--scene-o', past < 0 ? '0' : (Math.min(1, past / (innerHeight * 0.25) + 0.001) * (1 - 0.8 * Math.min(1, past / (innerHeight * 0.9)))).toFixed(3));
+      }
       else sceneEl.style.removeProperty('--scene-o');
     });
   }

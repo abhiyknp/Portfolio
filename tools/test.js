@@ -29,6 +29,15 @@ const go = async (pg, hash) => { await pg.evaluate((h) => { location.hash = h; }
     await pg.goto(URL + '#home'); await pg.waitForTimeout(800);
     log(tag, 'scene:', await pg.evaluate(() => document.documentElement.getAttribute('data-scene') || 'fallback'));
     await shot(pg, tag + '-home');
+    const ib = await pg.evaluate(() => { const el = document.getElementById('intro'); return { top: el.offsetTop, h: el.offsetHeight, ih: innerHeight, cards: el.querySelectorAll('.ic-card').length }; });
+    await pg.evaluate(([y]) => window.scrollTo(0, y), [ib.top + 0.6 * (ib.h - ib.ih)]); await pg.waitForTimeout(900);
+    const is = await pg.evaluate(() => window.PFIntro.state());
+    log(tag, 'intro:', ib.cards, 'cards | progress at 60% scroll =', is.t.toFixed(2), '| trace caption visible:', await pg.evaluate(() => getComputedStyle(document.querySelectorAll('.ic-cap')[2]).visibility), '| chip hidden:', await pg.evaluate(() => document.getElementById('chainage').classList.contains('is-hidden')));
+    if (ib.cards !== 42 || Math.abs(is.t - 0.6) > 0.05) errs.push(`${tag} intro did not follow scroll`);
+    await shot(pg, tag + '-intro-trace');
+    await pg.evaluate(() => window.scrollTo(0, 0)); await pg.waitForTimeout(100); await pg.click('[data-act="skip-intro"]'); await pg.waitForTimeout(300);
+    log(tag, 'skip intro → hero top', await pg.evaluate(() => Math.round(document.getElementById('hero').getBoundingClientRect().top)));
+    await pg.evaluate(() => window.scrollTo(0, 0)); await pg.waitForTimeout(300);
     const f0 = await pg.evaluate(() => window.__pfScene && window.__pfScene.target);
     const km0 = await pg.textContent('#ch-km');
     await pg.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight)); await pg.waitForTimeout(900);
@@ -71,7 +80,7 @@ const go = async (pg, hash) => { await pg.evaluate((h) => { location.hash = h; }
     await pg.context().close();
   }
   { const pg = await page(b, { reduced: true, tag: 'reduced' }); await pg.goto(URL + '#home'); await pg.waitForTimeout(500); await pg.evaluate(() => window.scrollTo(0, 99999)); await pg.waitForTimeout(400);
-    log('reduced motion: scene', await pg.evaluate(() => document.documentElement.getAttribute('data-scene')), 'formation = target:', await pg.evaluate(() => window.__pfScene.formation === window.__pfScene.target)); await pg.context().close(); }
+    log('reduced motion: scene', await pg.evaluate(() => document.documentElement.getAttribute('data-scene')), 'formation = target:', await pg.evaluate(() => window.__pfScene.formation === window.__pfScene.target)); log('reduced motion: intro storyboard', await pg.isVisible('.ic-board'), '| pinned stage present', await pg.$$eval('.ic-stage', (e) => e.length)); await overflow(pg, 'reduced', 'home'); await pg.context().close(); }
   { const pg = await page(b, { blockThree: true, tag: 'no-cdn' }); await pg.goto(URL + '#home'); await pg.waitForTimeout(600);
     log('three.js blocked: scene attr', await pg.evaluate(() => document.documentElement.getAttribute('data-scene')), '| fallback visible:', await pg.isVisible('#scene-fallback svg')); await shot(pg, 'no-cdn-home'); await pg.context().close(); }
   { const b2 = await chromium.launch({ args: ['--disable-webgl', '--disable-webgl2'] }); const ctx = await b2.newContext(); await ctx.route(/fonts\./, (r) => r.abort());
