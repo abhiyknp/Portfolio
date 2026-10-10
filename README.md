@@ -6,7 +6,7 @@ An interactive portfolio and BA knowledge base. It is a static site with no buil
 
 | Area | What it contains |
 |---|---|
-| Scroll intro (top of `#home`) | Two parts. "Chaos to clarity": stakeholder phrases fade as four words form "Turning complexity into clarity." Then "The thread is born": a gold line draws a question, a decision knot, three role lanes, a clarification loop and a merge, underlines the name and continues down the overview as the gold thread. Each part has a Skip intro button; with reduced motion, both show their final frame |
+| Scroll intro (top of `#home`) | "Chaos to clarity": stakeholder phrases fade as four words form "Turning complexity into clarity.", then the overview begins. It has a Skip intro button; with reduced motion, the final frame shows without pinning |
 | Overview (`#home`) | Direction A narrative, readable in 60 to 90 seconds: hero, résumé-based summary, how I work with a traceability chain, an acceptance-criteria example, case-study cards, skills with evidence, experience, evidence legend and contact. A scroll-drawn gold thread links the sections |
 | Skills Library (`#skills`) | 42 skills in 9 areas (A to I). Search and filter by area and evidence status. Each skill has 15 parts in 4 tabs: Understand, How I do it, Proof and practice, Interview |
 | Case studies (`#cases`) | Rajmarg Pravesh, NHAI DataLake 3.0, Healthcare Management System, ATS and VMS. Each has 20 sections told in 5 chapters (the problem, discovery, the solution, quality and delivery, results and lessons), with interactive swimlane workflows for three of them |
@@ -34,7 +34,7 @@ index.html                 page shell
 assets/css/main.css        design tokens (light and dark) and all styles
 assets/js/app.js           router, views, search, filters, tabs, modal, palette, progress
 assets/js/widgets.js       swimlane flows, decision table, KPI dashboard, ERD
-assets/js/intros.js        scroll intros (the home page uses the thread; chaos-to-clarity and blueprint are also available)
+assets/js/intros.js        scroll intros (the home page uses chaos-to-clarity; the thread and blueprint intros are kept for reference)
 assets/js/intro.js         earlier "request's journey" intro, kept for the concepts page
 concepts/                  design study: direction A with four intro prototypes
 assets/js/scene.js         scroll-linked Three.js traceability graph (ES module)

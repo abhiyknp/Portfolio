@@ -456,11 +456,8 @@
     if (!host || !window.PFIntros) return;
     host.classList.toggle('i-static', reduceMotion.matches);
     var skip = '<button class="i-skip" type="button" data-act="skip-intro">Skip intro</button>';
-    host.innerHTML = '<section class="i-sec i-chaos"><div class="i-stage" role="img" aria-label="Animated introduction, part one: stakeholder phrases fade away as four words form the line: Turning complexity into clarity.">' + skip + '</div></section>' +
-      '<section class="i-sec i-thread"><div class="i-stage" role="img" aria-label="Animated introduction, part two: one question becomes a decision, three roles, a clarification loop and one agreed solution, then underlines my name.">' + skip + '</div></section>';
-    var s1 = window.PFIntros.chaos(host.querySelector('.i-chaos'), { sub: '<span class="i-name">That is the job.</span><span>Here is how it works ↓</span>' });
-    var s2 = window.PFIntros.thread(host.querySelector('.i-thread'));
-    stopIntro = function () { s1(); s2(); };
+    host.innerHTML = '<section class="i-sec i-chaos"><div class="i-stage" role="img" aria-label="Animated introduction: stakeholder phrases fade away as four words form the line: Turning complexity into clarity.">' + skip + '</div></section>';
+    stopIntro = window.PFIntros.chaos(host.querySelector('.i-chaos'), { sub: '<span class="i-name">That is the job.</span><span>Here is how I do it ↓</span>' });
   }
   function layoutThread() {
     var home = document.getElementById('home-main'); if (!home) { threadLen = 0; return; }

@@ -29,12 +29,11 @@ const go = async (pg, hash) => { await pg.evaluate((h) => { location.hash = h; }
     await pg.goto(URL + '#home'); await pg.waitForTimeout(800);
     log(tag, 'scene:', await pg.evaluate(() => document.documentElement.getAttribute('data-scene') || 'fallback'));
     await shot(pg, tag + '-home');
-    const ib = await pg.evaluate(() => { const el = document.querySelector('#intro .i-thread'); return { top: el.getBoundingClientRect().top + scrollY, h: el.offsetHeight, ih: innerHeight, cards: el.querySelectorAll('.i3-p').length, chaos: document.querySelectorAll('#intro .i1-w').length }; });
+    const ib = await pg.evaluate(() => { const el = document.querySelector('#intro .i-chaos'); return { top: el.getBoundingClientRect().top + scrollY, h: el.offsetHeight, ih: innerHeight, threads: document.querySelectorAll('#intro .i-thread').length, chaos: el.querySelectorAll('.i1-w').length }; });
     await pg.evaluate(([y]) => window.scrollTo(0, y), [ib.top + 0.6 * (ib.h - ib.ih)]); await pg.waitForTimeout(900);
-    const drawn = await pg.evaluate(() => [...document.querySelectorAll('#intro .i3-p')].filter((p) => p.style.visibility === 'visible').length);
-    log(tag, 'chaos intro words:', ib.chaos); if (ib.chaos !== 36) errs.push(`${tag} chaos intro missing`);
-    log(tag, 'thread intro:', ib.cards, 'paths |', drawn, 'drawn at 60% scroll | chip hidden:', await pg.evaluate(() => document.getElementById('chainage').classList.contains('is-hidden')));
-    if (ib.cards !== 11 || drawn < 6 || drawn > 10) errs.push(`${tag} intro did not follow scroll`);
+    const faded = await pg.evaluate(() => [...document.querySelectorAll('#intro .i1-w:not(.h)')].filter((w) => +w.style.opacity < 0.05).length);
+    log(tag, 'chaos intro words:', ib.chaos, '| thread intro removed:', ib.threads === 0, '|', faded, 'of 32 noise phrases faded at 60% scroll | chip hidden:', await pg.evaluate(() => document.getElementById('chainage').classList.contains('is-hidden')));
+    if (ib.chaos !== 36 || ib.threads !== 0 || faded < 20) errs.push(`${tag} intro did not follow scroll`);
     await shot(pg, tag + '-intro-trace');
     await pg.evaluate(() => window.scrollTo(0, 0)); await pg.waitForTimeout(100); await pg.click('[data-act="skip-intro"]'); await pg.waitForTimeout(300);
     log(tag, 'skip intro → hero top', await pg.evaluate(() => Math.round(document.getElementById('hero').getBoundingClientRect().top)));
@@ -84,7 +83,7 @@ const go = async (pg, hash) => { await pg.evaluate((h) => { location.hash = h; }
     await pg.context().close();
   }
   { const pg = await page(b, { reduced: true, tag: 'reduced' }); await pg.goto(URL + '#home'); await pg.waitForTimeout(500); await pg.evaluate(() => window.scrollTo(0, 99999)); await pg.waitForTimeout(400);
-    log('reduced motion: scene', await pg.evaluate(() => document.documentElement.getAttribute('data-scene')), 'formation = target:', await pg.evaluate(() => window.__pfScene.formation === window.__pfScene.target)); log('reduced motion: static intro', await pg.$$eval('#intro.i-static', (e) => e.length), '| thread fully drawn', await pg.evaluate(() => [...document.querySelectorAll('#intro .i3-p')].every((p) => p.style.strokeDashoffset === '0.0000'))); await overflow(pg, 'reduced', 'home'); await pg.context().close(); }
+    log('reduced motion: scene', await pg.evaluate(() => document.documentElement.getAttribute('data-scene')), 'formation = target:', await pg.evaluate(() => window.__pfScene.formation === window.__pfScene.target)); log('reduced motion: static intro', await pg.$$eval('#intro.i-static', (e) => e.length), '| headline visible', await pg.evaluate(() => [...document.querySelectorAll('#intro .i1-w.h')].every((w) => +w.style.opacity > 0.9))); await overflow(pg, 'reduced', 'home'); await pg.context().close(); }
   { const pg = await page(b, { blockThree: true, tag: 'no-cdn' }); await pg.goto(URL + '#home'); await pg.waitForTimeout(600);
     log('three.js blocked: scene attr', await pg.evaluate(() => document.documentElement.getAttribute('data-scene')), '| fallback visible:', await pg.isVisible('#scene-fallback svg')); await shot(pg, 'no-cdn-home'); await pg.context().close(); }
   { const b2 = await chromium.launch({ args: ['--disable-webgl', '--disable-webgl2'] }); const ctx = await b2.newContext(); await ctx.route(/fonts\./, (r) => r.abort());
