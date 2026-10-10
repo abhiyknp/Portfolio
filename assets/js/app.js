@@ -130,6 +130,8 @@
           '<li><b>Given</b> no reason is selected, <b>then</b> I see "Select at least one reason" and nothing is saved.</li>' +
           '<li><b>Given</b> I am not the assigned reviewer, <b>then</b> the action is not available.</li>' +
           '<li><b>Given</b> the applicant responds, <b>then</b> the file returns to my queue marked "changed".</li></ul></div>' +
+        '<div class="h-ba"><h3>Before and after</h3><p class="muted">The same work, before and after analysis. Drag the handle across.</p>' + window.PFX.compareHtml() +
+        '<a class="h-pz" href="#puzzle"><span class="kicker">Quick challenge · 2 min</span><strong>Try it yourself: put a shuffled process back in order.</strong><span class="go" aria-hidden="true">→</span></a></div>' +
       '</section>' +
 
       '<section id="work" data-node aria-labelledby="work-h">' +
@@ -341,7 +343,8 @@
 
   /* ---------------- Scenarios ---------------- */
   function scenariosView() {
-    return '<div class="wrap page"><header class="page-head"><p class="kicker">Deep-dive · Decision scenarios</p><h1>Decision scenarios</h1><p class="lede">Business situations with several possible responses. Choose one to see the reasoning, rule, user experience, workflow and timing effect, acceptance criteria, tests and backlog items.</p><p class="note">Educational simulations. They are not descriptions of production behaviour on any project.</p></header><div class="grid g3">' +
+    return '<div class="wrap page"><header class="page-head"><p class="kicker">Deep-dive · Decision scenarios</p><h1>Decision scenarios</h1><p class="lede">Business situations with several possible responses. Choose one to see the reasoning, rule, user experience, workflow and timing effect, acceptance criteria, tests and backlog items.</p><p class="note">Educational simulations. They are not descriptions of production behaviour on any project.</p></header>' +
+      '<a class="h-pz" href="#puzzle"><span class="kicker">Quick challenge · 2 min</span><strong>Chaos to clarity: put a shuffled permission process back in order.</strong><span class="go" aria-hidden="true">→</span></a><div class="grid g3">' +
       PF.scenarios.map(function (s) { return '<a class="card" href="#scenario.' + s.id + '"><div class="meta">' + badge('illustrative') + '<span class="kicker">' + s.options.length + ' options</span></div><h3>' + esc(s.short) + '</h3><p class="small muted">' + esc(s.situation) + '</p><span class="card-foot"><span>Explore</span><span aria-hidden="true">→</span></span></a>'; }).join('') + '</div></div>';
   }
   var OPT_FIELDS = [['reasoning', 'Reasoning and trade-offs'], ['rule', 'Business rule'], ['ux', 'UX and notifications'], ['workflow', 'Workflow and TAT effect'], ['ac', 'Acceptance criteria'], ['tests', 'Test cases'], ['jira', 'JIRA story']];
@@ -390,14 +393,14 @@
   var current = '', navStack = [], scrollMemo = {};
   function pageLabel(h) {
     var p = h.split('.'), v = p[0], id = p.slice(1).join('.'), x;
-    var L = { home: 'Overview', skills: 'Skills Library', cases: 'Case studies', studio: 'Artifact Studio', scenarios: 'Scenarios', evidence: 'Evidence map' };
+    var L = { home: 'Overview', skills: 'Skills Library', cases: 'Case studies', studio: 'Artifact Studio', scenarios: 'Scenarios', evidence: 'Evidence map', puzzle: 'Process puzzle' };
     if (v === 'skill' && (x = skill(id))) return x.name;
     if (v === 'case' && (x = cs(id))) return x.short;
     if (v === 'studio' && id && (x = art(id))) return x.name;
     if (v === 'scenario' && (x = byId(PF.scenarios, id))) return x.short;
     return L[v] || 'Overview';
   }
-  function parentOf(h) { var v = h.split('.')[0]; return { skill: 'skills', case: 'cases', scenario: 'scenarios' }[v] || (v === 'studio' && h.indexOf('.') > -1 ? 'studio' : 'home'); }
+  function parentOf(h) { var v = h.split('.')[0]; return { skill: 'skills', case: 'cases', scenario: 'scenarios', puzzle: 'scenarios' }[v] || (v === 'studio' && h.indexOf('.') > -1 ? 'studio' : 'home'); }
   function route() {
     var h = decodeURIComponent(location.hash.slice(1)) || 'home';
     if (h === 'summary' || h === 'contact') { h = 'home'; }
@@ -416,6 +419,7 @@
       case 'studio': html = id ? artifactView(id) : studioView(); break;
       case 'scenarios': html = scenariosView(); break;
       case 'scenario': html = scenarioView(id); navKey = 'scenarios'; break;
+      case 'puzzle': html = window.PFX.puzzleView(); navKey = 'scenarios'; break;
       case 'evidence': html = evidenceView(); break;
       default: html = notFound(); navKey = '';
     }
@@ -425,7 +429,7 @@
     document.querySelectorAll('[data-nav]').forEach(function (a) { if (a.getAttribute('data-nav') === navKey) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
     var h1 = main.querySelector('h1');
     document.title = view === 'home' ? 'Abhishek Yadav, Business Analyst' : (h1 ? h1.textContent + ' · ' : '') + 'Abhishek Yadav';
-    window.PFW.hydrate(main); hydrateTabs(main);
+    window.PFW.hydrate(main); window.PFX.hydrate(main); hydrateTabs(main);
     if (view === 'skills') { drawLib(); }
     if (view === 'evidence') { drawEvidence(); }
     if (stopIntro) { stopIntro(); stopIntro = null; }
@@ -536,7 +540,7 @@
   }
   var INDEX = null;
   function buildIndex() {
-    INDEX = [{ t: 'Page', n: 'Overview and 60-second summary', h: '#home', k: 'home executive summary contact' }, { t: 'Page', n: 'Skills Library', h: '#skills', k: '' }, { t: 'Page', n: 'Artifact Studio', h: '#studio', k: '' }, { t: 'Page', n: 'Decision scenarios', h: '#scenarios', k: '' }, { t: 'Page', n: 'Evidence map', h: '#evidence', k: 'skills evidence matrix' }]
+    INDEX = [{ t: 'Page', n: 'Overview and 60-second summary', h: '#home', k: 'home executive summary contact' }, { t: 'Page', n: 'Skills Library', h: '#skills', k: '' }, { t: 'Page', n: 'Artifact Studio', h: '#studio', k: '' }, { t: 'Page', n: 'Decision scenarios', h: '#scenarios', k: '' }, { t: 'Page', n: 'Evidence map', h: '#evidence', k: 'skills evidence matrix' }, { t: 'Page', n: 'Process puzzle: chaos to clarity', h: '#puzzle', k: 'game challenge quick order workflow' }]
       .concat(PF.skills.map(function (s) { return { t: 'Skill', n: s.name, h: '#skill.' + s.id, k: s.tags.join(' ') + ' ' + s.tools.join(' ') + ' ' + s.sum + ' ' + s.evNote + ' ' + strip(s.def + ' ' + s.scenario + ' ' + s.enterprise) }; }))
       .concat(PF.cases.map(function (c) { return { t: 'Case study', n: c.name, h: '#case.' + c.id, k: c.domain + ' ' + c.org + ' ' + c.lede + ' ' + c.facts.map(function (f) { return f[1]; }).join(' ') }; }))
       .concat(PF.artifacts.map(function (a) { return { t: 'Artifact', n: a.name, h: '#studio.' + a.id, k: a.kind + ' ' + a.purpose + ' ' + a.problem + ' ' + strip(a.tabs.map(function (t) { return t[1]; }).join(' ')).slice(0, 4000) }; }))

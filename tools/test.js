@@ -77,6 +77,12 @@ const go = async (pg, hash) => { await pg.evaluate((h) => { location.hash = h; }
     await go(pg, 'scenario.missing-info'); await pg.click('.opt >> nth=1'); await pg.click('#opt-out [role="tab"] >> nth=3'); log(tag, 'scenario tab:', (await pg.textContent('#opt-out [role="tabpanel"]:not([hidden])')).slice(0, 60)); await shot(pg, tag + '-scenario');
     await go(pg, 'evidence'); await pg.click('[data-f="evm"][data-v="source"]'); log(tag, 'evidence source:', await pg.textContent('#ev-count')); await pg.selectOption('#ev-area', 'G'); log(tag, 'evidence source+G:', await pg.textContent('#ev-count')); await overflow(pg, tag, 'evidence');
     await go(pg, 'home'); await pg.keyboard.press('/'); await pg.fill('#pal-q', 'bharatkosh'); await pg.keyboard.press('Enter'); await pg.waitForTimeout(80); log(tag, 'palette → ', await pg.textContent('h1'));
+    await go(pg, 'home'); await pg.click('[data-act="cmp-pick"][data-i="3"]'); await pg.click('[data-act="cmp-set"][data-v="0"]');
+    const pos = await pg.$eval('.cmp', (e) => e.style.getPropertyValue('--pos')); log(tag, 'before/after: 4 examples', (await pg.$$('[data-act="cmp-pick"]')).length === 4, '| show after →', pos); if (pos !== '0%') errs.push(`${tag} slider did not move`);
+    await pg.focus('.cmp-range'); await pg.keyboard.press('ArrowRight'); log(tag, 'slider keyboard →', await pg.$eval('.cmp-range', (e) => e.value)); await overflow(pg, tag, 'home slider');
+    await go(pg, 'puzzle'); for (let r = 0; r < 8 && !(await pg.$('.pz-done')); r++) { while (await pg.$('.pz-tray .pz-card')) { const k = (await pg.$$eval('.pz-slot', (e) => e.map((x) => x.classList.contains('empty')))).indexOf(true); await pg.click(`[data-act="pz-place"][data-i="${k}"]`); } await pg.click('[data-act="pz-check"]'); }
+    const solved = await pg.$('.pz-done'); log(tag, 'puzzle:', solved ? (await pg.textContent('.pz-done h2')) : 'not solved', '| flow steps', await pg.$$eval('.pz-flow li', (e) => e.length)); if (!solved) errs.push(`${tag} puzzle not solvable`); await overflow(pg, tag, 'puzzle');
+    await pg.click('[data-act="pz-again"]'); await pg.click('.pz-tray .pz-card'); log(tag, 'puzzle restart, one placed:', await pg.$$eval('.pz-slot:not(.empty)', (e) => e.length));
     await go(pg, 'nope'); log(tag, '404:', await pg.textContent('h1'));
     await pg.click('[data-act="theme"]'); log(tag, 'theme:', await pg.evaluate(() => document.documentElement.getAttribute('data-theme')));
     await go(pg, 'home'); await shot(pg, tag + '-home-dark');
