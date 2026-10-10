@@ -29,9 +29,10 @@ const go = async (pg, hash) => { await pg.evaluate((h) => { location.hash = h; }
     await pg.goto(URL + '#home'); await pg.waitForTimeout(800);
     log(tag, 'scene:', await pg.evaluate(() => document.documentElement.getAttribute('data-scene') || 'fallback'));
     await shot(pg, tag + '-home');
-    const ib = await pg.evaluate(() => { const el = document.getElementById('intro'); return { top: el.offsetTop, h: el.offsetHeight, ih: innerHeight, cards: el.querySelectorAll('.i3-p').length }; });
+    const ib = await pg.evaluate(() => { const el = document.querySelector('#intro .i-thread'); return { top: el.getBoundingClientRect().top + scrollY, h: el.offsetHeight, ih: innerHeight, cards: el.querySelectorAll('.i3-p').length, chaos: document.querySelectorAll('#intro .i1-w').length }; });
     await pg.evaluate(([y]) => window.scrollTo(0, y), [ib.top + 0.6 * (ib.h - ib.ih)]); await pg.waitForTimeout(900);
     const drawn = await pg.evaluate(() => [...document.querySelectorAll('#intro .i3-p')].filter((p) => p.style.visibility === 'visible').length);
+    log(tag, 'chaos intro words:', ib.chaos); if (ib.chaos !== 36) errs.push(`${tag} chaos intro missing`);
     log(tag, 'thread intro:', ib.cards, 'paths |', drawn, 'drawn at 60% scroll | chip hidden:', await pg.evaluate(() => document.getElementById('chainage').classList.contains('is-hidden')));
     if (ib.cards !== 11 || drawn < 6 || drawn > 10) errs.push(`${tag} intro did not follow scroll`);
     await shot(pg, tag + '-intro-trace');
@@ -64,6 +65,9 @@ const go = async (pg, hash) => { await pg.evaluate((h) => { location.hash = h; }
     for (const id of ids.sc) { await go(pg, 'scenario.' + id); const opts = await pg.$$('.opt'); for (const o of opts) await o.click(); await overflow(pg, tag, 'scenario.' + id); }
     log(tag, 'rendered', ids.s.length, 'skills,', ids.c.length, 'cases,', ids.a.length, 'artifacts,', ids.sc.length, 'scenarios');
 
+    await go(pg, 'skills'); await pg.evaluate(() => scrollTo(0, 900)); await pg.waitForTimeout(100); await go(pg, 'skill.ac'); await pg.click('.back-btn'); await pg.waitForTimeout(250);
+    const back = await pg.evaluate(() => [document.querySelector('h1').textContent, Math.round(scrollY)]); log(tag, 'back →', back[0], '| scroll restored to', back[1]); if (back[0] !== 'Skills Library' || Math.abs(back[1] - 900) > 5) errs.push(`${tag} back button did not restore page`);
+    await go(pg, 'studio'); log(tag, 'studio stages:', await pg.$$eval('.stage-block', (e) => e.length), '| cards:', await pg.$$eval('.stage-block .card', (e) => e.length));
     await go(pg, 'skill.brd'); await pg.click('.skill-tabs [role="tab"] >> nth=3'); log(tag, 'skill interview tab:', (await pg.textContent('.skill-tabs [role="tabpanel"]:not([hidden]) h3')).trim());
     await pg.click('.skill-tabs [role="tab"] >> nth=2'); await pg.click('[data-act="artifact-preview"]'); log(tag, 'modal visible:', await pg.isVisible('#modal')); await shot(pg, tag + '-modal');
     await pg.keyboard.press('Escape'); log(tag, 'modal closed:', await pg.isHidden('#modal'));

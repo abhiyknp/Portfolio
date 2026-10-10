@@ -6,7 +6,7 @@ PF.artifacts.push(
 {
   id: 'brd', name: 'BRD excerpt', kind: 'Requirements',
   purpose: 'Records what the business needs and why, for sponsor approval.',
-  problem: 'Scope disputes, unclear objectives, and requirements with no business reason.',
+  problem: 'Scope disputes, unclear objectives and requirements with no business reason.',
   howto: 'Use as the baseline for the FRD, the RTM and change control. Every later requirement should trace to a BR here.',
   good: ['Objectives are measurable or have a named measure', 'Explicit exclusions', 'Rules separated from requirements, with IDs', 'Assumptions have owners', 'Version and approval recorded'],
   skills: ['brd', 'rules', 'rtm'], cases: ['rajmarg'],
@@ -57,7 +57,7 @@ PF.artifacts.push(
 {
   id: 'story', name: 'User story and acceptance criteria', kind: 'Agile',
   purpose: 'A testable slice of value with agreed acceptance conditions.',
-  problem: 'Vague work items, rework, and "is it done?" arguments.',
+  problem: 'Vague work items, rework and "is it done?" arguments.',
   howto: 'Refine with the team; check against the Definition of Ready.',
   good: ['User, capability, value', 'Negative, permission, exception and audit criteria', 'Linked designs and rules'],
   skills: ['stories', 'ac', 'wireframes', 'figma'], cases: ['rajmarg', 'ats-vms'],
@@ -157,7 +157,7 @@ PF.artifacts.push(
   tabs: [
     ['Plan', '<div class="doc"><p class="doc-meta">UAT Plan · Release R5 (illustrative)</p><p><strong>Scope:</strong> clarification management; bank guarantee re-upload. <strong>Out:</strong> reports (next release).</p><p><strong>Entry:</strong> system test complete; no open critical defects; UAT data loaded; users briefed.</p><p><strong>Participants:</strong> 2 reviewers per region (2 regions), 1 approver, 1 finance user, 2 applicant proxies.</p><p><strong>Schedule:</strong> 5 working days; daily triage at 16:00.</p><p><strong>Exit:</strong> all Must scenarios passed; no open critical or high defects without an agreed workaround; sign-off by authority representative.</p><p><strong>Accessibility checks:</strong> keyboard-only completion of applicant response; error messages read by a screen reader.</p></div>'],
     ['Execution matrix', '<div class="tw"><table><tr><th>ID</th><th>Scenario</th><th>Role</th><th>Data</th><th>Expected</th><th>Result</th></tr><tr><td>UAT-01</td><td>Raise clarification</td><td>Reviewer</td><td>APP-…0412</td><td>Status changes; applicant SMS</td><td class="ok">Pass</td></tr><tr><td>UAT-02</td><td>Respond with 2 documents</td><td>Applicant</td><td>APP-…0412</td><td>Back in queue, marked changed</td><td class="ok">Pass</td></tr><tr><td>UAT-07</td><td>Guarantee valid well after required date</td><td>Finance</td><td>BG valid +90d</td><td>Accepted</td><td class="ok">Pass</td></tr><tr><td>UAT-08</td><td>Guarantee valid exactly to required date</td><td>Finance</td><td>BG valid = required</td><td>Accepted (on or after)</td><td class="bad">Fail → DEF-14</td></tr><tr><td>UAT-09</td><td>Non-assigned reviewer</td><td>Reviewer B</td><td>APP-…0412</td><td>No action available</td><td class="ok">Pass</td></tr><tr><td>UAT-08 retest</td><td>After fix</td><td>Finance</td><td>same</td><td>Accepted</td><td class="ok">Pass</td></tr></table></div><p><strong>Happy path passed, edge case failed</strong>: UAT-07 passed but UAT-08 failed. The rule says "on or after", and the code used "after".</p>'],
-    ['Defect log', '<table><tr><th>ID</th><th>Summary</th><th>Sev</th><th>Pri</th><th>Status</th></tr><tr><td>DEF-14</td><td>Guarantee ending on required date rejected</td><td>Medium</td><td>High</td><td>Fixed, retested</td></tr><tr><td>DEF-15</td><td>Reminder SMS uses old template</td><td>Low</td><td>Medium</td><td>Open, workaround: email correct</td></tr></table>'],
+    ['Defect log', '<table><tr><th>ID</th><th>Summary</th><th>Severity</th><th>Priority</th><th>Status</th></tr><tr><td>DEF-14</td><td>Guarantee ending on required date rejected</td><td>Medium</td><td>High</td><td>Fixed, retested</td></tr><tr><td>DEF-15</td><td>Reminder SMS uses old template</td><td>Low</td><td>Medium</td><td>Open, workaround: email correct</td></tr></table>'],
     ['Sign-off', '<ul class="check"><li>All Must scenarios executed and passed</li><li>Open defects listed with workarounds (DEF-15)</li><li>Residual risk accepted: SMS template fixed in R5.1</li><li>User guide and SOP updated</li><li>Signed: authority representative, date</li></ul>']
   ]
 },

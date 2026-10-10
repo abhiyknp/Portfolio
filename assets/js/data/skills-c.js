@@ -13,7 +13,7 @@ PF.skills.push(
   use: ['Integrations with payment, e-signature, identity, documents and GIS services.', 'Front-end and back-end contracts.', 'Validating defects ("is it the UI or the API?").'],
   avoid: ['Designing the technical architecture yourself. Specify behaviour and rules; architects design endpoints and security.'],
   steps: ['State the business purpose of the interface.', 'List required and optional fields with business meaning and rules.', 'Define success responses and the status the business sees.', 'Define every failure: validation, duplicate, unauthorised, not found, timeout.', 'Agree idempotency for submissions (repeat requests must not create duplicates).', 'Write Postman checks for success and failure cases.', 'Review with engineering and the external owner.'],
-  scenario: 'An illustrative contract for "submit application" has these rules. applicantId comes from the session token, not the body. applicationType must be one of the configured types. Chainage from-value must be less than the to-value. Each listed document ID must already have been uploaded. An Idempotency-Key header prevents duplicate submission when the user double-clicks or the network retries. Possible responses: 201 with application number and status "Submitted"; 422 listing each invalid field with a message the UI can show; 409 if the same idempotency key was used with a different body.',
+  scenario: 'An illustrative contract for "submit application" has these rules. The applicant ID comes from the session token, not the request body. The application type must be one of the configured types. Chainage from-value must be less than the to-value. Each listed document ID must already have been uploaded. An Idempotency-Key header prevents duplicate submission when the user double-clicks or the network retries. Possible responses: 201 with application number and status "Submitted"; 422 listing each invalid field with a message the UI can show; 409 if the same idempotency key was used with a different body.',
   enterprise: 'See the full illustrative contract, JSON examples and Postman checks in the API artifact. <em>Endpoints and payloads are illustrative, not production APIs.</em>',
   inputs: ['Functional requirements', 'Rules catalogue', 'External system documentation'],
   outputs: ['API contract (business view)', 'Field mapping', 'Postman test collection outline'],
@@ -25,7 +25,7 @@ PF.skills.push(
   cases: ['rajmarg', 'ats-vms'],
   q: { q: 'How do you document an API from a BA perspective?', a: 'I start with the business purpose and the fields: which are required, which are optional, and the rules for each. Then I list every response, not just success. Validation errors with field-level messages, duplicate submissions, permission failures and timeouts, and what the user sees in each case. I add Postman checks for those cases and review them with engineering.' },
   more: ['What is idempotency and why does it matter?', 'What is the difference between 401 and 403?'],
-  honest: 'You defined API business requirements and used Postman. The contract here is illustrative and does not describe a real system.'
+  honest: 'I defined business requirements for APIs and used Postman. The contract here is illustrative and does not describe a real system.'
 },
 {
   id: 'integrations', area: 'E', name: 'System integrations',
@@ -49,7 +49,7 @@ PF.skills.push(
   cases: ['rajmarg', 'datalake'],
   q: { q: 'How do you handle a payment that has been debited but the portal has not confirmed it?', a: 'That case needs to be designed in advance. The portal shows a pending state rather than a failure, a status-verification call or daily reconciliation resolves it, and finance has a mismatch list to act on. The application moves forward only on a confirmed payment, and the applicant gets a clear message about what happens next.' },
   more: ['What goes into a data mapping document?'],
-  honest: 'The résumé names BharatKosh, eSign and GIS requirements. The flows described here are generic and illustrative, not the production integration design.'
+  honest: 'My résumé names the GIS, BharatKosh and eSign requirements. The flows described here are generic and illustrative, not the production integration design.'
 },
 {
   id: 'datamodel', area: 'E', name: 'Data modelling and SQL',
@@ -73,7 +73,7 @@ PF.skills.push(
   cases: ['rajmarg', 'datalake', 'healthcare'],
   q: { q: 'Explain a SQL query you would write to investigate a delay.', a: 'I would use the workflow history table to calculate how long each application spent in each status, then group by stage to see where time accumulates. Because current status alone cannot tell you where time went, I always work from history for timing questions.' },
   more: ['What is the difference between an inner and a left join?'],
-  honest: 'SQL is on your résumé. The schema and data are illustrative.'
+  honest: 'SQL is part of my toolkit. The schema and data here are illustrative.'
 },
 {
   id: 'migration', area: 'E', name: 'Data migration and legacy systems',
@@ -97,7 +97,7 @@ PF.skills.push(
   cases: ['rajmarg'],
   q: { q: 'How do you validate a data migration?', a: 'I reconcile at three levels. Counts by status and type, values such as amounts and dates for samples and totals, and an exception log where every rejected record has a reason and an owner. I also make sure business users verify sampled records in the new system before sign-off.' },
   more: ['What do you do with legacy records that are missing mandatory fields?'],
-  honest: 'The résumé supports defining migration requirements. Execution was engineering\'s. The numbers are illustrative.'
+  honest: 'I defined the requirements for legacy data migration; engineering carried out the migration. The numbers here are illustrative.'
 },
 {
   id: 'rbac', area: 'E', name: 'Security and role-based access',
@@ -121,7 +121,7 @@ PF.skills.push(
   cases: ['rajmarg', 'healthcare'],
   q: { q: 'How do you specify role-based access?', a: 'With a role × action matrix that includes data scope, plus separation-of-duties rules and audit requirements. Then I write negative acceptance criteria and test cases, for example that a non-assigned reviewer cannot raise a clarification, and that enforcement happens on the server, not only by hiding buttons.' },
   more: ['What is the difference between authentication and authorisation?'],
-  honest: 'The résumé supports RBAC requirements. Do not present the matrix as the actual project configuration.'
+  honest: 'I defined the requirements for role-based access. The matrix here is an example, not the actual project configuration.'
 },
 {
   id: 'powerbi', area: 'F', name: 'Power BI and KPI dashboards',
@@ -145,7 +145,7 @@ PF.skills.push(
   cases: ['healthcare', 'datalake', 'rajmarg'],
   q: { q: 'Tell me how you would catch a misleading KPI.', a: 'I would check its definition against the question. Average turnaround including applicant response time answers "how long does the whole process take", not "how fast is the authority". I would also check the distribution, because a few very old files can distort a mean. The fix is separate measures and medians with outlier counts, agreed with the stakeholder.' },
   more: ['What goes into a KPI definition?'],
-  honest: 'You built Power BI dashboards at Intechglobe. The dashboard here uses sample data and reflects no real results.'
+  honest: 'I built Power BI dashboards at Intechglobe. The dashboard here uses sample data and shows no real results.'
 },
 {
   id: 'sqlanalysis', area: 'F', name: 'SQL and data analysis',
@@ -169,7 +169,7 @@ PF.skills.push(
   cases: ['healthcare', 'datalake'],
   q: { q: 'How would you find duplicate applications?', a: 'Self-join applications on applicant and highway with an interval-overlap condition on chainage, restrict to active statuses, and use a key comparison to avoid listing each pair twice. Then review the list with the business, because a possible duplicate needs judgement, not automatic rejection.' },
   more: [],
-  honest: 'The queries use an illustrative schema.'
+  honest: 'The queries here use an illustrative schema, not a project database.'
 },
 {
   id: 'metrics', area: 'F', name: 'Business metrics and SLAs',
@@ -193,7 +193,7 @@ PF.skills.push(
   cases: ['rajmarg', 'healthcare'],
   q: { q: 'How should clarification time affect turnaround metrics?', a: 'It depends on the documented rule, but usually authority TAT pauses while waiting for the applicant and resumes when they respond. Applicant-side time is reported separately. I make sure the pause rule, its start and stop events, and how transfers and rework count are all written down and tested.' },
   more: [],
-  honest: 'Describe the definitions as your approach. Do not quote actual SLA values unless they come from published policy.'
+  honest: 'These definitions are my approach. I don\'t quote actual SLA values unless they come from published policy.'
 },
 {
   id: 'testing', area: 'G', name: 'Test strategy and test scenarios',
@@ -217,7 +217,7 @@ PF.skills.push(
   cases: ['rajmarg', 'ats-vms', 'healthcare'],
   q: { q: 'How do you contribute to testing as a BA?', a: 'I turn acceptance criteria and rules into business scenarios, especially negative, boundary and role-based ones, review QA\'s cases for coverage against the RTM, and help decide the regression scope when a change lands.' },
   more: [],
-  honest: 'QA teams owned test execution; describe your role as scenario design, review and UAT.'
+  honest: 'QA teams owned test execution. My role was scenario design, review and UAT.'
 },
 {
   id: 'uat', area: 'G', name: 'User Acceptance Testing (UAT)',
@@ -241,7 +241,7 @@ PF.skills.push(
   cases: ['rajmarg', 'healthcare', 'ats-vms'],
   q: { q: 'How do you run UAT?', a: 'I set entry criteria, pick users from each role, write scenarios in business language with data, and brief users. During execution I triage issues daily and retest fixes. At the end I prepare sign-off listing every open issue, its workaround and the residual risk the business is accepting.' },
   more: ['What do you do if users keep raising change requests during UAT?'],
-  honest: 'The résumé supports leading UAT and sign-offs. The specific edge case is illustrative.'
+  honest: 'I led UAT planning and sign-offs. The specific edge case here is illustrative.'
 },
 {
   id: 'triage', area: 'G', name: 'Defect triage',
@@ -265,7 +265,7 @@ PF.skills.push(
   cases: ['rajmarg', 'ats-vms'],
   q: { q: 'Explain severity versus priority with an example.', a: 'Severity is impact, priority is urgency. A misspelled ministry name on an approval letter is low severity, since nothing breaks, but high priority, because it goes out on official documents. A crash in a rarely used admin report may be high severity but lower priority if there is a workaround and no deadline.' },
   more: [],
-  honest: 'The résumé supports defect triage.'
+  honest: 'Defect triage is part of my day-to-day work. The discussion shown is illustrative.'
 },
 {
   id: 'sop', area: 'G', name: 'SOP and implementation validation',
@@ -313,7 +313,7 @@ PF.skills.push(
   cases: ['ats-vms', 'healthcare', 'rajmarg'],
   q: { q: 'How do you run a JAD session?', a: 'Clear objective, the decisions needed and the right people, including a decision-maker. A pre-read, a visible board, read-back of decisions at the end, and minutes within a day.' },
   more: [],
-  honest: 'The résumé supports JAD sessions and workshops.'
+  honest: 'I have run JAD sessions and stakeholder workshops. The agenda and conversation here are illustrative.'
 },
 {
   id: 'conflict', area: 'H', name: 'Conflict resolution, expectation management and escalation',
@@ -325,7 +325,7 @@ PF.skills.push(
   use: ['Contradictory requirements', 'Scope pressure', 'Blocked decisions.'],
   avoid: ['Escalating without options or impact.'],
   steps: ['Restate each position as a need.', 'Find shared objectives.', 'Lay out options with impacts.', 'Agree who decides.', 'Escalate with a deadline if undecided.', 'Record the decision.'],
-  scenario: '<strong>Escalation note (illustrative)</strong>: "Decision needed by Friday: can provisional approval be issued before inspection? Option A: yes, conditional. Faster for applicants, but requires a revocation path (est. one extra sprint). Option B: no. Keeps the current sequence, no rework. Sprint 6 work on the provisional approval story is blocked until decided. Recommendation: B for this release, A evaluated later."',
+  scenario: '<strong>Escalation note (illustrative)</strong>: "Decision needed by Friday: can provisional approval be issued before inspection? Option A: yes, conditional. Faster for applicants, but requires a revocation path (estimated at one extra sprint). Option B: no. Keeps the current sequence, no rework. Sprint 6 work on the provisional approval story is blocked until decided. Recommendation: B for this release, A evaluated later."',
   enterprise: 'Expectation management in practice: "This change is possible. Including it in this release would push UAT by about a week, based on the team\'s estimate. We can take it in the next release without moving the date."',
   inputs: ['Positions', 'Impact analysis'],
   outputs: ['Options paper', 'Escalation note', 'Decision record'],
@@ -337,7 +337,7 @@ PF.skills.push(
   cases: ['rajmarg'],
   q: { q: 'How do you escalate?', a: 'Early, in writing, with a clear decision needed, options with impacts, a recommendation and a deadline tied to what is blocked. Then I record the outcome in the decision log.' },
   more: [],
-  honest: 'Examples are illustrative.'
+  honest: 'The examples here are illustrative.'
 },
 {
   id: 'comms', area: 'H', name: 'Meeting minutes, decision logs and action tracking',
@@ -347,7 +347,7 @@ PF.skills.push(
   def: 'Minutes record discussion outcomes. A decision log records each decision with its rationale and approver. Action tracking records owner and due date. A RAID log records Risks, Assumptions, Issues and Dependencies.',
   why: 'Decisions that are not written down get reopened.',
   use: ['Every decision-making meeting.'],
-  avoid: ['Transcripts. Record outcomes.'],
+  avoid: ['Writing transcripts. Record outcomes instead.'],
   steps: ['Use a template.', 'Capture decisions, actions and open questions.', 'Publish quickly.', 'Review open actions at the next meeting.'],
   scenario: 'See the sample minutes and decision log in the Artifact Studio.',
   enterprise: 'Link decisions to the requirements they change, so the RTM shows the reason.',
@@ -361,7 +361,7 @@ PF.skills.push(
   cases: ['rajmarg', 'healthcare'],
   q: { q: 'What does a good decision log entry contain?', a: 'Date, the decision in one sentence, the rationale, alternatives considered, the approver, and links to the affected requirements.' },
   more: [],
-  honest: 'Templates are recommended practice.'
+  honest: 'The templates here are recommended practice.'
 },
 {
   id: 'enablement', area: 'H', name: 'Demonstrations, training, user manuals, release communication and sign-off',
@@ -385,7 +385,7 @@ PF.skills.push(
   cases: ['healthcare', 'rajmarg'],
   q: { q: 'How do you write release communication for different audiences?', a: 'For users I describe what changes for them and what to do. For the technical team I list the components, configuration and monitoring points. For approvers I summarise scope, UAT results and residual risks.' },
   more: [],
-  honest: 'The résumé supports these activities.'
+  honest: 'I have run demonstrations and training, and written SOPs, user manuals and release documentation. The release note here is illustrative.'
 },
 {
   id: 'po', area: 'I', name: 'Product vision, roadmap and opportunity assessment',
@@ -409,7 +409,7 @@ PF.skills.push(
   cases: ['rajmarg'],
   q: { q: 'Why are you ready for a Product Owner role?', a: 'Product decisions depend on understanding problems, users, rules and constraints, and that is what I have done for seven years. I have supported product ownership on a national portal, including prioritising backlogs with stakeholders, and I am used to defining success measures and working through trade-offs. What I would add as a Product Owner is owning those decisions directly.' },
   more: [],
-  honest: 'Never claim a Product Owner title you did not hold. Use "product ownership support", which is the wording on your résumé.'
+  honest: 'My job titles have been Business Analyst, so I don\'t claim a Product Owner title. I describe this as "product ownership support", the wording on my résumé.'
 },
 {
   id: 'hypotheses', area: 'I', name: 'Hypotheses, product metrics and experimentation',
@@ -433,7 +433,7 @@ PF.skills.push(
   cases: ['rajmarg'],
   q: { q: 'Write a hypothesis for a feature you would build.', a: 'We believe a "changed since your last action" marker will reduce the time reviewers take to resume clarified files. We will measure median time from response to the next reviewer action, with a guard-rail that files are not approved without document review. We will compare a phased rollout region against others.' },
   more: [],
-  honest: 'Practice examples only.'
+  honest: 'These are practice examples, not reported results.'
 },
 {
   id: 'tradeoffs', area: 'I', name: 'Dependency management and trade-off decisions',
@@ -457,6 +457,6 @@ PF.skills.push(
   cases: ['rajmarg'],
   q: { q: 'Tell me about a trade-off decision.', a: 'I would use the delayed sandbox example. I listed three options with their impacts, including the hidden cost of an interim manual process: an SOP, plus migrating records later. The product owner chose, and I recorded the decision and its follow-ups.' },
   more: [],
-  honest: 'The scenario is illustrative.'
+  honest: 'The scenario here is illustrative.'
 }
 );

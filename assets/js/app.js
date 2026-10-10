@@ -15,7 +15,7 @@
   };
   var EV = {
     source: ['ev-source', 'Source-supported experience'],
-    brief: ['ev-brief', 'Source-supported (owner brief)'],
+    brief: ['ev-brief', 'Source-supported (project brief)'],
     illustrative: ['ev-ill', 'Illustrative example'],
     recommended: ['ev-rec', 'Recommended approach'],
     mixed: ['ev-mixed', 'Mixed, see inline labels']
@@ -28,7 +28,8 @@
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function badge(ev) { var e = EV[ev] || EV.illustrative; return '<span class="ev ' + e[0] + '">' + e[1] + '</span>'; }
   function store(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k)); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
-  function strip(html) { var d = document.createElement('div'); d.innerHTML = html; return d.textContent || ''; }
+  function strip(html) { var d = document.createElement('div'); d.innerHTML = String(html).replace(/</g, ' <'); return (d.textContent || '').replace(/\s+/g, ' ').replace(/\s+([,.;:)])/g, '$1').trim(); }
+  function clip(text, n) { if (text.length <= n) return text; var c = text.slice(0, n); c = c.slice(0, c.lastIndexOf(' ')); return c.replace(/[,;:.\s]+$/, '') + '…'; }
   function list(items) { return '<ul>' + items.map(function (i) { return '<li>' + i + '</li>'; }).join('') + '</ul>'; }
   function skillLink(id) { var s = skill(id); return s ? '<a class="chip" href="#skill.' + s.id + '">' + esc(s.name) + '</a>' : ''; }
   function artLink(id) { var a = art(id); return a ? '<a class="chip" href="#studio.' + a.id + '">' + esc(a.name) + '</a>' : ''; }
@@ -245,7 +246,7 @@
       ['Interview', [
         ['Interview questions', '<div class="qa"><p class="q">' + esc(s.q.q) + '</p></div>' + (s.more.length ? '<p class="small muted">Follow-up questions to prepare:</p>' + list(s.more.map(esc)) : '')],
         ['Model answer', '<div class="qa"><p class="q">"' + esc(s.q.q) + '"</p><p>' + esc(s.q.a) + '</p></div>'],
-        ['Explaining it without overstating', '<p>' + esc(s.honest) + '</p><p class="small muted">Evidence note: ' + esc(s.evNote) + '</p>']]]
+        ['How I describe this without overstating', '<p>' + esc(s.honest) + '</p><p class="small muted">Evidence note: ' + esc(s.evNote) + '</p>']]]
     ];
     var n = 0;
     var panels = T.map(function (tab) { return [tab[0], '<div class="secs">' + tab[1].map(function (x) { n++; return sec(n, x[0], x[1], x[2]); }).join('') + '</div>']; });
@@ -283,27 +284,56 @@
   }
 
   /* ---------------- Artifact Studio ---------------- */
-  var studioKind = 'all';
+  var STAGES = [
+    ['Discover and align', 'Understand the problem and agree on decisions'],
+    ['Specify', 'Describe exactly what to build'],
+    ['Plan and build', 'Turn requirements into the team\'s work'],
+    ['Test and trace', 'Prove it works and nothing is missing'],
+    ['Release and measure', 'Ship safely and check the result']
+  ];
+  var META = {
+    impact: [0, 'A list of everything a proposed change will affect, with an owner and an action for each.', 'Product owner, engineering lead, QA', 'For every change request'],
+    minutes: [0, 'A short record of what was decided, by whom and why, and who does what next.', 'Everyone who attended, plus absent decision-makers', 'After every workshop or decision meeting'],
+    sql: [0, 'Database queries that answer business questions directly from the data, such as where applications are stuck.', 'BA, product owner, reporting team', 'During discovery, testing and reporting'],
+    brd: [1, 'The agreed statement of what the business needs and why, signed off before the build starts.', 'Sponsor, process owner, product owner', 'After discovery, before detailed design'],
+    frd: [1, 'A table of exactly how the system must behave for each function, including errors and exceptions.', 'Developers, testers, designers', 'After the BRD is approved'],
+    srs: [1, 'The complete specification of the system: functions, integrations, permissions and quality targets.', 'Architects, vendors, testers, auditors', 'For contracted or multi-team builds'],
+    bpmn: [1, 'A diagram of who does what, in which order, including decisions and return paths.', 'Business, design, development and testing', 'During discovery and specification'],
+    decision: [1, 'A grid that shows which outcome applies to every combination of conditions, so no case is missed.', 'Policy owners, developers, testers', 'Whenever several rules combine'],
+    api: [1, 'A plain-language contract for how two systems talk: what is sent, what comes back, and what happens when something fails.', 'Developers, integration partners, testers', 'Before an integration is built'],
+    story: [2, 'One small piece of work, written from the user\'s side, with the conditions it must meet to be accepted.', 'Developers, testers, product owner', 'In backlog refinement, before a sprint'],
+    jira: [2, 'The team\'s ordered list of work (epics, stories and bugs) with the reason behind the order.', 'Scrum team, product owner', 'Every sprint'],
+    confluence: [2, 'How the project\'s documents are organised, so anyone can find the current version.', 'The whole team and stakeholders', 'Set up at the start, used throughout'],
+    rtm: [3, 'A table that links each business objective to its requirements, stories, tests and release, so nothing is lost.', 'BA, QA, product owner, auditors', 'Throughout the project; checked before UAT'],
+    uat: [3, 'The plan, test cases and sign-off for business users to confirm the system works for their real tasks.', 'Business users, QA, product owner', 'Before each release'],
+    defect: [3, 'A bug report with everything a developer needs to reproduce and fix the problem.', 'Testers, developers, the triage meeting', 'Whenever testing finds a problem'],
+    release: [4, 'A checklist that confirms a release is ready: scope, quality, people, support and rollback.', 'Product owner, engineering, support', 'At the go/no-go meeting'],
+    kpi: [4, 'Precise definitions of each measure on a dashboard, so everyone calculates it the same way.', 'Managers, analysts, product owner', 'Before building a dashboard, and when measuring outcomes']
+  };
+  function studioOrder() { var o = []; STAGES.forEach(function (_, k) { PF.artifacts.forEach(function (a) { if (META[a.id] && META[a.id][0] === k) o.push(a); }); }); return o; }
   function studioView() {
-    var kinds = []; PF.artifacts.forEach(function (a) { if (kinds.indexOf(a.kind) < 0) kinds.push(a.kind); });
-    return '<div class="wrap page"><header class="page-head"><p class="kicker">Deep-dive · Artifact Studio</p><h1>Artifact Studio</h1><p class="lede">' + PF.artifacts.length + ' sample deliverables you can inspect. Each explains its purpose, the problem it solves, how to use it and what a good version looks like.</p><p class="note">All artifacts are educational reconstructions with invented IDs and sample data. None is a client document.</p></header>' +
-      '<div class="filter-row" role="group" aria-label="Filter by type"><span>Type</span><button class="chip" type="button" data-f="kind" data-v="all" aria-pressed="' + (studioKind === 'all') + '">All</button>' + kinds.map(function (k) { return '<button class="chip" type="button" data-f="kind" data-v="' + k + '" aria-pressed="' + (studioKind === k) + '">' + k + '</button>'; }).join('') + '</div>' +
-      '<div class="grid g3" id="studio-grid">' + studioCards() + '</div></div>';
-  }
-  function studioCards() {
-    return PF.artifacts.filter(function (a) { return studioKind === 'all' || a.kind === studioKind; }).map(function (a) {
-      return '<a class="card" href="#studio.' + a.id + '"><div class="meta"><span class="kicker">' + a.kind + '</span>' + badge('illustrative') + '</div><h3>' + esc(a.name) + '</h3><p class="small muted">' + esc(a.purpose) + '</p><span class="card-foot"><span>' + a.tabs.length + ' view' + (a.tabs.length > 1 ? 's' : '') + '</span><span aria-hidden="true">→</span></span></a>';
-    }).join('');
+    return '<div class="wrap page"><header class="page-head"><p class="kicker">Artifact Studio</p><h1 style="font-size:clamp(2.4rem,6vw,4.4rem)">The documents behind the work.</h1>' +
+      '<p class="lede">Examples of the documents a Business Analyst produces, in the order they appear in a project. Open any one to see the example, who uses it and what a good one looks like.</p></header>' +
+      '<ol class="studio-how"><li><b>1</b>Pick a project stage below.</li><li><b>2</b>Open a document to see the full example.</li><li><b>3</b>Use the tabs to look at it from the business, functional, technical and testing sides.</li></ol>' +
+      '<p class="note">Every example was written for this portfolio with invented IDs and sample data. None is a client document.</p>' +
+      STAGES.map(function (st, k) {
+        var items = PF.artifacts.filter(function (a) { return META[a.id] && META[a.id][0] === k; });
+        return '<section class="stage-block" aria-labelledby="stg-' + k + '"><div class="stage-head"><span class="stage-n">Stage ' + (k + 1) + '</span><h2 id="stg-' + k + '">' + st[0] + '</h2><p>' + st[1] + '</p></div><div class="grid g3">' +
+          items.map(function (a) { var m = META[a.id]; return '<a class="card" href="#studio.' + a.id + '"><h3>' + esc(a.name) + '</h3><p class="small">' + esc(m[1]) + '</p><p class="small muted"><b>Used by:</b> ' + esc(m[2]) + '</p><span class="card-foot"><span>Open the example</span><span aria-hidden="true">→</span></span></a>'; }).join('') +
+          '</div></section>';
+      }).join('') + '</div>';
   }
   function artifactView(id) {
     var a = art(id); if (!a) return notFound();
-    var i = PF.artifacts.indexOf(a), prev = PF.artifacts[i - 1], next = PF.artifacts[i + 1];
+    var m = META[a.id] || [0, a.purpose, '', ''], order = studioOrder(), i = order.indexOf(a), prev = order[i - 1], next = order[i + 1];
     var users = PF.skills.filter(function (s) { return s.artifact === a.id; }).map(function (s) { return s.id; });
     var sk = a.skills.concat(users.filter(function (x) { return a.skills.indexOf(x) < 0; }));
-    return '<div class="wrap page"><nav class="crumbs" aria-label="Breadcrumb"><a href="#studio">Artifact Studio</a><span aria-hidden="true">/</span><span>' + a.kind + '</span></nav>' +
-      '<header class="page-head"><p class="kicker">' + a.kind + ' ' + badge('illustrative') + '</p><h1>' + esc(a.name) + '</h1><p class="lede">' + esc(a.purpose) + '</p></header>' +
-      '<div class="grid g3"><div class="panel stack"><h3 class="kicker">Problem it solves</h3><p>' + esc(a.problem) + '</p></div><div class="panel stack"><h3 class="kicker">How to use it</h3><p>' + esc(a.howto) + '</p></div><div class="panel stack"><h3 class="kicker">What good looks like</h3><ul class="check small">' + a.good.map(function (g) { return '<li>' + esc(g) + '</li>'; }).join('') + '</ul></div></div>' +
-      '<section class="stack" aria-label="Artifact">' + tabs('art-' + a.id, a.tabs) + '</section>' +
+    return '<div class="wrap page"><nav class="crumbs" aria-label="Breadcrumb"><a href="#studio">Artifact Studio</a><span aria-hidden="true">/</span><span>Stage ' + (m[0] + 1) + ': ' + STAGES[m[0]][0] + '</span></nav>' +
+      '<header class="page-head"><p class="kicker">Stage ' + (m[0] + 1) + ' · ' + STAGES[m[0]][0] + ' ' + badge('illustrative') + '</p><h1 style="font-size:clamp(2.2rem,5.4vw,3.8rem)">' + esc(a.name) + '</h1><p class="lede">' + esc(m[1]) + '</p></header>' +
+      '<div class="grid g3"><div class="panel stack"><h3 class="kicker">Why it exists</h3><p>' + esc(a.purpose) + '</p><p class="small muted"><b>Problem it solves:</b> ' + esc(a.problem) + '</p></div><div class="panel stack"><h3 class="kicker">Who uses it</h3><p>' + esc(m[2]) + '</p></div><div class="panel stack"><h3 class="kicker">When it is used</h3><p>' + esc(m[3]) + '</p></div></div>' +
+      '<div class="read-tip"><b>How to read this example</b><span>' + esc(a.howto) + ' Switch between the tabs to see different views.</span></div>' +
+      '<section class="stack" aria-label="The example"><h2 style="font-size:var(--t-xl)">The example</h2>' + tabs('art-' + a.id, a.tabs) + '</section>' +
+      '<section class="panel stack"><h3 class="kicker">What a good one looks like</h3><ul class="check">' + a.good.map(function (g) { return '<li>' + esc(g) + '</li>'; }).join('') + '</ul></section>' +
       '<section class="two"><div class="stack"><h2 style="font-size:var(--t-lg)">Skills it demonstrates</h2><div class="chips">' + sk.map(skillLink).join('') + '</div></div><div class="stack"><h2 style="font-size:var(--t-lg)">Used in case studies</h2><div class="chips">' + a.cases.map(caseLink).join('') + '</div></div></section>' +
       '<nav class="pager" aria-label="More artifacts">' + (prev ? '<a class="btn ghost" href="#studio.' + prev.id + '">← ' + esc(prev.name) + '</a>' : '<span></span>') + (next ? '<a class="btn ghost" href="#studio.' + next.id + '">' + esc(next.name) + ' →</a>' : '') + '</nav></div>';
   }
@@ -349,17 +379,31 @@
     document.getElementById('ev-count').textContent = rows.length + ' skills';
     host.innerHTML = rows.length ? '<table class="ev-table" style="min-width:1100px"><tr><th>Skill</th><th>Practical explanation</th><th>Project or scenario</th><th>Artifact</th><th>Case study</th><th>Interview question</th><th>Evidence status</th></tr>' + rows.map(function (s) {
       var a = art(s.artifact);
-      return '<tr><td><a href="#skill.' + s.id + '">' + esc(s.name) + '</a><span class="muted small">' + s.area + ' · ' + AREAS[s.area] + '</span></td><td>' + esc(s.sum) + '</td><td>' + esc(strip(s.scenario).slice(0, 150)) + '… ' + badge('illustrative') + '</td><td>' + (a ? '<a href="#studio.' + a.id + '">' + esc(a.name) + '</a>' : '') + '</td><td>' + s.cases.map(function (c) { var x = cs(c); return x ? '<a href="#case.' + x.id + '">' + esc(x.short) + '</a>' : ''; }).join(', ') + '</td><td>' + esc(s.q.q) + '</td><td>' + badge(s.ev) + '<span class="muted small" style="display:block;margin-top:.3rem">' + esc(s.evNote) + '</span></td></tr>';
+      return '<tr><td><a href="#skill.' + s.id + '">' + esc(s.name) + '</a><span class="muted small">' + s.area + ' · ' + AREAS[s.area] + '</span></td><td>' + esc(s.sum) + '</td><td>' + esc(clip(strip(s.scenario), 160)) + ' ' + badge('illustrative') + '</td><td>' + (a ? '<a href="#studio.' + a.id + '">' + esc(a.name) + '</a>' : '') + '</td><td>' + s.cases.map(function (c) { var x = cs(c); return x ? '<a href="#case.' + x.id + '">' + esc(x.short) + '</a>' : ''; }).join(', ') + '</td><td>' + esc(s.q.q) + '</td><td>' + badge(s.ev) + '<span class="muted small" style="display:block;margin-top:.3rem">' + esc(s.evNote) + '</span></td></tr>';
     }).join('') + '</table>' : '<div class="empty">No skills match these filters.</div>';
   }
 
   function notFound() { return '<div class="wrap page"><h1>Page not found</h1><p>That link does not match a page. <a href="#home">Go to the overview</a> or press <span class="kbd">/</span> to search.</p></div>'; }
 
   /* ---------------- Router ---------------- */
-  var current = '';
+  var current = '', navStack = [], scrollMemo = {};
+  function pageLabel(h) {
+    var p = h.split('.'), v = p[0], id = p.slice(1).join('.'), x;
+    var L = { home: 'Overview', skills: 'Skills Library', cases: 'Case studies', studio: 'Artifact Studio', scenarios: 'Scenarios', evidence: 'Evidence map' };
+    if (v === 'skill' && (x = skill(id))) return x.name;
+    if (v === 'case' && (x = cs(id))) return x.short;
+    if (v === 'studio' && id && (x = art(id))) return x.name;
+    if (v === 'scenario' && (x = byId(PF.scenarios, id))) return x.short;
+    return L[v] || 'Overview';
+  }
+  function parentOf(h) { var v = h.split('.')[0]; return { skill: 'skills', case: 'cases', scenario: 'scenarios' }[v] || (v === 'studio' && h.indexOf('.') > -1 ? 'studio' : 'home'); }
   function route() {
     var h = decodeURIComponent(location.hash.slice(1)) || 'home';
     if (h === 'summary' || h === 'contact') { h = 'home'; }
+    /* Remember where the reader was, and whether this navigation goes back one step. */
+    if (current) scrollMemo[current] = scrollY;
+    var goingBack = navStack.length > 1 && navStack[navStack.length - 2] === h && current !== h;
+    if (goingBack) navStack.pop(); else if (navStack[navStack.length - 1] !== h) navStack.push(h);
     var parts = h.split('.'), view = parts[0], id = parts.slice(1).join('.');
     var html, navKey = view;
     switch (view) {
@@ -387,7 +431,15 @@
     if (view === 'home') { chain(0); mountIntro(); }
     layoutThread();
     closeMenu();
-    if (current !== h) { window.scrollTo(0, 0); main.focus({ preventScroll: true }); }
+    if (view !== 'home') {
+      var target = navStack.length > 1 ? navStack[navStack.length - 2] : parentOf(h), pg = main.querySelector('.page');
+      if (pg) pg.insertAdjacentHTML('afterbegin', '<div class="back-row"><button class="back-btn" type="button" data-act="back" data-to="' + esc(target) + '">← Back to ' + esc(pageLabel(target)) + '</button></div>');
+    }
+    if (current !== h) {
+      if (goingBack && scrollMemo[h] != null) { var y = scrollMemo[h]; window.scrollTo(0, y); requestAnimationFrame(function () { window.scrollTo(0, y); }); }
+      else window.scrollTo(0, 0);
+      main.focus({ preventScroll: true });
+    }
     var anchor = decodeURIComponent(location.hash.slice(1));
     if (anchor === 'summary' || anchor === 'contact') { var t = document.getElementById(anchor); if (t) t.scrollIntoView(); }
     current = h;
@@ -403,8 +455,12 @@
     var host = document.getElementById('intro');
     if (!host || !window.PFIntros) return;
     host.classList.toggle('i-static', reduceMotion.matches);
-    host.innerHTML = '<section class="i-sec"><div class="i-stage" role="img" aria-label="Animated introduction: one question becomes a decision, three roles, a clarification loop and one agreed solution, then underlines my name."><button class="i-skip" type="button" data-act="skip-intro">Skip intro</button></div></section>';
-    stopIntro = window.PFIntros.thread(host.querySelector('.i-sec'));
+    var skip = '<button class="i-skip" type="button" data-act="skip-intro">Skip intro</button>';
+    host.innerHTML = '<section class="i-sec i-chaos"><div class="i-stage" role="img" aria-label="Animated introduction, part one: stakeholder phrases fade away as four words form the line: Turning complexity into clarity.">' + skip + '</div></section>' +
+      '<section class="i-sec i-thread"><div class="i-stage" role="img" aria-label="Animated introduction, part two: one question becomes a decision, three roles, a clarification loop and one agreed solution, then underlines my name.">' + skip + '</div></section>';
+    var s1 = window.PFIntros.chaos(host.querySelector('.i-chaos'), { sub: '<span class="i-name">That is the job.</span><span>Here is how it works ↓</span>' });
+    var s2 = window.PFIntros.thread(host.querySelector('.i-thread'));
+    stopIntro = function () { s1(); s2(); };
   }
   function layoutThread() {
     var home = document.getElementById('home-main'); if (!home) { threadLen = 0; return; }
@@ -527,7 +583,6 @@
     var t = e.target.closest('[data-act], [data-f]'); if (!t) return;
     var act = t.getAttribute('data-act'), f = t.getAttribute('data-f');
     if (f === 'area' || f === 'ev') { lib[f] = t.getAttribute('data-v'); store('pf-lib', lib); t.parentNode.querySelectorAll('[data-f="' + f + '"]').forEach(function (b) { b.setAttribute('aria-pressed', String(b === t)); }); drawLib(); return; }
-    if (f === 'kind') { studioKind = t.getAttribute('data-v'); t.parentNode.querySelectorAll('[data-f="kind"]').forEach(function (b) { b.setAttribute('aria-pressed', String(b === t)); }); document.getElementById('studio-grid').innerHTML = studioCards(); return; }
     if (f === 'evm') { evf.ev = t.getAttribute('data-v'); t.parentNode.querySelectorAll('[data-f="evm"]').forEach(function (b) { b.setAttribute('aria-pressed', String(b === t)); }); drawEvidence(); return; }
     switch (act) {
       case 'menu': var o = !nav.classList.contains('open'); nav.classList.toggle('open', o); t.setAttribute('aria-expanded', String(o)); break;
@@ -538,6 +593,7 @@
       case 'goto': var el = document.getElementById(t.getAttribute('data-target')); if (el) { el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); } break;
       case 'jump': e.preventDefault(); var b = document.getElementById(t.getAttribute('data-target')); if (b) { b.open = true; b.scrollIntoView(); b.querySelector('summary').focus({ preventScroll: true }); } break;
       case 'chain': chain(+t.getAttribute('data-i')); break;
+      case 'back': if (navStack.length > 1) history.back(); else location.hash = t.getAttribute('data-to'); break;
       case 'skip-intro': var hero = document.getElementById('hero'); if (hero) { window.scrollTo(0, hero.getBoundingClientRect().top + scrollY - (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--tb')) || 64)); var h1 = document.getElementById('h-title'); h1.setAttribute('tabindex', '-1'); h1.focus({ preventScroll: true }); } break;
       case 'h-ac': var ul = document.getElementById('h-ac'), open = ul.hidden; ul.hidden = !open; t.setAttribute('aria-expanded', String(open)); t.textContent = open ? 'Hide acceptance criteria' : 'Show acceptance criteria'; break;
       case 'next-chapter': var tb2 = document.querySelectorAll('#chapters [role="tab"]')[+t.getAttribute('data-i')]; if (tb2) { tb2.click(); document.getElementById('chapters').scrollIntoView(); tb2.focus({ preventScroll: true }); } break;
@@ -568,7 +624,11 @@
   var kmEl = document.getElementById('ch-km'), phEl = document.getElementById('ch-phase'), fillEl = document.getElementById('ch-fill'), sceneEl = document.querySelector('.scene'), ticking = false;
   var PHASES = ['Discover', 'Specify', 'Trace', 'Release'];
   /* Scroll offset where the pinned intro ends and the overview begins (0 when there is no animated intro). */
-  function introBase() { var el = document.getElementById('intro'); return el && !el.classList.contains('is-static') && !el.classList.contains('i-static') ? el.offsetTop + el.offsetHeight - innerHeight : 0; }
+  function introBase() {
+    var el = document.getElementById('intro'); if (!el || el.classList.contains('is-static') || el.classList.contains('i-static')) return 0;
+    var tb = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--tb')) || 0;
+    return el.getBoundingClientRect().top + scrollY + el.offsetHeight - (innerHeight - tb);
+  }
   window.PFIntroBase = introBase;
   function onScroll() {
     if (ticking) return; ticking = true;

@@ -27,7 +27,7 @@ PF.skills.push(
   cases: ['rajmarg', 'healthcare'],
   q: { q: 'Tell me about a time you found that the requested solution was not what the business needed.', a: 'I would answer with the clarification example and frame it as my method. The request was to reduce clarification cycles, and the first proposal was to make some fields optional. Before agreeing, I listed the possible causes: incomplete applicant data, inconsistent validation, missing guidance and internal routing. I would explain how I would test each one, for example by sampling clarification remarks and tagging them by cause. The point I would make is that the requirement I eventually wrote addressed the confirmed cause, and that the success measure was agreed before build. If asked for numbers, I would say I do not have measured results I can share.' },
   more: ['How do you know when discovery is finished?', 'How do you handle a senior stakeholder who insists on their solution?', 'What evidence do you trust more than interviews?'],
-  honest: 'Describe the discovery method and the kinds of evidence you used. Do not attribute policy decisions to yourself. Approvals and policy positions sit with the client authority. Say "I prepared the analysis that the product owner and client used to decide", not "I decided".'
+  honest: 'I describe the discovery method and the evidence I used. Policy decisions and approvals belonged to the client authority, so I say "I prepared the analysis the product owner and client used to decide", not "I decided".'
 },
 {
   id: 'elicitation', area: 'A', name: 'Stakeholder identification and elicitation',
@@ -51,7 +51,7 @@ PF.skills.push(
   cases: ['rajmarg', 'ats-vms'],
   q: { q: 'How do you handle two stakeholders who want opposite things?', a: 'I start by getting both positions written down as needs rather than solutions. With the mandatory-fields example, the applicant need is "submit without unnecessary effort" and the authority need is "have enough evidence to approve in compliance". I then work field by field: who uses it, at what stage, under which rule. That usually turns one argument into several smaller decisions, and some fields can move to a later stage. Anything still contested goes to the person with decision rights, with the options and their impacts, and the result goes into the decision log.' },
   more: ['Which elicitation technique do you rely on most, and why?', 'How do you elicit requirements from someone who is too busy to meet?', 'How do you know you have identified every stakeholder?'],
-  honest: 'Name the stakeholder groups that appear in your résumé (MoRTH, NHAI, DIC, engineering, QA, UI/UX). Describe your role as facilitating and documenting. Avoid implying that you had authority over client officials.'
+  honest: 'I name the stakeholder groups from my résumé (MoRTH, NHAI, DIC, engineering, QA and UI/UX) and describe my role as facilitating and documenting. I had no authority over client officials, and I don\'t imply that I did.'
 },
 {
   id: 'brd', area: 'A', name: 'BRD (Business Requirements Document)',
@@ -75,7 +75,7 @@ PF.skills.push(
   cases: ['rajmarg', 'healthcare', 'ats-vms'],
   q: { q: 'What is the difference between a BRD and an FRD?', a: 'The BRD says what the business needs and why: objectives, scope, rules and success criteria, written for the sponsor to approve. The FRD says how the system must behave to meet those needs: roles, inputs, validations, outputs, exceptions. For example, the BRD says "reviewers must record a reason for each clarification". The FRD says "the clarification dialog shall require selecting at least one reason code from the configured list and shall allow up to 1,000 characters of remarks".' },
   more: ['Who signs off a BRD, and what happens after sign-off?', 'How do you manage changes to a signed BRD?'],
-  honest: 'You can say you authored BRDs on each listed project. Do not claim specific approved content from client documents. Describe structure and approach, and use the portfolio excerpt as a reconstructed example.'
+  honest: 'I authored BRDs on each project listed. I don\'t quote approved client documents; the excerpt here is a reconstructed example of my structure and approach.'
 },
 {
   id: 'frd', area: 'A', name: 'FRD (Functional Requirements Document)',
@@ -99,7 +99,7 @@ PF.skills.push(
   cases: ['rajmarg', 'healthcare', 'ats-vms'],
   q: { q: 'Show me how a business requirement becomes functional requirements.', a: 'I would take "applicants can respond to a clarification" and break it into visible behaviour. Where the applicant sees it, what they can upload, what validations apply, what status the application moves to, who is notified, and what happens if the response window lapses. Each piece becomes an FR with a parent link to the BR. The FRs then trace to stories and test cases, so a later change to the response window shows exactly what to update.' },
   more: ['What makes a functional requirement testable?', 'How much detail is too much in an FRD?'],
-  honest: 'Say that you wrote FRDs and functional specifications. The tables in this portfolio are reconstructed examples, not client documents.'
+  honest: 'I wrote FRDs and functional specifications. The tables in this portfolio are reconstructed examples, not client documents.'
 },
 {
   id: 'srs', area: 'A', name: 'SRS (Software Requirements Specification)',
@@ -123,7 +123,7 @@ PF.skills.push(
   cases: ['rajmarg', 'datalake'],
   q: { q: 'How do you keep an SRS maintainable over many releases?', a: 'Stable IDs that are never renumbered, a change-history table that names each changed requirement and the reason, deprecation instead of deletion, and the RTM updated in the same change. I also keep business rules in their own catalogue, so a rule change does not touch dozens of requirements.' },
   more: ['What goes into the system context section?', 'How do you document error handling in an SRS?'],
-  honest: 'You authored SRS documents. Describe structure and practices. Do not reproduce or paraphrase confidential specifications.'
+  honest: 'I authored SRS documents. I describe their structure and my practices, and I never reproduce or paraphrase confidential specifications.'
 },
 {
   id: 'stories', area: 'A', name: 'User stories',
@@ -147,7 +147,7 @@ PF.skills.push(
   cases: ['rajmarg', 'healthcare', 'ats-vms'],
   q: { q: 'How do you split a large story?', a: 'I look for a thin slice that still delivers value end to end. For clarification management, the first slice is: the reviewer raises a clarification with a reason, the applicant sees it and responds, and the file returns to the reviewer. Reminders, escalation, reason-code administration and reporting come as later stories. Each slice has its own acceptance criteria and can be tested independently.' },
   more: ['What is the difference between an epic, a feature and a story?', 'Who writes user stories on your teams?'],
-  honest: 'You wrote user stories on every BA role. The example stories here are illustrative and are not copied from client backlogs.'
+  honest: 'I have written user stories in every BA role. The stories here are illustrative and are not copied from client backlogs.'
 },
 {
   id: 'ac', area: 'A', name: 'Acceptance criteria',
@@ -171,7 +171,7 @@ PF.skills.push(
   cases: ['rajmarg', 'ats-vms'],
   q: { q: 'What is the difference between acceptance criteria and test cases?', a: 'Acceptance criteria state the conditions the story must meet: for example, that a clarification cannot be raised without a reason. Test cases are the concrete checks that prove it, with preconditions, data, steps and expected results, including variants such as one reason, several reasons and none. One criterion usually produces several test cases.' },
   more: ['How do you write acceptance criteria for a permission rule?', 'Should acceptance criteria include UI text?'],
-  honest: 'Say that you wrote acceptance criteria for stories on the listed projects. The specific criteria here are illustrative.'
+  honest: 'I wrote acceptance criteria for stories on the projects listed. The specific criteria here are illustrative.'
 },
 {
   id: 'rtm', area: 'A', name: 'Requirements Traceability Matrix (RTM)',
@@ -195,7 +195,7 @@ PF.skills.push(
   cases: ['rajmarg', 'healthcare', 'ats-vms'],
   q: { q: 'How have you used an RTM beyond compliance?', a: 'Mainly for impact analysis and UAT readiness. When a rule changes, filtering by the rule ID gives the exact list of stories, test cases and documents to update, which turns "what does this affect?" from a meeting into a query. Before UAT, I check forward coverage so that no approved requirement arrives without test cases.' },
   more: ['What columns do you include in an RTM?', 'Who maintains it?'],
-  honest: 'You authored RTMs. Describe how you used them. Do not quote real requirement IDs or counts from client projects.'
+  honest: 'I authored RTMs and describe how I used them. I don\'t quote real requirement IDs or counts from client projects.'
 },
 {
   id: 'rules', area: 'A', name: 'Business rules and validation logic',
@@ -219,7 +219,7 @@ PF.skills.push(
   cases: ['rajmarg', 'healthcare', 'ats-vms'],
   q: { q: 'How do you document a complex rule so that developers and testers read it the same way?', a: 'I write it in plain language with an ID, owner and source. Then I add a decision table for the combinations and pseudocode if order matters, and list the boundary cases explicitly. For example, for a guarantee validity rule I would state whether "on the required date" is valid and include the one-day-before and exact-date tests.' },
   more: ['Where should validation happen: front end or back end?', 'How do you handle rules that differ by region?'],
-  honest: 'These rules are examples written for this portfolio. Do not present them as actual policy of any authority.'
+  honest: 'These rules were written for this portfolio to show the method. They are not the actual policy of any authority.'
 },
 {
   id: 'process', area: 'A', name: 'Process modelling and workflow design',
@@ -231,7 +231,7 @@ PF.skills.push(
   use: ['Any multi-step, multi-role workflow.', 'Status design and SLA definition.', 'Training and SOPs.'],
   avoid: ['Modelling every keystroke. Model decisions, handoffs and states.'],
   steps: ['Define scope: trigger, end states, participants.', 'Draw current state from evidence.', 'Mark pain points and delays.', 'Design future state with decisions, alternate paths, rejection loops, escalation and exceptions.', 'Derive the status model from the future state.', 'Validate with each role by walking through real cases.', 'Link process steps to requirements.'],
-  scenario: 'For an application process, the future state has six lanes: Applicant, Portal, Reviewing Officer, Field Inspector, Approving Authority and Finance. Key loops are clarification (reviewer to applicant and back), inspection, provisional approval leading to payment and guarantee, and final approval with e-signature. Exceptions include a response window lapse (escalation), payment failure (retry or reconcile) and an invalid guarantee (re-upload).',
+  scenario: 'For an application process, the future state has six lanes: Applicant, Portal, Reviewing Officer, Field Inspector, Approving Authority and Finance. The key paths are the clarification loop (reviewer to applicant and back), site inspection, provisional approval leading to payment and the bank guarantee, and final approval with an e-signature. Exceptions include a response window lapse (escalation), payment failure (retry or reconcile) and an invalid guarantee (re-upload).',
   enterprise: 'The interactive workflow in the Rajmarg Pravesh case study and the BPMN artifact lets you click each step to see the role, the rule, the status change and the related requirement. It is a reconstructed, illustrative model, not the production configuration.',
   inputs: ['SOPs and policy', 'Observation and interviews', 'System records'],
   outputs: ['Current and future-state diagrams', 'Status model', 'Exception catalogue'],
@@ -243,7 +243,7 @@ PF.skills.push(
   cases: ['rajmarg', 'healthcare', 'ats-vms'],
   q: { q: 'Walk me through a workflow you designed.', a: 'I would walk through the application workflow: submission, scrutiny, clarification loop, inspection, provisional approval, payment and guarantee, final approval. I would focus on the decisions and exceptions: what happens when a response is late, when a payment fails, when a guarantee is invalid. Then I would explain that the status list was derived from that model so that every status has an owner and an exit.' },
   more: ['How do you validate a process model?', 'What is the difference between current and future state, and why model both?'],
-  honest: 'You created workflow diagrams with Visio. The diagram here is a reconstruction for illustration; say so if asked.'
+  honest: 'I created workflow diagrams in Visio. The diagram here is a reconstruction for illustration, and I say so if asked.'
 },
 {
   id: 'gap', area: 'A', name: 'Gap analysis and impact analysis',
@@ -267,7 +267,7 @@ PF.skills.push(
   cases: ['rajmarg', 'ats-vms'],
   q: { q: 'How do you do an impact analysis for a change request?', a: 'I start from the RTM to find affected requirements, stories and tests. Then I check a fixed list: workflow and statuses, roles and permissions, data and history, integrations, notifications, reports, documentation, training, and policy dependencies. Each impact gets a level and an owner, and the product owner decides whether and when to take the change.' },
   more: ['Give an example of a gap you found that was not a system gap.'],
-  honest: 'Gap analysis appears in your résumé. The bank-guarantee change is an illustrative scenario from the case study.'
+  honest: 'Gap analysis is part of my résumé. The bank guarantee change is an illustrative scenario from the case study.'
 },
 {
   id: 'nfr', area: 'A', name: 'Non-functional requirements',
@@ -291,6 +291,6 @@ PF.skills.push(
   cases: ['rajmarg', 'healthcare'],
   q: { q: 'How do you define non-functional requirements when stakeholders cannot give numbers?', a: 'I ask scenario questions about the business impact, for example what happens if search is slow on the busiest day. I take those to engineering to agree what is measurable. If a target is still unknown, I write it as an assumption with an owner and a date to confirm, rather than inventing a number.' },
   more: ['Which NFRs matter most for a government portal?'],
-  honest: 'Present this as your approach. Targets in this portfolio are illustrative assumptions, not project commitments.'
+  honest: 'This is my approach to non-functional requirements. The targets shown are illustrative assumptions, not project commitments.'
 }
 );

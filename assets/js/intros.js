@@ -29,7 +29,8 @@
   /* ---------------- 1 · Chaos to clarity ---------------- */
   var NOISE = ['make it faster', 'urgent!!', 'same as last time', 'fewer fields?', 'who approves this?', 'compliance', 'can we add a report?', 'it worked in UAT', 'just a small change', 'ASAP', 'policy says…', 'the vendor said no', 'what does "pending" mean?', 'users are confused', 'need it by Friday', 'is this in scope?', 'the data doesn\'t match', 'Excel export?', 'legacy records', 'one more approval step', 'it\'s a quick fix', 'mobile too?', 'audit wants proof', 'why was it rejected?', 'the SMS never arrived', 'duplicate application', 'which version?', 'who owns this?', 'can\'t find the document', 'payment pending', 'like the old system', 'escalate this'];
   var HEAD = ['Turning', 'complexity', 'into', 'clarity.'];
-  function chaos(host) {
+  function chaos(host, opts) {
+    opts = opts || {};
     var stage = host.querySelector('.i-stage'), seed = 5;
     function rnd() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
     var html = '<h2 class="i1-measure" aria-hidden="true">' + HEAD.map(function (w) { return '<span>' + w + '</span>'; }).join(' ') + '</h2>';
@@ -42,7 +43,7 @@
     words.filter(function (o) { return o.head; }).forEach(function (o, k) { o.x = [0.12, 0.72, 0.2, 0.8][k]; o.y = [0.22, 0.18, 0.78, 0.74][k]; o.z = 0.9; });
     html += words.map(function (o, i) { return '<span class="i1-w' + (o.head ? ' h' : '') + (o.hi === 3 ? ' last' : '') + '" data-i="' + i + '">' + o.w.replace(/</g, '&lt;') + '</span>'; }).join('');
     html += '<p class="i-cap i1-c1">Every project starts as noise.</p><p class="i-cap i1-c2">The job is to find what matters.</p>' +
-      '<div class="i1-sub"><span class="i-name">Abhishek Yadav</span><span>Senior IT Business Analyst</span></div><span class="i-cue">Scroll ↓</span>';
+      '<div class="i1-sub">' + (opts.sub || '<span class="i-name">Abhishek Yadav</span><span>Senior IT Business Analyst</span>') + '</div><span class="i-cue">Scroll ↓</span>';
     stage.insertAdjacentHTML('beforeend', html);
     var els = Array.prototype.slice.call(stage.querySelectorAll('.i1-w')), measure = stage.querySelector('.i1-measure'), sub = stage.querySelector('.i1-sub'), c1 = stage.querySelector('.i1-c1'), c2 = stage.querySelector('.i1-c2'), cue = stage.querySelector('.i-cue');
     var T = [], FT = 60, W = 0, H = 0;

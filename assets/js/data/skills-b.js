@@ -24,7 +24,7 @@ PF.skills.push(
   cases: ['rajmarg', 'healthcare', 'ats-vms'],
   q: { q: 'What does a BA do in each Scrum event?', a: 'In refinement I bring stories with draft acceptance criteria and answer questions. In planning I clarify scope against the sprint goal. In the daily scrum I listen for requirement blockers and resolve them quickly. In the review I help demonstrate and capture feedback as backlog items. In the retrospective I raise process issues such as unready stories. Throughout, I keep the RTM and decision log in line with what changed.' },
   more: ['How do you handle requirements that change mid-sprint?', 'What is the difference between Scrum and Kanban, and when would you use each?'],
-  honest: 'You worked in Scrum teams as a BA. Do not claim to have been the Scrum Master or the formal Product Owner unless you held those roles.'
+  honest: 'I worked in Scrum teams as a Business Analyst. I was not the Scrum Master or the formal Product Owner, and I don\'t claim either role.'
 },
 {
   id: 'backlog', area: 'B', name: 'Backlog management and prioritisation',
@@ -48,7 +48,7 @@ PF.skills.push(
   cases: ['rajmarg', 'ats-vms'],
   q: { q: 'How do you prioritise compliance work against user pain points?', a: 'Compliance obligations with a hard consequence go first, but I check that they really are obligations by asking for the source. Then I look at dependencies: an audit trail may unblock reporting and dispute handling. User pain is weighed by how many users it affects and how often. I always write the reasoning beside the ranking so it can be challenged.' },
   more: ['How do you say no to a senior stakeholder?', 'How do you handle technical debt in the backlog?'],
-  honest: 'Résumé supports backlog prioritisation with client stakeholders. The final ordering authority sat with the product owner or client; describe your role as analysis and recommendation.'
+  honest: 'My résumé covers backlog prioritisation with client stakeholders. The final ordering decision sat with the product owner or client, so I describe my role as analysis and recommendation.'
 },
 {
   id: 'discovery-product', area: 'B', name: 'Product discovery and outcome thinking',
@@ -72,7 +72,7 @@ PF.skills.push(
   cases: ['rajmarg', 'healthcare'],
   q: { q: 'How would you measure whether a feature worked?', a: 'I would define the outcome before building, for example the share of applications returned for a missing document at first review. I would fix a baseline period and data source, add guard-rail metrics such as abandonment, and agree the decision rule with the product owner. Then I would review honestly, including the possibility that it did not work.' },
   more: ['What is the difference between an output and an outcome?'],
-  honest: 'Present this as your recommended approach and product-readiness thinking. Do not claim measured improvements.'
+  honest: 'This shows my recommended approach and product thinking. I don\'t claim measured improvements.'
 },
 {
   id: 'dor-dod', area: 'B', name: 'Definition of Ready and Definition of Done',
@@ -96,7 +96,7 @@ PF.skills.push(
   cases: ['rajmarg'],
   q: { q: 'What is on your Definition of Ready?', a: 'Clear story and value, acceptance criteria with negative and permission cases, rules confirmed by ID, designs including error states, dependencies identified with status, an estimate, and known test-data needs. For integrations I add an agreed interface contract and an available sandbox.' },
   more: ['What happens if a story is not ready at sprint planning?'],
-  honest: 'Present these as recommended checklists rather than quoting team-specific ones.'
+  honest: 'These are recommended checklists, not the exact lists any one team used.'
 },
 {
   id: 'release', area: 'B', name: 'Release planning and change management',
@@ -120,7 +120,7 @@ PF.skills.push(
   cases: ['rajmarg', 'healthcare'],
   q: { q: 'Walk me through how you prepare a release.', a: 'I confirm scope against the RTM, list dependencies such as configuration, integrations and master data, and agree regression scope with QA. I run UAT and get sign-off with residual risks recorded. I prepare release notes, user guides and SOP updates, then bring all of it to the go/no-go meeting. After release I monitor support tickets and key indicators and triage issues quickly.' },
   more: ['What do you do if UAT sign-off is late but the release date is fixed?'],
-  honest: 'Résumé supports release coordination and readiness. Deployment execution sat with engineering; describe your role as coordination, validation and documentation.'
+  honest: 'My résumé covers release coordination and readiness. Engineering carried out deployments; my role was coordination, validation and documentation.'
 },
 {
   id: 'jira', area: 'C', name: 'JIRA',
@@ -136,7 +136,7 @@ PF.skills.push(
   enterprise: '<strong>Example JQL (illustrative project key "PERMIT")</strong><pre><code>-- Stories in the next release that are not ready\nproject = PERMIT AND issuetype = Story AND fixVersion = "R5" AND status = "Backlog"\n\n-- Open high-severity bugs by component\nproject = PERMIT AND issuetype = Bug AND statusCategory != Done\n  AND priority in (Highest, High) ORDER BY component, created\n\n-- Stories with no acceptance-criteria label (team convention)\nproject = PERMIT AND issuetype = Story AND labels not in (ac-reviewed)\n  AND sprint in openSprints()\n\n-- Bugs reopened in the last 14 days (quality signal)\nproject = PERMIT AND issuetype = Bug AND status changed FROM "Resolved" TO "Reopened" DURING (-14d, now())</code></pre>Each query answers a question the BA asks every week: what is not ready, what is risky, what is untested, and what is regressing.',
   inputs: ['Requirements', 'Team workflow'],
   outputs: ['Epics, stories, bugs', 'Filters and dashboards', 'Release versions'],
-  mistakes: [['Bug reports without expected vs actual.', 'Use a template.'], ['Stories with no epic or version.', 'Make links mandatory by convention.'], ['Too many custom statuses.', 'Statuses should reflect real handoffs.']],
+  mistakes: [['Bug reports that do not state the expected and actual results.', 'Use a template.'], ['Stories with no epic or version.', 'Make links mandatory by convention.'], ['Too many custom statuses.', 'Statuses should reflect real handoffs.']],
   collab: { biz: 'Stakeholders view dashboards rather than raw lists.', design: 'Design links on stories.', dev: 'Subtasks and dependencies.', qa: 'Bugs and test links.', pm: 'Backlog order and versions.' },
   tools: ['JIRA Software', 'JQL', 'Dashboards'],
   artifact: 'jira', artifactNote: 'Open the JIRA epic, stories and backlog artifact.',
@@ -144,7 +144,7 @@ PF.skills.push(
   cases: ['rajmarg', 'ats-vms'],
   q: { q: 'How do you use JQL in your work?', a: 'Mostly for saved filters that answer weekly questions: which stories in the next release are not ready, which high-severity bugs are open by component, and which bugs were reopened recently. Those filters feed a dashboard for stand-ups and stakeholder updates.' },
   more: ['What makes a good bug report?', 'How do you structure epics for a multi-module portal?'],
-  honest: 'Ticket keys and project names here are invented. Do not imply access to a live instance or quote real ticket numbers.'
+  honest: 'The ticket keys and project names here are invented. I don\'t imply access to a live JIRA instance or quote real ticket numbers.'
 },
 {
   id: 'confluence', area: 'C', name: 'Confluence',
@@ -168,7 +168,7 @@ PF.skills.push(
   cases: ['healthcare', 'rajmarg'],
   q: { q: 'How do you keep documentation in sync with the backlog?', a: 'I write requirements once in Confluence, link each page to its JIRA epic, and embed JIRA filters for live lists. Changes go through page versions with a change note, and the RTM is updated in the same change.' },
   more: ['How do you structure a new Confluence space?'],
-  honest: 'The space structure here is a recommended template.'
+  honest: 'The space structure shown is a recommended template.'
 },
 {
   id: 'journeys', area: 'D', name: 'User journeys and personas',
@@ -192,7 +192,7 @@ PF.skills.push(
   cases: ['rajmarg', 'healthcare', 'ats-vms'],
   q: { q: 'How do you account for different user groups in requirements?', a: 'I map each group\'s goals and context separately. For example, applicants may be on mobile with patchy connectivity, while reviewers work through queues at a desk. Requirements then reflect both: progress saving and clear next steps for applicants, filters and change history for reviewers. If I have not validated the personas, I label them as assumptions.' },
   more: [],
-  honest: 'Personas here are proto-personas created for this portfolio.'
+  honest: 'The personas here are proto-personas created for this portfolio, not validated research.'
 },
 {
   id: 'wireframes', area: 'D', name: 'Wireframes and prototyping',
@@ -216,7 +216,7 @@ PF.skills.push(
   cases: ['rajmarg', 'healthcare', 'ats-vms'],
   q: { q: 'How do you communicate functional intent to a designer?', a: 'With a low-fidelity wireframe annotated with data, actions, rules by ID and every state, plus the user story and acceptance criteria. I leave the visual design to the designer and focus on behaviour: who sees what, when, and what happens in each state.' },
   more: [],
-  honest: 'The wireframe here is a reconstruction for illustration, built in HTML, not exported from Figma.'
+  honest: 'The wireframe here is a reconstruction built in HTML for illustration. It was not exported from Figma.'
 },
 {
   id: 'figma', area: 'D', name: 'Figma and FigJam',
@@ -264,6 +264,6 @@ PF.skills.push(
   cases: ['rajmarg', 'healthcare'],
   q: { q: 'Give an example of a usability issue you would raise.', a: 'A generic "Invalid file" error. Users retry the same file. I would propose a message stating the actual problem and the fix, for example the file size and the limit, and add that to the acceptance criteria.' },
   more: [],
-  honest: 'Present these as review practice. The findings are illustrative.'
+  honest: 'These are examples of my review practice. The findings are illustrative.'
 }
 );

@@ -1,4 +1,4 @@
-/* Direction A: a calm, dark navy page in the owner's own design language. One gold thread (the traceability idea)
+/* Direction A: a calm, dark navy page in the portfolio's own design language. One gold thread (the traceability idea)
    runs from the intro down the overview; sky blue for links and highlights, gold for signals. Manrope for reading,
    DM Mono for labels. Dark is the default; a light version stays available from the theme toggle. */
 :root {
@@ -594,3 +594,29 @@ a.h-case:hover { transform: translateY(-3px); border-color: color-mix(in srgb, v
 .h-hero { isolation: isolate; }
 .h-hero::before { content: ""; position: absolute; z-index: -1; top: 0; bottom: 0; left: calc(50% - 50vw); width: 100vw; background: linear-gradient(90deg, var(--paper) 0%, color-mix(in srgb, var(--paper) 88%, transparent) 45%, transparent 72%); pointer-events: none; }
 @media (max-width: 860px) { .h-hero::before { background: color-mix(in srgb, var(--paper) 84%, transparent); } }
+/* Artifact Studio */
+.studio-how { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: var(--s-3); }
+.studio-how li { display: flex; gap: .75rem; align-items: center; border: 1px solid var(--rule); border-radius: var(--r); padding: .8rem 1rem; background: var(--surface); margin: 0; }
+.studio-how b { flex: none; width: 2rem; height: 2rem; border-radius: 50%; display: grid; place-items: center; background: var(--signal); color: var(--on-signal); font: 700 .9rem var(--f-mono); }
+.stage-block { display: grid; gap: var(--s-4); padding-top: var(--s-4); border-top: 1px solid var(--rule); }
+.stage-head { display: grid; gap: .3rem; }
+.stage-n { font: 500 var(--t-xs) var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--signal); }
+.stage-head h2 { font-size: var(--t-xl); }
+.stage-head p { color: var(--ink-2); }
+.read-tip { display: grid; gap: .25rem; border-left: 4px solid var(--signal); background: color-mix(in srgb, var(--signal) 8%, transparent); padding: .9rem 1.1rem; border-radius: 0 var(--r) var(--r) 0; }
+.read-tip b { font-weight: 700; }
+.read-tip span { color: var(--ink-2); }
+.back-row { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
+.back-btn { display: inline-flex; align-items: center; gap: .4rem; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); border-radius: 999px; padding: .45rem .9rem; font: 600 var(--t-sm) var(--f-body); cursor: pointer; }
+.back-btn:hover { border-color: var(--accent); }
+/* Chaos to clarity intro */
+.intro-thread .i-sec.i-chaos { height: 300vh; }
+.intro-thread .i-sec.i-thread { height: 360vh; }
+.intro-thread.i-static .i-sec { height: auto; }
+.i1-measure { position: absolute; left: 50%; top: 44%; transform: translate(-50%, -50%); margin: 0; width: min(94%, 1000px); text-align: center; font: 800 clamp(2.4rem, 7.4vw, 6rem)/1.02 var(--f-body); letter-spacing: -.055em; visibility: hidden; }
+.i1-w { position: absolute; left: 0; top: 0; transform-origin: 0 0; white-space: nowrap; font-weight: 600; color: var(--ink-3); will-change: transform, opacity; }
+.i1-w.h { font-weight: 800; letter-spacing: -.055em; line-height: 1.02; color: var(--ink); transition: color .5s; }
+.i1-w.h.last.lit { color: var(--accent); }
+.i1-sub { position: absolute; left: 50%; top: 66%; transform: translateX(-50%); display: grid; justify-items: center; gap: 4px; text-align: center; opacity: 0; font-size: clamp(1rem, 2vw, 1.3rem); color: var(--ink-2); width: min(90%, 640px); }
+.i1-sub .i-name { font-size: clamp(1.3rem, 2.6vw, 1.8rem); font-weight: 800; color: var(--ink); }
+.i1-c1, .i1-c2 { opacity: 0; }

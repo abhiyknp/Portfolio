@@ -102,7 +102,7 @@ PF.scenarios.push(
   situation: 'Four days before UAT, a senior official asks that provisional approval letters include a QR code linking to the verification page.',
   context: 'The release date is fixed by a public announcement.',
   options: [
-    { id: 'accept', label: 'Add it to the current release', verdict: 'risky', reasoning: 'Unestimated work, a new integration dependency and no test time put the whole release at risk.' },
+    { id: 'accept', label: 'Add it to the current release', verdict: 'risky', reasoning: 'Work that has not been estimated, a new integration dependency and no time to test it put the whole release at risk.' },
     { id: 'assess', label: 'Run a quick impact assessment and give options with consequences', verdict: 'recommended', reasoning: 'Assess design, template, verification page, security (what the QR exposes), testing and documentation. Option A: next release (no risk to date). Option B: current release, dropping a Could item and adding two days of testing (risk to date). The decision-maker chooses and the decision is logged.', ac: 'If accepted: given an approval letter, then it includes a QR resolving to a verification page that shows only permission number, validity and status.', jira: 'PERMIT-160 QR on letters (fixVersion decided by PO)' },
     { id: 'refuse', label: 'Refuse. Scope is frozen', verdict: 'situational', reasoning: 'Scope freezes are legitimate, but a flat refusal without options harms the relationship. Explain, then offer the next release.' }
   ],

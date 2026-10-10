@@ -6,15 +6,15 @@ An interactive portfolio and BA knowledge base. It is a static site with no buil
 
 | Area | What it contains |
 |---|---|
-| Scroll intro (top of `#home`) | "The thread is born": a gold line draws a question, a decision knot, three role lanes, a clarification loop and a merge, then underlines the name and continues down the overview as the gold thread. It has a Skip intro button. With reduced motion, the finished drawing shows without pinning |
+| Scroll intro (top of `#home`) | Two parts. "Chaos to clarity": stakeholder phrases fade as four words form "Turning complexity into clarity." Then "The thread is born": a gold line draws a question, a decision knot, three role lanes, a clarification loop and a merge, underlines the name and continues down the overview as the gold thread. Each part has a Skip intro button; with reduced motion, both show their final frame |
 | Overview (`#home`) | Direction A narrative, readable in 60 to 90 seconds: hero, résumé-based summary, how I work with a traceability chain, an acceptance-criteria example, case-study cards, skills with evidence, experience, evidence legend and contact. A scroll-drawn gold thread links the sections |
 | Skills Library (`#skills`) | 42 skills in 9 areas (A to I). Search and filter by area and evidence status. Each skill has 15 parts in 4 tabs: Understand, How I do it, Proof and practice, Interview |
 | Case studies (`#cases`) | Rajmarg Pravesh, NHAI DataLake 3.0, Healthcare Management System, ATS and VMS. Each has 20 sections told in 5 chapters (the problem, discovery, the solution, quality and delivery, results and lessons), with interactive swimlane workflows for three of them |
-| Artifact Studio (`#studio`) | 17 sample deliverables (BRD, FRD, SRS, RTM, story and acceptance criteria, BPMN, decision table, JIRA, Confluence, API contract, SQL and ERD, KPI dashboard, UAT, defect, minutes, release checklist, change impact), with tabbed views |
+| Artifact Studio (`#studio`) | 17 sample deliverables arranged by project stage (discover and align, specify, plan and build, test and trace, release and measure), each with a plain-language explanation, who uses it and when, plus (BRD, FRD, SRS, RTM, story and acceptance criteria, BPMN, decision table, JIRA, Confluence, API contract, SQL and ERD, KPI dashboard, UAT, defect, minutes, release checklist, change impact), with tabbed views |
 | Decision scenarios (`#scenarios`) | 7 interactive situations. Choose an option to see the reasoning, rule, UX, workflow and TAT effect, acceptance criteria, tests and JIRA story |
 | Evidence map (`#evidence`) | Skill-to-project, skill-to-artifact and skill-to-case mapping, with an interview question and evidence status for each skill |
 
-Press `/` (or Ctrl/Cmd+K) anywhere to search everything.
+Press `/` (or Ctrl/Cmd+K) anywhere to search everything. Every page except the overview has a Back button that returns to the previous page and its scroll position.
 
 ## Evidence labels
 

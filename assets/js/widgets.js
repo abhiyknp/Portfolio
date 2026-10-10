@@ -238,7 +238,7 @@
       s += '<text class="ent-t" x="' + (e.x + 10) + '" y="' + (e.y + 15) + '">' + e.n + '</text>';
       e.f.forEach(function (f, i) { var yy = e.y + 38 + i * rh; if (f[0]) s += '<text class="ent-k" x="' + (e.x + 8) + '" y="' + yy + '">' + f[0] + '</text>'; s += '<text class="ent-f" x="' + (e.x + 34) + '" y="' + yy + '">' + f[1] + '</text>'; });
     });
-    host.innerHTML = '<div class="erd stack"><div class="flow-scroll" tabindex="0" aria-label="Entity relationship diagram, scrolls sideways">' + s + '</svg></div><p class="small muted">PK = primary key; FK = foreign key; 1 to N = one row relates to many. workflow_history stores every status change, so timing questions use history rather than the current status.</p></div>';
+    host.innerHTML = '<div class="erd stack"><div class="flow-scroll" tabindex="0" aria-label="Entity relationship diagram, scrolls sideways">' + s + '</svg></div><p class="small muted">PK = primary key; FK = foreign key; 1 to N = one row relates to many. The workflow_history table stores every status change, so timing questions use history rather than the current status.</p></div>';
   }
 
   window.PFW = {
