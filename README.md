@@ -1,6 +1,6 @@
 # Abhishek Yadav, Business Analyst portfolio
 
-An interactive portfolio and BA knowledge base. It is a static site with no build step: plain HTML, CSS and JavaScript, with Three.js loaded from a CDN.
+An interactive portfolio and Business Analysis knowledge base. It is a static site with no build step: plain HTML, CSS and JavaScript, with Three.js loaded from a CDN.
 
 ## What is in it
 

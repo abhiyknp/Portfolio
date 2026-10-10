@@ -174,7 +174,7 @@
     items.push({ d: 'M730 438 V472 H684 V438', a: 0.68, b: 0.76, cls: 'ret', t: ['re-upload', 640, 490] });
     items.push({ d: 'M346 84 L372 62 H400', a: 0.72, b: 0.78, cls: 'lead', t: ['RULE-01 · all mandatory documents', 404, 66, 'note'] });
     items.push({ d: rp(600, 500, 330, 84, 2) + ' M600 528 H930 M600 556 H930 M780 556 V584', a: 0.76, b: 0.86, cls: 'block' });
-    var TB = [['DRAWING  Permission workflow', 612, 519], ['DRAWN BY  A. Yadav · BA', 612, 547], ['REV  1.0', 612, 575], ['STATUS  Approved', 792, 575]];
+    var TB = [['DRAWING  Permission workflow', 612, 519], ['DRAWN BY  A. Yadav · Business Analyst', 612, 547], ['REV  1.0', 612, 575], ['STATUS  Approved', 792, 575]];
     var svg = '<svg class="i5-svg" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><defs><marker id="i5a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="i5-ah"/></marker></defs>' +
       items.map(function (it) { return '<path class="i5-' + it.cls + '" d="' + it.d + '" pathLength="1"' + (it.cls === 'arrow' || it.cls === 'ret' ? ' marker-end="url(#i5a)"' : '') + '/>'; }).join('') +
       items.map(function (it, i) { return it.t ? '<text class="i5-t ' + (it.t[3] || '') + '" data-i="' + i + '" x="' + it.t[1] + '" y="' + it.t[2] + '"' + (it.t[3] === 'mid' ? ' text-anchor="middle"' : '') + '>' + it.t[0] + '</text>' : ''; }).join('') +

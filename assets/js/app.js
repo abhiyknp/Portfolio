@@ -65,7 +65,7 @@
     ['R5', 'Release', 'Ships with release notes for applicants and reviewers, an updated SOP section, and UAT sign-off with residual risks recorded.', 'release']
   ];
   var CAPS = [
-    { t: 'Requirements engineering, end to end', d: 'BRD, FRD, SRS, RTM, user stories and acceptance criteria on every BA role since 2020.', s: ['brd', 'frd', 'srs', 'rtm'], a: 'rtm', c: 'rajmarg' },
+    { t: 'Requirements engineering, end to end', d: 'BRD, FRD, SRS, RTM, user stories and acceptance criteria on every Business Analyst role since 2020.', s: ['brd', 'frd', 'srs', 'rtm'], a: 'rtm', c: 'rajmarg' },
     { t: 'Multi-role workflow and rules design', d: 'Workflow design across 10+ modules for a national permission portal with reviewing and approving authorities.', s: ['process', 'rules'], a: 'bpmn', c: 'rajmarg' },
     { t: 'Integration requirements', d: 'Business requirements for GIS workflows, BharatKosh payment, eSign, role-based access, APIs and legacy migration.', s: ['integrations', 'api', 'migration', 'rbac'], a: 'api', c: 'rajmarg' },
     { t: 'UAT, defect triage and release readiness', d: 'Led UAT planning, triage, release validation, sign-offs and production readiness.', s: ['uat', 'triage', 'release'], a: 'uat', c: 'rajmarg' },
@@ -84,7 +84,7 @@
       '<div class="home" id="home-main"><svg class="home-thread" aria-hidden="true"><path class="t-bg"/><path class="t-fg"/></svg><div class="wrap">' +
       '<section class="h-hero" id="hero" data-node aria-labelledby="h-title">' +
         '<figure class="h-photo"><img src="assets/img/abhishek-yadav.webp" alt="Abhishek Yadav, Senior IT Business Analyst" width="560" height="700" fetchpriority="high"></figure>' +
-        '<span class="h-status"><i></i> Open to Senior BA, Product Owner and Product Analyst roles</span>' +
+        '<span class="h-status"><i></i> Open to Senior Business Analyst, Product Owner and Product Analyst roles</span>' +
         '<h1 id="h-title">Senior IT<br>Business <span>Analyst.</span></h1>' +
         '<p class="h-state">Turning complexity into clarity.</p>' +
         '<p class="lede" style="max-width:60ch">Seven years turning policy and process into requirements that teams can build and test. Currently working on the Rajmarg Pravesh portal for Digital India Corporation (MeitY), across MoRTH and NHAI.</p>' +
@@ -156,7 +156,7 @@
         '<div class="h-head"><p class="kicker">06 · Experience</p><h2 id="exp-h">Seven years, four teams.</h2></div>' +
         '<div class="h-exp">' +
           '<div><span class="when">Apr 2025 – now</span><div><h3>Ascra Technologies · Business Analyst</h3><p>Rajmarg Pravesh Portal and NHAI DataLake 3.0 for Digital India Corporation (MeitY): 10+ workflow modules, integrations, UAT, triage, release readiness.</p><div class="chips">' + caseLink('rajmarg') + caseLink('datalake') + '</div></div></div>' +
-          '<div><span class="when">Apr 2021 – Apr 2025</span><div><h3>Intechglobe · Business Analyst</h3><p>Healthcare Management System: end-to-end BA, Confluence and Visio documentation, Scrum delivery, Power BI and SQL, workshops and training.</p><div class="chips">' + caseLink('healthcare') + '</div></div></div>' +
+          '<div><span class="when">Apr 2021 – Apr 2025</span><div><h3>Intechglobe · Business Analyst</h3><p>Healthcare Management System: end-to-end Business Analysis, Confluence and Visio documentation, Scrum delivery, Power BI and SQL, workshops and training.</p><div class="chips">' + caseLink('healthcare') + '</div></div></div>' +
           '<div><span class="when">Feb 2020 – Mar 2021</span><div><h3>Coditro · Business Analyst</h3><p>ATS and VMS: BRD, FRD, SRS, RTM; stories and acceptance criteria; JAD sessions, gap analysis, defect tracking.</p><div class="chips">' + caseLink('ats-vms') + '</div></div></div>' +
           '<div><span class="when">Mar 2019 – Feb 2020</span><div><h3>RTL Technologies · Business Development Analyst</h3><p>Client requirement analysis, proposals, market and competitor research, client presentations.</p></div></div>' +
         '</div>' +
@@ -295,7 +295,7 @@
   var META = {
     impact: [0, 'A list of everything a proposed change will affect, with an owner and an action for each.', 'Product owner, engineering lead, QA', 'For every change request'],
     minutes: [0, 'A short record of what was decided, by whom and why, and who does what next.', 'Everyone who attended, plus absent decision-makers', 'After every workshop or decision meeting'],
-    sql: [0, 'Database queries that answer business questions directly from the data, such as where applications are stuck.', 'BA, product owner, reporting team', 'During discovery, testing and reporting'],
+    sql: [0, 'Database queries that answer business questions directly from the data, such as where applications are stuck.', 'Business Analyst, product owner, reporting team', 'During discovery, testing and reporting'],
     brd: [1, 'The agreed statement of what the business needs and why, signed off before the build starts.', 'Sponsor, process owner, product owner', 'After discovery, before detailed design'],
     frd: [1, 'A table of exactly how the system must behave for each function, including errors and exceptions.', 'Developers, testers, designers', 'After the BRD is approved'],
     srs: [1, 'The complete specification of the system: functions, integrations, permissions and quality targets.', 'Architects, vendors, testers, auditors', 'For contracted or multi-team builds'],
@@ -305,7 +305,7 @@
     story: [2, 'One small piece of work, written from the user\'s side, with the conditions it must meet to be accepted.', 'Developers, testers, product owner', 'In backlog refinement, before a sprint'],
     jira: [2, 'The team\'s ordered list of work (epics, stories and bugs) with the reason behind the order.', 'Scrum team, product owner', 'Every sprint'],
     confluence: [2, 'How the project\'s documents are organised, so anyone can find the current version.', 'The whole team and stakeholders', 'Set up at the start, used throughout'],
-    rtm: [3, 'A table that links each business objective to its requirements, stories, tests and release, so nothing is lost.', 'BA, QA, product owner, auditors', 'Throughout the project; checked before UAT'],
+    rtm: [3, 'A table that links each business objective to its requirements, stories, tests and release, so nothing is lost.', 'Business Analyst, QA, product owner, auditors', 'Throughout the project; checked before UAT'],
     uat: [3, 'The plan, test cases and sign-off for business users to confirm the system works for their real tasks.', 'Business users, QA, product owner', 'Before each release'],
     defect: [3, 'A bug report with everything a developer needs to reproduce and fix the problem.', 'Testers, developers, the triage meeting', 'Whenever testing finds a problem'],
     release: [4, 'A checklist that confirms a release is ready: scope, quality, people, support and rollback.', 'Product owner, engineering, support', 'At the go/no-go meeting'],
