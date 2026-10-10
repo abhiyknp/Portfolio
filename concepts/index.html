@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Portfolio Directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=DM+Mono:wght@400;500&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&family=Overpass:wght@400;600;700;800&display=swap">
+<style>
+/* Comparison shell: a quiet frame so each mock-up's own identity carries. Five panels, one visible at a time. */
+:root {
+  --bg: #f4f5f3; --surface: #ffffff; --fg: #15202a; --muted: #55636c; --line: #d9dfdb; --accent: #19664f; --accent-soft: #dcebe4; --signal: #e2a01a; --on-signal: #1d1503;
+  --f-ui: "IBM Plex Sans", "Segoe UI", Roboto, Arial, sans-serif; --f-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace; --f-display: "Archivo", "Arial Narrow", Arial, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0e1518; --surface: #151f24; --fg: #e5ece9; --muted: #a2b0b5; --line: #29363c; --accent: #5cc49b; --accent-soft: #173229; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #0e1518; --surface: #151f24; --fg: #e5ece9; --muted: #a2b0b5; --line: #29363c; --accent: #5cc49b; --accent-soft: #173229; color-scheme: dark; }
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 400 16px/1.6 var(--f-ui); overflow-x: hidden; }
+[hidden] { display: none !important; }
+img { max-width: 100%; }
+button { font: inherit; }
+:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+.sw { max-width: 1180px; margin: 0 auto; padding-inline: max(16px, 4vw); }
+
+.shell-head { padding-block: 28px 0; display: grid; gap: 14px; }
+.shell-head h1 { margin: 0; font: 700 clamp(1.6rem, 3.6vw, 2.4rem)/1.1 var(--f-display); font-stretch: 112%; letter-spacing: -.01em; text-wrap: balance; }
+.shell-head p { margin: 0; color: var(--muted); max-width: 70ch; }
+.tabs-bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 60; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); margin-top: 18px; }
+.tabs { display: flex; gap: 6px; overflow-x: auto; padding-block: 10px; scrollbar-width: thin; }
+.tabs button { flex: none; display: grid; text-align: left; gap: 2px; padding: 8px 14px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: 8px; cursor: pointer; }
+.tabs button span { font: 600 .7rem/1 var(--f-mono); letter-spacing: .06em; color: var(--muted); }
+.tabs button strong { font-weight: 600; font-size: .92rem; white-space: nowrap; }
+.tabs button[aria-selected="true"] { border-color: var(--accent); box-shadow: inset 0 -3px 0 var(--accent); }
+.verdict { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; padding-block: 14px; }
+.verdict div { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: .9rem; }
+.verdict b { display: block; font: 600 .7rem/1.4 var(--f-mono); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+.verdict .rec { border-color: var(--accent); background: var(--accent-soft); }
+.mock-label { font: 600 .72rem/1 var(--f-mono); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); padding-block: 4px 10px; }
+.shell-foot { padding-block: 40px 60px; color: var(--muted); font-size: .9rem; }
+
+/* ============ A · Your design, refined (deliberately dark-only) ============ */
+.opt-a { --ab: #07111d; --ab2: #0c1a2a; --ap: #102033; --al: rgba(164, 190, 220, .18); --at: #eef4fb; --am: #a9bacd; --ablue: #8ab8ff; --asig: #f2b33d;
+  background: var(--ab); color: var(--at); font-family: "Manrope", var(--f-ui); position: relative; overflow: hidden; border-radius: 14px; }
+.opt-a .aw { max-width: 1080px; margin: 0 auto; padding-inline: max(16px, 5vw) max(16px, 4vw); position: relative; }
+.opt-a .thread { position: absolute; left: max(14px, 2.4vw); top: 0; width: 24px; height: 100%; pointer-events: none; }
+.opt-a .thread path { fill: none; stroke-width: 2; }
+.opt-a .thread .t-bg { stroke: rgba(164, 190, 220, .14); }
+.opt-a .thread .t-fg { stroke: var(--asig); filter: drop-shadow(0 0 6px rgba(242, 179, 61, .55)); }
+.opt-a .node-dot { position: absolute; left: calc(max(14px, 2.4vw) + 4px); width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(164, 190, 220, .4); background: var(--ab); transition: border-color .3s, background .3s, box-shadow .3s; }
+.opt-a .node-dot.on { border-color: var(--asig); background: var(--asig); box-shadow: 0 0 14px rgba(242, 179, 61, .7); }
+.opt-a .eb { font: 500 .78rem/1.3 "DM Mono", var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ablue); }
+.opt-a section { padding-block: clamp(64px, 10vw, 110px); border-top: 1px solid var(--al); }
+.opt-a .a-hero { border-top: 0; padding-top: clamp(56px, 9vw, 100px); }
+.opt-a .a-status { display: inline-flex; gap: 8px; align-items: center; border: 1px solid var(--al); border-radius: 99px; padding: 6px 12px; font-size: .85rem; color: var(--am); }
+.opt-a .a-status i { width: 8px; height: 8px; border-radius: 50%; background: #7fd3b0; box-shadow: 0 0 10px #7fd3b0; }
+.opt-a h2.a-title { font-size: clamp(2.8rem, 8vw, 5.6rem); line-height: .95; letter-spacing: -.06em; margin: 22px 0 14px; font-weight: 800; }
+.opt-a h2.a-title span { color: var(--ablue); }
+.opt-a .a-state { font-size: clamp(1.25rem, 2.6vw, 1.7rem); font-weight: 600; letter-spacing: -.03em; margin: 0 0 14px; color: #d7e5f6; }
+.opt-a .a-lede { font-size: 1.12rem; color: var(--am); max-width: 58ch; margin: 0; line-height: 1.7; }
+.opt-a .a-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+.opt-a .a-btn { border: 1px solid rgba(142, 180, 230, .45); border-radius: 999px; padding: 12px 18px; font-weight: 700; font-size: .95rem; color: var(--at); background: transparent; cursor: pointer; text-decoration: none; }
+.opt-a .a-btn.p { background: var(--at); color: var(--ab); border-color: var(--at); }
+.opt-a h3.a-h { font-size: clamp(2rem, 5vw, 3.4rem); line-height: 1.05; letter-spacing: -.045em; margin: 12px 0 14px; }
+.opt-a .a-p { color: var(--am); font-size: 1.05rem; max-width: 60ch; margin: 0 0 30px; }
+.opt-a .a-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 14px; }
+.opt-a .a-card { background: linear-gradient(145deg, rgba(20, 38, 58, .85), rgba(10, 23, 37, .75)); border: 1px solid var(--al); border-radius: 16px; padding: 22px; display: grid; gap: 8px; align-content: start; }
+.opt-a .a-card .n { font: 500 .8rem "DM Mono", var(--f-mono); color: var(--asig); }
+.opt-a .a-card h4 { margin: 0; font-size: 1.15rem; letter-spacing: -.02em; }
+.opt-a .a-card p { margin: 0; color: var(--am); font-size: .98rem; }
+.opt-a .a-card .out { font: 500 .82rem "DM Mono", var(--f-mono); color: var(--ablue); }
+.opt-a .a-proof { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 760px) { .opt-a .a-proof { grid-template-columns: 1fr; } }
+.opt-a .a-story { font-size: 1.15rem; line-height: 1.6; }
+.opt-a .a-ac { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.opt-a .a-ac li { border-left: 3px solid var(--asig); background: rgba(242, 179, 61, .07); padding: 10px 14px; border-radius: 0 10px 10px 0; color: #d7e5f6; }
+.opt-a .a-ac b { color: var(--asig); }
+.opt-a .a-tag { display: inline-block; font: 500 .75rem "DM Mono", var(--f-mono); color: var(--am); border: 1px solid var(--al); border-radius: 99px; padding: 4px 10px; }
+.opt-a .a-proj { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 14px; }
+.opt-a .a-proj .a-card h4 { font-size: 1.35rem; }
+.opt-a .a-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.opt-a .a-chips span { font-size: .82rem; color: #cfdced; border: 1px solid var(--al); border-radius: 99px; padding: 4px 10px; }
+.opt-a .a-exp { display: grid; gap: 0; }
+.opt-a .a-exp > div { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 16px; padding: 18px 0; border-bottom: 1px solid var(--al); }
+@media (max-width: 600px) { .opt-a .a-exp > div { grid-template-columns: 1fr; gap: 4px; } }
+.opt-a .a-exp .when { font: 500 .85rem "DM Mono", var(--f-mono); color: var(--ablue); }
+.opt-a .a-exp h4 { margin: 0 0 4px; font-size: 1.1rem; }
+.opt-a .a-exp p { margin: 0; color: var(--am); }
+.opt-a .a-contact { text-align: center; display: grid; justify-items: center; gap: 14px; }
+
+/* ============ B · Bento live tiles ============ */
+.opt-b { --bb: #eef1ef; --bs: #ffffff; --bt: #14202a; --bm: #56646d; --bl: #d7dfdb; --bg2: #19664f; --bsig: #e2a01a; --bsoft: #dcebe4;
+  background: var(--bb); color: var(--bt); border-radius: 14px; padding: clamp(14px, 3vw, 28px); font-family: var(--f-ui); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .opt-b { --bb: #0f171a; --bs: #172227; --bt: #e6ece9; --bm: #a3b1b6; --bl: #2a373d; --bg2: #5cc49b; --bsoft: #173229; } }
+:root[data-theme="dark"] .opt-b { --bb: #0f171a; --bs: #172227; --bt: #e6ece9; --bm: #a3b1b6; --bl: #2a373d; --bg2: #5cc49b; --bsoft: #173229; }
+.bento { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: minmax(150px, auto); gap: 12px; }
+@media (max-width: 980px) { .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .bento { grid-template-columns: 1fr; } }
+.tile { background: var(--bs); border: 1px solid var(--bl); border-radius: 20px; padding: 20px; display: grid; gap: 10px; align-content: start; min-width: 0; position: relative; }
+.tile.w2 { grid-column: span 2; } .tile.h2 { grid-row: span 2; }
+@media (max-width: 560px) { .tile.w2 { grid-column: auto; } .tile.h2 { grid-row: auto; } }
+.tile .lbl { font: 600 .74rem/1.2 var(--f-mono); letter-spacing: .07em; text-transform: uppercase; color: var(--bm); }
+.tile h3 { margin: 0; font: 650 1.3rem/1.2 var(--f-display); font-stretch: 108%; }
+.tile p { margin: 0; color: var(--bm); }
+.tile.hero-t { background: var(--bt); color: var(--bb); }
+.tile.hero-t .lbl, .tile.hero-t p { color: color-mix(in srgb, var(--bb) 75%, transparent); }
+.tile.hero-t h2 { margin: 4px 0 0; font: 700 clamp(2rem, 4.6vw, 3.3rem)/1 var(--f-display); font-stretch: 115%; letter-spacing: -.02em; }
+.tile.hero-t h2 em { font-style: normal; color: var(--bsig); }
+.b-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.b-btn { border: 1px solid currentColor; background: transparent; color: inherit; border-radius: 99px; padding: 9px 15px; font-weight: 600; cursor: pointer; text-decoration: none; font-size: .92rem; }
+.b-btn.p { background: var(--bsig); border-color: var(--bsig); color: #1d1503; }
+.big { font: 700 3.2rem/1 var(--f-display); font-stretch: 112%; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.big small { font-size: 1.1rem; color: var(--bm); font-weight: 500; }
+.switch-row { display: flex; align-items: center; gap: 10px; font-size: .95rem; cursor: pointer; }
+.switch-row input { width: 1.1rem; height: 1.1rem; accent-color: var(--bg2); }
+.seg { display: inline-flex; border: 1px solid var(--bl); border-radius: 99px; padding: 3px; gap: 3px; flex-wrap: wrap; }
+.seg button { border: 0; background: transparent; color: var(--bt); padding: 7px 12px; border-radius: 99px; cursor: pointer; font-size: .9rem; }
+.seg button[aria-pressed="true"] { background: var(--bt); color: var(--bs); }
+.outcome-b { border-radius: 12px; padding: 12px 14px; background: var(--bsoft); font-size: .98rem; }
+.outcome-b strong { display: block; }
+.flip { perspective: 900px; cursor: pointer; border: 0; background: none; padding: 0; text-align: left; color: inherit; width: 100%; min-height: 190px; }
+.flip-in { position: relative; width: 100%; min-height: 190px; transition: transform .6s; transform-style: preserve-3d; }
+.flip[aria-pressed="true"] .flip-in { transform: rotateY(180deg); }
+.flip-f { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 14px; padding: 14px; display: grid; gap: 6px; align-content: start; background: var(--bb); }
+.flip-b { transform: rotateY(180deg); background: var(--bsoft); }
+.flip-f .s { font-size: 1.05rem; }
+.flip-f ul { margin: 0; padding-left: 1rem; font-size: .9rem; display: grid; gap: 4px; }
+.mini-flow { width: 100%; height: auto; }
+.mini-flow .ln { stroke: var(--bl); stroke-width: 2; fill: none; }
+.mini-flow .path { stroke: var(--bg2); stroke-width: 2.5; fill: none; stroke-dasharray: 6 6; animation: dash 1.4s linear infinite; }
+.mini-flow .st { fill: var(--bs); stroke: var(--bt); stroke-width: 1.5; }
+.mini-flow .st.g { fill: var(--bsig); stroke: var(--bsig); }
+.mini-flow text { fill: var(--bt); font: 500 10.5px var(--f-ui); }
+.mini-flow .lane { fill: var(--bm); font: 600 9.5px var(--f-mono); letter-spacing: .05em; }
+@keyframes dash { to { stroke-dashoffset: -24; } }
+.tool-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.tool-chips span { border: 1px solid var(--bl); border-radius: 99px; padding: 5px 11px; font-size: .9rem; }
+.tl-bar { display: grid; grid-template-columns: 11fr 13fr 48fr 18fr; gap: 3px; margin-top: 4px; }
+.tl-bar div { height: 10px; border-radius: 3px; background: color-mix(in srgb, var(--bg2) 35%, transparent); }
+.tl-bar div:last-child { background: var(--bg2); }
+.tl-rows { display: grid; gap: 6px; font-size: .92rem; }
+.tl-rows div { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px dashed var(--bl); padding-bottom: 5px; }
+.tl-rows span { color: var(--bm); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.proj-rows { display: grid; gap: 4px; }
+.proj-rows button { display: flex; justify-content: space-between; gap: 10px; text-align: left; border: 0; border-bottom: 1px solid var(--bl); background: none; color: var(--bt); padding: 10px 2px; cursor: pointer; font-size: 1rem; }
+.proj-rows button span { color: var(--bm); font-size: .88rem; }
+.expand-hint { font-size: .85rem; color: var(--bg2); font-weight: 600; }
+.b-over { position: fixed; inset: 0; z-index: 80; background: rgba(8, 14, 18, .6); display: grid; place-items: center; padding: 16px; }
+.b-over-box { background: var(--bs); color: var(--bt); border-radius: 22px; padding: 26px; width: min(640px, 100%); max-height: 86vh; overflow: auto; display: grid; gap: 12px; position: relative; }
+.b-over-box h3 { margin: 0; font: 700 1.7rem/1.15 var(--f-display); font-stretch: 110%; }
+.b-over-box ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 6px; }
+.b-close { position: absolute; right: 14px; top: 14px; border: 1px solid var(--bl); background: var(--bs); color: var(--bt); border-radius: 50%; width: 36px; height: 36px; cursor: pointer; font-size: 1.2rem; }
+.ill { font: 600 .68rem/1 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: #8a5800; background: #fbefd2; padding: 3px 7px; border-radius: 4px; justify-self: start; }
+
+/* ============ C · Metro map ============ */
+.opt-c { --cb: #fbfbf8; --cs: #ffffff; --ct: #111a20; --cm: #59666e; --cl: #dcdfdc;
+  --l-req: #0f7b5f; --l-agi: #2b62b0; --l-dat: #d08a00; --l-tst: #c2402f; --l-stk: #7a4bb0;
+  background: var(--cb); color: var(--ct); border-radius: 14px; font-family: "Overpass", var(--f-ui); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .opt-c { --cb: #10171b; --cs: #172126; --ct: #ecf1ef; --cm: #a4b1b6; --cl: #2b383e; --l-req: #3fc28f; --l-agi: #6f9fe6; --l-dat: #f0b23a; --l-tst: #ee7a6b; --l-stk: #b08be0; } }
+:root[data-theme="dark"] .opt-c { --cb: #10171b; --cs: #172126; --ct: #ecf1ef; --cm: #a4b1b6; --cl: #2b383e; --l-req: #3fc28f; --l-agi: #6f9fe6; --l-dat: #f0b23a; --l-tst: #ee7a6b; --l-stk: #b08be0; }
+.c-head { padding: clamp(22px, 4vw, 44px); display: grid; gap: 10px; border-bottom: 4px solid var(--ct); }
+.c-head .sign { display: inline-flex; gap: 10px; align-items: center; font-weight: 800; font-size: .9rem; letter-spacing: .06em; text-transform: uppercase; }
+.c-head .sign i { width: 28px; height: 28px; border-radius: 50%; background: var(--ct); color: var(--cb); display: grid; place-items: center; font-style: normal; font-size: .85rem; }
+.c-head h2 { margin: 0; font-size: clamp(2rem, 5vw, 3.4rem); line-height: 1.02; font-weight: 800; letter-spacing: -.02em; }
+.c-head p { margin: 0; color: var(--cm); max-width: 62ch; font-size: 1.05rem; }
+.legend-c { display: flex; flex-wrap: wrap; gap: 8px; }
+.legend-c span { display: inline-flex; gap: 7px; align-items: center; border: 1px solid var(--cl); border-radius: 99px; padding: 4px 11px 3px 6px; font-weight: 600; font-size: .9rem; background: var(--cs); }
+.legend-c i { width: 18px; height: 6px; border-radius: 3px; }
+.c-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 360px); gap: 24px; padding: clamp(16px, 3vw, 36px); align-items: start; }
+@media (max-width: 860px) { .c-body { grid-template-columns: 1fr; } .c-card { display: none; } }
+.strip { position: relative; }
+.strip-row { display: grid; grid-template-columns: 112px minmax(0, 1fr); align-items: center; min-height: 54px; position: relative; cursor: pointer; border-radius: 10px; }
+.strip-row:hover .s-name, .strip-row.cur .s-name { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.strip-row.ix { min-height: 84px; }
+.s-name { font-size: 1.05rem; font-weight: 600; line-height: 1.25; padding: 6px 0; }
+.ix .s-name { font-size: 1.25rem; font-weight: 800; }
+.s-sub { display: block; font-size: .88rem; color: var(--cm); font-weight: 400; }
+.s-yr { display: inline-block; font-weight: 800; font-size: .8rem; background: var(--ct); color: var(--cb); padding: 2px 7px 0; border-radius: 4px; margin-right: 6px; vertical-align: 2px; }
+.s-more { grid-column: 2; font-family: var(--f-ui); font-size: .95rem; color: var(--cm); padding: 0 0 10px; }
+.strip svg.tracks { position: absolute; left: 0; top: 0; width: 112px; height: 100%; pointer-events: none; overflow: visible; }
+.train { position: absolute; left: 0; width: 112px; height: 0; pointer-events: none; z-index: 2; }
+.train i { position: absolute; top: -9px; width: 18px; height: 18px; border-radius: 50%; background: var(--ct); border: 3px solid var(--cb); box-shadow: 0 0 0 3px var(--ct); }
+.c-card { position: sticky; top: 90px; background: var(--cs); border: 1px solid var(--cl); border-radius: 16px; padding: 20px; display: grid; gap: 10px; }
+.c-card .lines { display: flex; gap: 5px; flex-wrap: wrap; }
+.c-card .lines span { font-size: .8rem; font-weight: 700; color: #fff; padding: 3px 8px 1px; border-radius: 99px; }
+.c-card h3 { margin: 0; font-size: 1.5rem; font-weight: 800; line-height: 1.15; }
+.c-card p { margin: 0; color: var(--cm); font-family: var(--f-ui); }
+.c-card .next { font-size: .9rem; font-weight: 700; color: var(--cm); }
+.c-end { padding: 0 clamp(16px, 3vw, 36px) 36px; }
+
+/* ============ D · Ask me ============ */
+.opt-d { --db: #f2f4f6; --ds: #ffffff; --dt: #16202a; --dm: #5a6670; --dl: #dde2e6; --dme: #19664f; --dme-t: #ffffff; --dsig: #e2a01a;
+  background: var(--db); color: var(--dt); border-radius: 14px; font-family: var(--f-ui); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .opt-d { --db: #0e1519; --ds: #172126; --dt: #e7ede9; --dm: #a3b0b6; --dl: #2a363c; --dme: #2f8f6e; } }
+:root[data-theme="dark"] .opt-d { --db: #0e1519; --ds: #172126; --dt: #e7ede9; --dm: #a3b0b6; --dl: #2a363c; --dme: #2f8f6e; }
+.chat { max-width: 760px; margin: 0 auto; padding: clamp(16px, 3vw, 32px) max(12px, 3vw) 28px; display: grid; gap: 14px; }
+.d-top { display: flex; gap: 12px; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--dl); }
+.av { width: 46px; height: 46px; border-radius: 50%; background: var(--dme); color: #fff; display: grid; place-items: center; font: 700 1rem var(--f-display); font-stretch: 120%; flex: none; }
+.d-top strong { display: block; font-size: 1.08rem; }
+.d-top span { color: var(--dm); font-size: .9rem; }
+.d-top .on { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #3fb07f; margin-right: 6px; }
+.msgs { display: grid; gap: 12px; min-height: 260px; }
+.msg { max-width: min(560px, 92%); padding: 12px 16px; border-radius: 18px; font-size: 1.02rem; line-height: 1.55; animation: pop .35s ease both; }
+.msg.me { background: var(--ds); border: 1px solid var(--dl); border-bottom-left-radius: 6px; justify-self: start; }
+.msg.you { background: var(--dme); color: var(--dme-t); border-bottom-right-radius: 6px; justify-self: end; }
+.msg p { margin: 0; } .msg p + p { margin-top: 8px; }
+.msg .card-d { margin-top: 10px; background: var(--db); border: 1px solid var(--dl); border-radius: 12px; padding: 12px; display: grid; gap: 6px; font-size: .95rem; }
+.msg .card-d b { font: 600 .72rem/1.3 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--dm); }
+.msg .card-d ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 3px; }
+.msg .src { display: block; margin-top: 8px; font: 500 .74rem/1.3 var(--f-mono); color: var(--dm); }
+.typing { display: inline-flex; gap: 4px; padding: 14px 16px; }
+.typing i { width: 7px; height: 7px; border-radius: 50%; background: var(--dm); animation: blink 1s infinite; }
+.typing i:nth-child(2) { animation-delay: .15s; } .typing i:nth-child(3) { animation-delay: .3s; }
+@keyframes blink { 50% { opacity: .25; } }
+@keyframes pop { from { opacity: 0; transform: translateY(6px); } }
+.sugs { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 6px; }
+.sugs button { border: 1px solid var(--dme); color: var(--dt); background: var(--ds); border-radius: 99px; padding: 9px 14px; cursor: pointer; font-size: .95rem; }
+.sugs button:hover { background: color-mix(in srgb, var(--dme) 12%, var(--ds)); }
+.d-foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; color: var(--dm); font-size: .88rem; border-top: 1px solid var(--dl); padding-top: 10px; }
+.d-foot button { border: 0; background: none; color: var(--dme); font-weight: 600; cursor: pointer; padding: 0; }
+
+/* ============ E · Story-mode case study ============ */
+.opt-e { --eb: #f6f7f4; --es: #ffffff; --et: #13202a; --em: #56656d; --el: #d6ddd9; --eacc: #19664f; --esig: #e2a01a; --esoft: #fbefd2;
+  background: var(--eb); color: var(--et); border-radius: 14px; font-family: var(--f-ui); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .opt-e { --eb: #0f171a; --es: #162126; --et: #e6ece9; --em: #a2b0b5; --el: #2a363c; --eacc: #5cc49b; --esoft: #33280f; } }
+:root[data-theme="dark"] .opt-e { --eb: #0f171a; --es: #162126; --et: #e6ece9; --em: #a2b0b5; --el: #2a363c; --eacc: #5cc49b; --esoft: #33280f; }
+.e-head { padding: clamp(22px, 4vw, 44px) clamp(16px, 4vw, 44px) 10px; display: grid; gap: 10px; }
+.e-head h2 { margin: 0; font: 700 clamp(2rem, 5vw, 3.2rem)/1.03 var(--f-display); font-stretch: 112%; letter-spacing: -.015em; }
+.e-head p { margin: 0; color: var(--em); max-width: 62ch; font-size: 1.05rem; }
+.e-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: clamp(16px, 4vw, 48px); padding: 0 clamp(16px, 4vw, 44px) 40px; }
+.e-steps { display: grid; gap: 0; padding-bottom: 30vh; }
+.e-step { min-height: 62vh; display: grid; align-content: center; gap: 10px; opacity: .35; transition: opacity .35s; }
+.e-step.on { opacity: 1; }
+.e-step .k { font: 600 .78rem/1 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--eacc); }
+.e-step h3 { margin: 0; font: 650 1.7rem/1.15 var(--f-display); font-stretch: 108%; }
+.e-step p { margin: 0; font-size: 1.08rem; color: var(--em); max-width: 46ch; }
+.e-step .tag-e { justify-self: start; font: 600 .7rem/1 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; padding: 4px 8px; border-radius: 4px; background: var(--esoft); color: #8a5800; }
+.e-step .tag-e.src { background: color-mix(in srgb, var(--eacc) 16%, transparent); color: var(--eacc); }
+.e-vis { position: sticky; top: 90px; height: min(76vh, 640px); background: var(--es); border: 1px solid var(--el); border-radius: 18px; padding: 14px; display: grid; grid-template-rows: auto 1fr auto; gap: 8px; }
+.e-vis .cap { font: 600 .78rem/1.3 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--em); }
+.e-vis svg { width: 100%; height: 100%; }
+.e-vis .lane-r { fill: var(--eb); }
+.e-vis .lane-t { fill: var(--em); font: 600 10px var(--f-mono); letter-spacing: .04em; }
+.e-vis .nd rect, .e-vis .nd circle, .e-vis .nd path { fill: var(--es); stroke: var(--el); stroke-width: 1.5; transition: fill .4s, stroke .4s; }
+.e-vis .nd text { fill: var(--em); font: 500 11px var(--f-ui); transition: fill .4s; }
+.e-vis .nd.hot rect, .e-vis .nd.hot circle, .e-vis .nd.hot path { fill: color-mix(in srgb, var(--eacc) 18%, var(--es)); stroke: var(--eacc); stroke-width: 2.5; }
+.e-vis .nd.hot text { fill: var(--et); font-weight: 700; }
+.e-vis .nd.warn rect, .e-vis .nd.warn path { fill: var(--esoft); stroke: var(--esig); stroke-width: 2.5; }
+.e-vis .ed { fill: none; stroke: var(--el); stroke-width: 1.5; transition: stroke .4s; }
+.e-vis .ed.hot { stroke: var(--eacc); stroke-width: 2.5; }
+.e-vis .ed.loop.hot { stroke: var(--esig); stroke-dasharray: 6 5; animation: dash 1.2s linear infinite; }
+.e-vis .lane-r.hot { fill: color-mix(in srgb, var(--eacc) 9%, var(--eb)); }
+.e-note { font-size: .9rem; color: var(--em); min-height: 2.6em; }
+@media (max-width: 860px) {
+  .e-body { grid-template-columns: 1fr; }
+  .e-vis { top: calc(84px + env(safe-area-inset-top, 0px)); height: 34vh; order: -1; z-index: 2; padding: 10px; }
+  .e-vis .e-note { display: none; }
+  .e-step { min-height: 78vh; align-content: end; padding-bottom: 6vh; }
+}
+@media (prefers-reduced-motion: reduce) { .mini-flow .path, .e-vis .ed.loop.hot { animation: none; } .flip-in { transition: none; } .msg { animation: none; } .e-step { transition: none; } }
+</style>
+</head>
+<body>
+<div class="sw">
+  <header class="shell-head">
+    <h1>Five directions for your portfolio</h1>
+    <p>Each tab is a working mock-up with your real content. Try them on your phone and in dark mode, then tell me which one (or which mix) to build out. Examples marked "Illustrative" are invented to show the method.</p>
+  </header>
+</div>
+<div class="tabs-bar"><div class="sw"><div class="tabs" role="tablist" aria-label="Directions">
+  <button role="tab" id="t-a" aria-controls="opt-a" aria-selected="true" data-opt="a"><span>A</span><strong>Your design, refined</strong></button>
+  <button role="tab" id="t-b" aria-controls="opt-b" aria-selected="false" tabindex="-1" data-opt="b"><span>B</span><strong>Bento live tiles</strong></button>
+  <button role="tab" id="t-c" aria-controls="opt-c" aria-selected="false" tabindex="-1" data-opt="c"><span>C</span><strong>Career metro map</strong></button>
+  <button role="tab" id="t-d" aria-controls="opt-d" aria-selected="false" tabindex="-1" data-opt="d"><span>D</span><strong>Ask me</strong></button>
+  <button role="tab" id="t-e" aria-controls="opt-e" aria-selected="false" tabindex="-1" data-opt="e"><span>E</span><strong>Story-mode case study</strong></button>
+</div></div></div>
+<div class="sw"><div class="verdict" id="verdict" aria-live="polite"></div><div class="mock-label">Mock-up below ↓</div></div>
+
+<div class="sw">
+<!-- ===================== A ===================== -->
+<section class="opt opt-a" id="opt-a" role="tabpanel" aria-labelledby="t-a">
+  <svg class="thread" aria-hidden="true"><path class="t-bg"/><path class="t-fg"/></svg>
+  <div class="aw">
+    <section class="a-hero" data-node>
+      <span class="a-status"><i></i> Open to Senior BA and Product Owner roles</span>
+      <h2 class="a-title">Senior IT<br>Business <span>Analyst.</span></h2>
+      <p class="a-state">Turning complexity into clarity.</p>
+      <p class="a-lede">Seven years turning policy and process into requirements that teams can build and test. Currently working on the Rajmarg Pravesh portal for Digital India Corporation (MeitY), across MoRTH and NHAI.</p>
+      <div class="a-btns"><a class="a-btn p" href="#a-proj">See my work ↓</a><a class="a-btn" href="#a-proof">See a real example</a></div>
+    </section>
+    <section data-node>
+      <div class="eb">01 · How I work</div>
+      <h3 class="a-h">One request, followed all the way to release.</h3>
+      <p class="a-p">The gold thread on the left is the same idea: every step stays connected to the one before it.</p>
+      <div class="a-grid">
+        <div class="a-card"><span class="n">01 Discover</span><h4>Find the real problem</h4><p>Separate symptoms, causes and constraints before anyone proposes a feature.</p><span class="out">→ Problem statement · stakeholder map</span></div>
+        <div class="a-card"><span class="n">02 Specify</span><h4>Write what to build</h4><p>Numbered, testable requirements and the business rules behind them.</p><span class="out">→ BRD · FRD · SRS</span></div>
+        <div class="a-card"><span class="n">03 Deliver</span><h4>Keep the team moving</h4><p>Stories with acceptance criteria, refined and prioritised with stakeholders.</p><span class="out">→ Backlog · user stories</span></div>
+        <div class="a-card"><span class="n">04 Validate</span><h4>Prove it works</h4><p>Trace every requirement to a test, run UAT with real users, get sign-off.</p><span class="out">→ RTM · UAT · release notes</span></div>
+      </div>
+    </section>
+    <section id="a-proof" data-node>
+      <div class="eb">02 · Proof, not claims</div>
+      <h3 class="a-h">What my acceptance criteria look like.</h3>
+      <div class="a-proof">
+        <div class="a-card"><span class="a-tag">Illustrative example</span><p class="a-story"><b>As a</b> reviewing officer, <b>I want</b> to raise a clarification with a specific reason, <b>so that</b> the applicant knows exactly what to fix.</p><button class="a-btn" type="button" data-act="a-ac" aria-expanded="false">Show acceptance criteria</button></div>
+        <ul class="a-ac" id="a-ac" hidden>
+          <li><b>Given</b> an application assigned to me, <b>when</b> I raise a clarification with a reason, <b>then</b> the applicant is notified and the authority clock pauses.</li>
+          <li><b>Given</b> no reason is selected, <b>then</b> I see "Select at least one reason" and nothing is saved.</li>
+          <li><b>Given</b> I'm not the assigned reviewer, <b>then</b> the action isn't available.</li>
+          <li><b>Given</b> the applicant responds, <b>then</b> the file returns to my queue marked "changed".</li>
+        </ul>
+      </div>
+    </section>
+    <section id="a-proj" data-node>
+      <div class="eb">03 · Projects</div>
+      <h3 class="a-h">Complex systems. Clearer delivery.</h3>
+      <div class="a-proj">
+        <div class="a-card"><span class="n">Government · 2025 – now</span><h4>Rajmarg Pravesh Portal</h4><p>National Highway access and Right of Way permissions. Business analysis and product delivery across 10+ workflow modules, from discovery to post-production support.</p><div class="a-chips"><span>GIS</span><span>BharatKosh</span><span>eSign</span><span>Role-based access</span><span>Legacy migration</span><span>UAT</span></div></div>
+        <div class="a-card"><span class="n">Healthcare · 2021 – 2025</span><h4>Healthcare Management System</h4><p>End-to-end BA from elicitation to production support, with Power BI dashboards and SQL reports, workshops and user training.</p><div class="a-chips"><span>BRD · FRD · SRS</span><span>Power BI</span><span>SQL</span><span>Scrum</span></div></div>
+        <div class="a-card"><span class="n">HR tech · 2020 – 2021</span><h4>ATS and VMS platforms</h4><p>Requirements, stories and acceptance criteria, JAD sessions and gap analysis, through to testing and deployment support.</p><div class="a-chips"><span>JAD</span><span>Gap analysis</span><span>Figma</span></div></div>
+        <div class="a-card"><span class="n">Data · 2025 – now</span><h4>NHAI DataLake 3.0</h4><p>Business analysis on NHAI's data platform, alongside Rajmarg Pravesh at Ascra Technologies.</p><div class="a-chips"><span>Requirements</span><span>Stakeholders</span></div></div>
+      </div>
+    </section>
+    <section data-node>
+      <div class="eb">04 · Experience</div>
+      <h3 class="a-h">Seven years, four teams.</h3>
+      <div class="a-exp">
+        <div><span class="when">2025 – now</span><div><h4>Ascra Technologies · Business Analyst</h4><p>Rajmarg Pravesh and NHAI DataLake 3.0 for Digital India Corporation (MeitY).</p></div></div>
+        <div><span class="when">2021 – 2025</span><div><h4>Intechglobe · Business Analyst</h4><p>Healthcare Management System.</p></div></div>
+        <div><span class="when">2020 – 2021</span><div><h4>Coditro · Business Analyst</h4><p>ATS and VMS platforms.</p></div></div>
+        <div><span class="when">2019 – 2020</span><div><h4>RTL Technologies · Business Development Analyst</h4><p>Proposals, requirement documents, market research.</p></div></div>
+      </div>
+    </section>
+    <section class="a-contact" data-node>
+      <div class="eb">05 · Let's talk</div>
+      <h3 class="a-h">Clear requirements. Better delivery.</h3>
+      <p class="a-p" style="margin:0">ba.abhiy@gmail.com · linkedin.com/in/abhiyknp</p>
+      <div class="a-btns" style="justify-content:center"><a class="a-btn p" href="mailto:ba.abhiy@gmail.com">Email me</a><a class="a-btn" href="https://www.linkedin.com/in/abhiyknp" target="_blank" rel="noopener">LinkedIn ↗</a></div>
+    </section>
+  </div>
+</section>
+
+<!-- ===================== B ===================== -->
+<section class="opt opt-b" id="opt-b" role="tabpanel" aria-labelledby="t-b" hidden>
+  <div class="bento">
+    <div class="tile hero-t w2 h2">
+      <span class="lbl">Abhishek Yadav · Noida</span>
+      <h2>Senior IT Business Analyst who makes requirements <em>traceable.</em></h2>
+      <p>Seven years across government, healthcare and HR tech. Now on the Rajmarg Pravesh portal for Digital India Corporation (MoRTH · NHAI).</p>
+      <div class="b-btns"><button class="b-btn p" type="button" data-more="rajmarg">See current project</button><a class="b-btn" href="mailto:ba.abhiy@gmail.com">Email me</a></div>
+    </div>
+    <div class="tile"><span class="lbl">Experience</span><div class="big" data-count="7">7<small>+ yrs</small></div><p>From discovery to production support.</p></div>
+    <div class="tile"><span class="lbl">Rajmarg Pravesh</span><div class="big" data-count="10">10<small>+ modules</small></div><p>Workflow modules owned end to end.</p></div>
+    <div class="tile w2">
+      <span class="lbl">Try it · Decision rule</span>
+      <h3>A document is wrong at review. What happens?</h3>
+      <div class="seg" role="group" aria-label="Situation"><button type="button" aria-pressed="true" data-dec="fix">Fixable (wrong page)</button><button type="button" aria-pressed="false" data-dec="inel">Applicant not eligible</button><button type="button" aria-pressed="false" data-dec="miss">Not attached at all</button></div>
+      <div class="outcome-b" id="b-dec" aria-live="polite"></div>
+      <span class="ill">Illustrative rule</span>
+    </div>
+    <div class="tile w2 h2">
+      <span class="lbl">Rajmarg Pravesh · how a permission flows</span>
+      <svg class="mini-flow" viewBox="0 0 520 250" role="img" aria-label="Simplified permission workflow">
+        <text class="lane" x="0" y="34">APPLICANT</text><text class="lane" x="0" y="104">REVIEWER</text><text class="lane" x="0" y="174">APPROVER</text><text class="lane" x="0" y="234">FINANCE</text>
+        <path class="ln" d="M84 30 H500 M84 100 H500 M84 170 H500 M84 230 H500"/>
+        <path class="path" d="M110 30 H180 V100 H260 V170 H330 V230 H400 V170 H470"/>
+        <path class="path" style="stroke:#e2a01a" d="M220 100 V40 H190"/>
+        <circle class="st g" cx="110" cy="30" r="8"/><text x="96" y="14">Apply</text>
+        <circle class="st" cx="220" cy="100" r="8"/><text x="196" y="124">Review</text>
+        <text x="196" y="54" style="fill:#c88400">Clarify ⏸</text>
+        <circle class="st" cx="290" cy="170" r="8"/><text x="266" y="194">Approve</text>
+        <circle class="st" cx="365" cy="230" r="8"/><text x="345" y="250">Pay · BG</text>
+        <circle class="st g" cx="470" cy="170" r="8"/><text x="448" y="194">eSign</text>
+      </svg>
+      <p>Applicant → review (with a clarification loop that pauses the clock) → approval → payment and bank guarantee → eSigned permission.</p>
+      <button class="b-btn" type="button" data-more="rajmarg" style="justify-self:start">Open the case study</button>
+    </div>
+    <div class="tile w2">
+      <span class="lbl">Try it · KPI definitions matter</span>
+      <h3>Authority turnaround (median)</h3>
+      <div class="big"><span id="b-kpi">17</span><small> days</small></div>
+      <label class="switch-row" for="b-kpi-t"><input type="checkbox" id="b-kpi-t"> Include time waiting on the applicant</label>
+      <p id="b-kpi-note">Applicant waiting time is excluded, so the authority is measured fairly.</p>
+      <span class="ill">Sample data</span>
+    </div>
+    <div class="tile">
+      <span class="lbl">Tap to flip · User story</span>
+      <button class="flip" type="button" aria-pressed="false" data-act="flip">
+        <span class="flip-in">
+          <span class="flip-f"><span class="s"><b>As a</b> reviewer, <b>I want</b> to raise a clarification with a reason, <b>so that</b> the applicant knows what to fix.</span><span class="expand-hint">Flip for acceptance criteria ↻</span></span>
+          <span class="flip-f flip-b"><b>Acceptance criteria</b><ul><li>No reason → blocked</li><li>Not assigned → not allowed</li><li>Raised → clock pauses</li><li>Response → back to my queue</li></ul></span>
+        </span>
+      </button>
+    </div>
+    <div class="tile">
+      <span class="lbl">Career</span>
+      <div class="tl-bar" aria-hidden="true"><div></div><div></div><div></div><div></div></div>
+      <div class="tl-rows"><div>Ascra <span>2025–</span></div><div>Intechglobe <span>2021–25</span></div><div>Coditro <span>2020–21</span></div><div>RTL <span>2019–20</span></div></div>
+    </div>
+    <div class="tile w2">
+      <span class="lbl">Projects · tap for details</span>
+      <div class="proj-rows">
+        <button type="button" data-more="rajmarg">Rajmarg Pravesh Portal <span>Government →</span></button>
+        <button type="button" data-more="health">Healthcare Management System <span>Healthcare →</span></button>
+        <button type="button" data-more="ats">ATS and VMS <span>HR tech →</span></button>
+        <button type="button" data-more="datalake">NHAI DataLake 3.0 <span>Data →</span></button>
+      </div>
+    </div>
+    <div class="tile w2">
+      <span class="lbl">Tools I use every week</span>
+      <div class="tool-chips"><span>JIRA</span><span>Confluence</span><span>SQL</span><span>Postman</span><span>REST APIs</span><span>Power BI</span><span>Figma</span><span>FigJam</span><span>Visio</span><span>Lucidchart</span><span>Miro</span><span>Excel</span></div>
+    </div>
+  </div>
+  <div class="b-over" id="b-over" hidden><div class="b-over-box" role="dialog" aria-modal="true" aria-labelledby="b-over-h"><button class="b-close" type="button" data-act="b-close" aria-label="Close">×</button><div id="b-over-body"></div></div></div>
+</section>
+
+<!-- ===================== C ===================== -->
+<section class="opt opt-c" id="opt-c" role="tabpanel" aria-labelledby="t-c" hidden>
+  <div class="c-head">
+    <span class="sign"><i>AY</i> Career network map</span>
+    <h2>Five skill lines. One big interchange.</h2>
+    <p>Each coloured line is a skill area. Each big station is a job. Scroll and the train travels through seven years; the card on the right shows where you are. Tap any station for details.</p>
+    <div class="legend-c"><span><i style="background:var(--l-req)"></i>Requirements</span><span><i style="background:var(--l-agi)"></i>Agile &amp; delivery</span><span><i style="background:var(--l-dat)"></i>Data &amp; integration</span><span><i style="background:var(--l-tst)"></i>Testing &amp; UAT</span><span><i style="background:var(--l-stk)"></i>Stakeholders</span></div>
+  </div>
+  <div class="c-body">
+    <div class="strip" id="strip"><svg class="tracks" id="tracks" aria-hidden="true"></svg><div class="train" id="train"><i></i></div></div>
+    <aside class="c-card" id="c-card" aria-live="polite"></aside>
+  </div>
+</section>
+
+<!-- ===================== D ===================== -->
+<section class="opt opt-d" id="opt-d" role="tabpanel" aria-labelledby="t-d" hidden>
+  <div class="chat">
+    <div class="d-top"><span class="av">AY</span><div><strong>Abhishek Yadav</strong><span><i class="on"></i>Senior IT Business Analyst · usually answers instantly</span></div></div>
+    <div class="msgs" id="msgs" aria-live="polite"></div>
+    <div class="sugs" id="sugs"></div>
+    <div class="d-foot"><span>Answers are written from my résumé. Examples are labelled.</span><button type="button" data-act="d-reset">Start over</button></div>
+  </div>
+</section>
+
+<!-- ===================== E ===================== -->
+<section class="opt opt-e" id="opt-e" role="tabpanel" aria-labelledby="t-e" hidden>
+  <div class="e-head">
+    <span class="tag-e src" style="justify-self:start;font:600 .7rem/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:4px;background:color-mix(in srgb,var(--eacc) 16%,transparent);color:var(--eacc)">Case study · Government</span>
+    <h2>Rajmarg Pravesh: one permission, end to end.</h2>
+    <p>Read on the left. The diagram follows you, lighting up the part of the workflow each step is about.</p>
+  </div>
+  <div class="e-body">
+    <div class="e-steps" id="e-steps">
+      <div class="e-step" data-hot="lane-all"><span class="k">01 · Context</span><h3>A national portal for highway access</h3><p>Applicants ask for permission to connect to a National Highway or use its Right of Way. Several authorities review, inspect, collect fees and approve.</p><span class="tag-e src">From résumé and project brief</span></div>
+      <div class="e-step" data-hot="n-apply n-docs e1"><span class="k">02 · Submission</span><h3>Nothing reaches review incomplete</h3><p>The applicant marks the location on a map, enters chainage (km) and uploads documents. Submission is blocked until every mandatory document for that application type is attached.</p><span class="tag-e">Illustrative rule</span></div>
+      <div class="e-step" data-hot="n-review e2 e-clar n-clar" data-warn="n-clar"><span class="k">03 · Clarification</span><h3>Ask once, precisely, and pause the clock</h3><p>If something is wrong, the reviewer raises a clarification with a reason. The authority's turnaround clock pauses while the applicant fixes it, then resumes.</p><span class="tag-e">Illustrative example</span></div>
+      <div class="e-step" data-hot="n-insp n-approve e3 e4"><span class="k">04 · Inspection and approval</span><h3>Site checked, then provisional approval</h3><p>A field inspection report goes back to the reviewer, who recommends. The approving authority grants provisional approval, returns the file, or rejects it with reasons.</p><span class="tag-e">Illustrative example</span></div>
+      <div class="e-step" data-hot="n-pay e5 e6 e-bg n-bg" data-warn="n-bg"><span class="k">05 · Payment and guarantee</span><h3>Money confirmed, guarantees valid</h3><p>Fees are paid through BharatKosh. If a bank guarantee's validity ends too early, finance returns it and the applicant re-uploads, without starting again.</p><span class="tag-e src">BharatKosh from résumé</span></div>
+      <div class="e-step" data-hot="n-esign n-done e8 e7"><span class="k">06 · eSign</span><h3>Final approval, digitally signed</h3><p>The approver signs with eSign and the applicant downloads the permission.</p><span class="tag-e src">eSign from résumé</span></div>
+      <div class="e-step" data-hot="lane-all n-apply n-docs n-review n-insp n-approve n-pay n-esign n-done"><span class="k">07 · My role</span><h3>What I did across 10+ modules</h3><p>Requirements discovery to UAT and production support: BRDs, FRDs, SRS, RTMs, stories and acceptance criteria; requirements for GIS, BharatKosh, eSign, role-based access, APIs and legacy migration; UAT, defect triage, release validation and sign-off.</p><span class="tag-e src">From résumé</span></div>
+    </div>
+    <div class="e-vis" aria-hidden="true">
+      <span class="cap" id="e-cap">The workflow</span>
+      <svg viewBox="0 0 520 360" preserveAspectRatio="xMidYMid meet">
+        <g id="lanes">
+          <rect class="lane-r" id="l-0" x="0" y="0" width="520" height="80" rx="8"/><text class="lane-t" x="10" y="16">APPLICANT</text>
+          <rect class="lane-r" id="l-1" x="0" y="92" width="520" height="80" rx="8"/><text class="lane-t" x="10" y="108">REVIEWER · INSPECTOR</text>
+          <rect class="lane-r" id="l-2" x="0" y="184" width="520" height="80" rx="8"/><text class="lane-t" x="10" y="200">APPROVING AUTHORITY</text>
+          <rect class="lane-r" id="l-3" x="0" y="276" width="520" height="80" rx="8"/><text class="lane-t" x="10" y="292">FINANCE</text>
+        </g>
+        <path class="ed" id="e1" d="M92 44 H122"/><path class="ed" id="e2" d="M182 44 H196 V132 H212"/>
+        <path class="ed loop" id="e-clar" d="M262 112 V58 H246"/>
+        <path class="ed" id="e3" d="M272 132 H300"/><path class="ed" id="e4" d="M350 132 H364 V224 H300 V224"/>
+        <path class="ed" id="e5" d="M265 242 V270 H228 V298"/><path class="ed loop" id="e-bg" d="M320 334 V348 H228 V334"/>
+        <path class="ed" id="e6" d="M256 316 H290"/><path class="ed" id="e8" d="M350 316 H400 V242"/><path class="ed" id="e7" d="M430 224 H446 V44 H462"/>
+        <g class="nd" id="n-apply"><rect x="20" y="28" width="72" height="34" rx="8"/><text x="56" y="49" text-anchor="middle">Apply · map</text></g>
+        <g class="nd" id="n-docs"><rect x="122" y="28" width="60" height="34" rx="8"/><text x="152" y="49" text-anchor="middle">Docs</text></g>
+        <g class="nd" id="n-clar"><rect x="190" y="38" width="56" height="34" rx="8"/><text x="218" y="59" text-anchor="middle">Fix ⏸</text></g>
+        <g class="nd" id="n-review"><rect x="212" y="114" width="60" height="36" rx="8"/><text x="242" y="136" text-anchor="middle">Review</text></g>
+        <g class="nd" id="n-insp"><rect x="300" y="114" width="50" height="36" rx="8"/><text x="325" y="136" text-anchor="middle">Inspect</text></g>
+        <g class="nd" id="n-approve"><rect x="230" y="206" width="70" height="36" rx="8"/><text x="265" y="228" text-anchor="middle">Provisional</text></g>
+        <g class="nd" id="n-pay"><rect x="200" y="298" width="56" height="36" rx="8"/><text x="228" y="320" text-anchor="middle">Pay · BG</text></g>
+        <g class="nd" id="n-bg"><rect x="290" y="298" width="60" height="36" rx="8"/><text x="320" y="320" text-anchor="middle">Verify BG</text></g>
+        <g class="nd" id="n-esign"><rect x="370" y="206" width="60" height="36" rx="8"/><text x="400" y="228" text-anchor="middle">eSign</text></g>
+        <g class="nd" id="n-done"><circle cx="478" cy="44" r="16"/><text x="478" y="74" text-anchor="middle">Issued</text></g>
+      </svg>
+      <span class="e-note" id="e-note">Illustrative reconstruction, not the production configuration.</span>
+    </div>
+  </div>
+</section>
+</div>
+
+<div class="sw shell-foot">Built as a comparison. Nothing here replaces the current site until you choose. The content stays the same; only the experience changes.</div>
+
+<script>
+(function () {
+  'use strict';
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $ = function (s, r) { return (r || document).querySelector(s); }, $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+  /* ---------- Shell: tabs and verdicts ---------- */
+  var V = {
+    a: [['Best for', 'A calm, premium first read. Very easy to scan.'], ['Wow moment', 'A gold thread draws down the page as you scroll, lighting each section like a traced requirement.'], ['Watch-outs', 'Dark-only. Least depth of the five unless we add the skills and artifacts underneath.'], ['Effort', 'Low to medium. Builds on your file.']],
+    b: [['Best for', 'Recruiters skimming on a phone. Everything visible in one screen or two.'], ['Wow moment', 'Every tile works: flip a story, toggle a KPI, change a rule and see the outcome.'], ['Watch-outs', 'Bento is a current trend; tiles must stay short or it gets busy.'], ['Effort', 'Medium.'], ['My pick', 'Strongest base for the home page.', 'rec']],
+    c: [['Best for', 'Being remembered. Shows how your skills grew and connect over time.'], ['Wow moment', 'A train rides down your career as you scroll; lines meet at the Rajmarg Pravesh interchange.'], ['Watch-outs', 'The metaphor must never hide the facts. Needs care on small phones.'], ['Effort', 'Medium to high.'], ['My pick', 'Best signature section for the home page.', 'rec']],
+    d: [['Best for', 'Hiring managers with specific questions. Short, readable answers.'], ['Wow moment', 'It feels like interviewing you. Answers carry real examples.'], ['Watch-outs', 'Scripted, not live AI. Browsing everything needs a "view all" route.'], ['Effort', 'Medium.']],
+    e: [['Best for', 'Depth. Turns a 20-section case study into a story anyone can follow.'], ['Wow moment', 'The diagram follows you and lights up each stage as you read.'], ['Watch-outs', 'One story per case study; long on phones.'], ['Effort', 'Medium. Pairs with any home page.'], ['My pick', 'Best format for all four case studies.', 'rec']]
+  };
+  var tabs = $$('.tabs [role="tab"]'), current = 'a';
+  function select(k, focus) {
+    current = k;
+    tabs.forEach(function (t) { var on = t.getAttribute('data-opt') === k; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; if (on && focus) t.focus(); });
+    $$('.opt').forEach(function (p) { p.hidden = p.id !== 'opt-' + k; });
+    $('#verdict').innerHTML = V[k].map(function (v) { return '<div' + (v[2] ? ' class="rec"' : '') + '><b>' + v[0] + '</b>' + v[1] + '</div>'; }).join('');
+    try { history.replaceState(null, '', '#' + k); } catch (e) {}
+    if (k === 'a') initA(); if (k === 'c') initC(); if (k === 'd') initD(); if (k === 'e') initE();
+    onScroll();
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { select(t.getAttribute('data-opt')); });
+    t.addEventListener('keydown', function (e) { var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (!d) return; e.preventDefault(); select(tabs[(i + d + tabs.length) % tabs.length].getAttribute('data-opt'), true); });
+  });
+
+  /* ---------- A: thread that draws with scroll ---------- */
+  var aReady = false, aLen = 0;
+  function initA() {
+    var host = $('#opt-a'), svg = $('.thread', host), H = host.offsetHeight;
+    svg.setAttribute('viewBox', '0 0 24 ' + H); svg.setAttribute('height', H);
+    var d = 'M12 40 ' + Array.apply(null, Array(12)).map(function (_, i) { var y = 40 + (H - 80) * (i + 1) / 12; return 'C ' + (i % 2 ? 2 : 22) + ' ' + (y - (H - 80) / 24) + ', ' + (i % 2 ? 22 : 2) + ' ' + (y - (H - 80) / 48) + ', 12 ' + y; }).join(' ');
+    $$('path', svg).forEach(function (p) { p.setAttribute('d', d); });
+    var fg = $('.t-fg', svg); aLen = fg.getTotalLength(); fg.style.strokeDasharray = aLen; fg.style.strokeDashoffset = reduce ? 0 : aLen;
+    if (!aReady) {
+      $$('[data-node]', host).forEach(function (s) { var dot = document.createElement('span'); dot.className = 'node-dot'; host.appendChild(dot); s.__dot = dot; });
+      aReady = true;
+    }
+    $$('[data-node]', host).forEach(function (s) { s.__dot.style.top = (s.offsetTop + 70) + 'px'; });
+  }
+  function scrollA() {
+    var host = $('#opt-a'); if (host.hidden || !aLen) return;
+    var r = host.getBoundingClientRect(), reach = innerHeight * 0.6 - r.top, p = Math.max(0, Math.min(1, reach / host.offsetHeight));
+    if (!reduce) $('.t-fg', host).style.strokeDashoffset = (aLen * (1 - p)).toFixed(1);
+    $$('[data-node]', host).forEach(function (s) { s.__dot.classList.toggle('on', reduce || s.offsetTop + 70 < reach); });
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-act="a-ac"]'); if (!b) return;
+    var ul = $('#a-ac'), open = ul.hidden; ul.hidden = !open; b.setAttribute('aria-expanded', String(open)); b.textContent = open ? 'Hide acceptance criteria' : 'Show acceptance criteria';
+  });
+
+  /* ---------- B: bento interactions ---------- */
+  var DEC = {
+    fix: ['Return for clarification with the reason', 'The file keeps its history and payments. The authority clock pauses until the applicant replies.'],
+    inel: ['Reject, with the policy reason recorded', 'Ineligibility is a substantive ground. The decision is final and the reason is visible to the applicant.'],
+    miss: ['Block submission and list what is missing', 'It never reaches the reviewer. The applicant sees exactly which document to add.']
+  };
+  function dec(k) { $$('[data-dec]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-dec') === k)); }); $('#b-dec').innerHTML = '<strong>' + DEC[k][0] + '</strong>' + DEC[k][1]; }
+  dec('fix');
+  $('#b-kpi-t').addEventListener('change', function (e) {
+    var on = e.target.checked; $('#b-kpi').textContent = on ? '22' : '17';
+    $('#b-kpi-note').textContent = on ? 'Now the authority looks 5 days slower, because the applicant\'s waiting time is counted against them. Same data, different definition.' : 'Applicant waiting time is excluded, so the authority is measured fairly.';
+  });
+  var MORE = {
+    rajmarg: ['Rajmarg Pravesh Portal', 'Government · Ascra Technologies · 2025 – now', ['National Highway access and Right of Way permission portal for Digital India Corporation (MeitY), across MoRTH and NHAI.', 'Business analysis and product delivery across 10+ workflow modules, from discovery to post-production support.', 'Requirements for GIS workflows, BharatKosh payment, eSign, role-based access, APIs, workflow automation and legacy migration.', 'Led UAT planning, defect triage, release validation and stakeholder sign-offs.']],
+    health: ['Healthcare Management System', 'Healthcare · Intechglobe · 2021 – 2025', ['End-to-end business analysis, from elicitation and solution design to deployment and production support.', 'BRDs, FRDs, SRS, RTMs, stories and workflows in Confluence and Visio.', 'Wireframes, dashboards and reports with Figma, Power BI, SQL and Excel.', 'Workshops, product demonstrations, user training and change management.']],
+    ats: ['ATS and VMS platforms', 'HR tech · Coditro · 2020 – 2021', ['BRDs, FRDs, SRS, RTMs, workflows and functional specifications.', 'User stories and acceptance criteria; backlog refinement and sprint planning.', 'Gap analysis, JAD sessions and defect tracking.', 'Figma wireframes, Visio workflows, testing and deployment support.']],
+    datalake: ['NHAI DataLake 3.0', 'Data · Ascra Technologies · 2025 – now', ['Listed alongside Rajmarg Pravesh in my current role at Ascra Technologies.', 'Business analysis responsibilities shared with the Ascra programme: requirements, stakeholder collaboration, UAT and release work.']]
+  };
+  var lastFocus = null;
+  function openMore(k) {
+    var m = MORE[k]; lastFocus = document.activeElement;
+    $('#b-over-body').innerHTML = '<span class="lbl" style="font:600 .74rem var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--bm)">' + m[1] + '</span><h3 id="b-over-h">' + m[0] + '</h3><ul>' + m[2].map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul><p style="margin:0;color:var(--bm)">The full case study would open here, in story mode (see option E).</p>';
+    $('#b-over').hidden = false; $('.b-close').focus();
+  }
+  function closeMore() { $('#b-over').hidden = true; if (lastFocus) lastFocus.focus(); }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-dec]'); if (t) dec(t.getAttribute('data-dec'));
+    t = e.target.closest('[data-more]'); if (t) openMore(t.getAttribute('data-more'));
+    if (e.target.closest('[data-act="b-close"]') || e.target.id === 'b-over') closeMore();
+    t = e.target.closest('[data-act="flip"]'); if (t) t.setAttribute('aria-pressed', String(t.getAttribute('aria-pressed') !== 'true'));
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('#b-over').hidden) closeMore(); });
+
+  /* ---------- C: metro strip map ---------- */
+  var LINES = { req: ['Requirements', '--l-req'], agi: ['Agile & delivery', '--l-agi'], dat: ['Data & integration', '--l-dat'], tst: ['Testing & UAT', '--l-tst'], stk: ['Stakeholders', '--l-stk'] };
+  var ORDER = ['req', 'agi', 'dat', 'tst', 'stk'];
+  var STOPS = [
+    { ix: 1, yr: '2019', name: 'RTL Technologies', sub: 'Business Development Analyst', lines: ['stk', 'dat'], more: 'Client requirement analysis, proposals and requirement documents. Where the journey starts.' },
+    { line: 'stk', name: 'Client presentations and proposals', more: 'Presenting to clients and turning their needs into proposals.' },
+    { line: 'dat', name: 'Market and competitor research', more: 'Research that fed business opportunities and client pitches.' },
+    { ix: 1, yr: '2020', name: 'Coditro LLP', sub: 'ATS and VMS · Business Analyst', lines: ['req', 'agi', 'tst', 'stk'], more: 'First BA role. Requirements, Agile delivery and testing lines open here.' },
+    { line: 'req', name: 'BRD · FRD · SRS · RTM', more: 'Gathered, analysed and documented requirements end to end.' },
+    { line: 'stk', name: 'JAD sessions', more: 'Joint sessions with business and development teams.' },
+    { line: 'req', name: 'Gap analysis', more: 'Current vs desired state for ATS and VMS implementation.' },
+    { line: 'agi', name: 'Backlog refinement and sprint planning', more: 'User stories and acceptance criteria for Agile delivery.' },
+    { line: 'tst', name: 'Defect tracking', more: 'Making sure requirements were implemented as agreed.' },
+    { ix: 1, yr: '2021', name: 'Intechglobe', sub: 'Healthcare Management System · Business Analyst', lines: ['req', 'agi', 'dat', 'tst', 'stk'], more: 'Four years, end-to-end BA. Every line runs through here.' },
+    { line: 'dat', name: 'Power BI dashboards and SQL reports', more: 'Dashboards, analytical reports and process visualisations.' },
+    { line: 'stk', name: 'Workshops, demos and training', more: 'Stakeholder workshops, product demonstrations, user training and change management.' },
+    { line: 'agi', name: 'Scrum releases', more: 'Prioritised requirements and managed sprint backlogs with product, dev and QA.' },
+    { line: 'req', name: 'Wireframes in Figma', more: 'Wireframes and workflow diagrams in Figma, Confluence and Visio.' },
+    { ix: 1, big: 1, yr: '2025', name: 'Ascra Technologies', sub: 'Rajmarg Pravesh · NHAI DataLake 3.0', lines: ['req', 'agi', 'dat', 'tst', 'stk'], more: 'The grand interchange: all five lines meet on a national permission portal for Digital India Corporation (MoRTH · NHAI).' },
+    { line: 'req', name: '10+ workflow modules', more: 'Business analysis and product delivery, discovery to post-production support.' },
+    { line: 'dat', name: 'GIS · BharatKosh · eSign · APIs', more: 'Business requirements for integrations, role-based access and workflow automation.' },
+    { line: 'dat', name: 'Legacy data migration', more: 'Requirements for bringing legacy records into the portal.' },
+    { line: 'tst', name: 'UAT, triage and release validation', more: 'Led UAT planning, defect triage, release validation and production readiness.' },
+    { line: 'stk', name: 'Sign-offs with MoRTH, NHAI and DIC', more: 'Stakeholder sign-offs and backlog prioritisation with client teams.' },
+    { line: 'agi', name: 'Product ownership support', more: 'Prioritised product backlogs and delivered Agile releases.' },
+    { ix: 1, next: 1, yr: 'Next', name: 'Your team?', sub: 'Senior BA · Product Owner · Product Analyst', lines: ['req', 'agi', 'dat', 'tst', 'stk'], more: 'Next stop. Email ba.abhiy@gmail.com or find me at linkedin.com/in/abhiyknp.' }
+  ];
+  var cReady = false, rows = [], X = {};
+  function initC() {
+    var strip = $('#strip'); if (cReady) { drawTracks(); return; }
+    ORDER.forEach(function (k, i) { X[k] = 14 + i * 20; });
+    STOPS.forEach(function (s, i) {
+      var r = document.createElement('div'); r.className = 'strip-row' + (s.ix ? ' ix' : ''); r.tabIndex = 0; r.setAttribute('role', 'button'); r.setAttribute('aria-expanded', 'false');
+      r.innerHTML = '<span></span><span class="s-name">' + (s.yr ? '<span class="s-yr">' + s.yr + '</span>' : '') + s.name + (s.sub ? '<span class="s-sub">' + s.sub + '</span>' : '') + '</span><div class="s-more" hidden>' + s.more + '</div>';
+      r.__i = i; strip.appendChild(r); rows.push(r);
+      var tog = function () { var m = $('.s-more', r); m.hidden = !m.hidden; r.setAttribute('aria-expanded', String(!m.hidden)); setCard(i); drawTracks(); };
+      r.addEventListener('click', tog); r.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tog(); } });
+    });
+    cReady = true; drawTracks(); setCard(0);
+  }
+  function cssv(n) { return getComputedStyle($('#opt-c')).getPropertyValue(n).trim(); }
+  function drawTracks() {
+    var strip = $('#strip'), svg = $('#tracks'), H = strip.offsetHeight, s = '';
+    svg.setAttribute('viewBox', '0 0 112 ' + H); svg.setAttribute('height', H);
+    var start = {}; rows.forEach(function (r, i) { var st = STOPS[i]; (st.lines || [st.line]).forEach(function (l) { if (start[l] === undefined) start[l] = r.offsetTop + r.offsetHeight / 2; }); });
+    var endY = rows[rows.length - 1].offsetTop + rows[rows.length - 1].offsetHeight / 2;
+    ORDER.forEach(function (k) { s += '<path d="M' + X[k] + ' ' + start[k] + ' V' + (endY - 30) + '" stroke="' + cssv(LINES[k][1]) + '" stroke-width="6" stroke-linecap="round"/>'; s += '<path d="M' + X[k] + ' ' + (endY - 30) + ' V' + endY + '" stroke="' + cssv(LINES[k][1]) + '" stroke-width="6" stroke-dasharray="4 5"/>'; });
+    rows.forEach(function (r, i) {
+      var st = STOPS[i], y = r.offsetTop + r.offsetHeight / 2;
+      if (st.ix) { var ls = st.lines.map(function (l) { return X[l]; }), x0 = Math.min.apply(null, ls) - 9, x1 = Math.max.apply(null, ls) + 9; s += '<rect x="' + x0 + '" y="' + (y - 11) + '" width="' + (x1 - x0) + '" height="22" rx="11" fill="' + cssv('--cs') + '" stroke="' + cssv('--ct') + '" stroke-width="' + (st.big ? 4 : 3) + '"/>'; }
+      else s += '<circle cx="' + X[st.line] + '" cy="' + y + '" r="6.5" fill="' + cssv('--cs') + '" stroke="' + cssv(LINES[st.line][1]) + '" stroke-width="3.5"/>';
+    });
+    svg.innerHTML = s;
+  }
+  var cardIdx = -1;
+  function setCard(i) {
+    if (i === cardIdx) return; cardIdx = i;
+    var st = STOPS[i], ls = st.lines || [st.line];
+    rows.forEach(function (r, k) { r.classList.toggle('cur', k === i); });
+    $('#c-card').innerHTML = '<div class="lines">' + ls.map(function (l) { return '<span style="background:' + cssv(LINES[l][1]) + '">' + LINES[l][0] + '</span>'; }).join('') + '</div><h3>' + (st.yr ? st.yr + ' · ' : '') + st.name + '</h3>' + (st.sub ? '<p><b>' + st.sub + '</b></p>' : '') + '<p>' + st.more + '</p>' + (STOPS[i + 1] ? '<span class="next">Next stop: ' + STOPS[i + 1].name + '</span>' : '');
+  }
+  function scrollC() {
+    if ($('#opt-c').hidden || !cReady) return;
+    var strip = $('#strip'), r = strip.getBoundingClientRect(), y = Math.max(0, Math.min(strip.offsetHeight, innerHeight * 0.5 - r.top));
+    $('#train').style.transform = 'translateY(' + y.toFixed(0) + 'px)';
+    var best = 0; rows.forEach(function (row, k) { if (row.offsetTop + row.offsetHeight / 2 <= y + 10) best = k; });
+    var st = STOPS[best], lx = st.line ? X[st.line] : X.req; $('#train i').style.left = (lx - 9) + 'px';
+    setCard(best);
+  }
+
+  /* ---------- D: ask me ---------- */
+  var QA = {
+    now: { q: 'What do you work on now?', a: ['I\'m a Business Analyst at Ascra Technologies, working for Digital India Corporation (MeitY) on MoRTH and NHAI initiatives.', 'My main project is the <b>Rajmarg Pravesh portal</b>: National Highway access and Right of Way permissions. I own business analysis and product delivery across 10+ workflow modules, from discovery to production support.'], card: ['What I define there', ['GIS workflows and chainage capture', 'BharatKosh payment integration', 'eSign for final approval', 'Role-based access and APIs', 'Legacy data migration']], src: 'Résumé · Ascra Technologies', next: ['ac', 'conflict', 'tools'] },
+    ac: { q: 'Show me how you write acceptance criteria', a: ['Here\'s one for a reviewer raising a clarification. I always cover the happy path, a negative path, permissions and what gets recorded.'], card: ['Acceptance criteria · illustrative', ['Given an assigned application, when I raise a clarification with a reason, then the applicant is notified and the clock pauses', 'Given no reason is selected, then I see "Select at least one reason" and nothing is saved', 'Given I\'m not the assigned reviewer, then the action isn\'t available', 'Given the applicant responds, then the file returns to my queue marked "changed"']], src: 'Illustrative example', next: ['testing', 'now', 'po'] },
+    conflict: { q: 'How do you handle conflicting stakeholders?', a: ['I turn positions into needs. Say applicants want fewer mandatory fields and the authority wants every field for compliance.', 'I map each field to who uses it, at which stage and under which rule. Unused fields go, fields needed later move to that stage, and anything still contested goes to the decision-maker with options and impacts. Then it\'s recorded in the decision log.'], src: 'Résumé: stakeholder management, JAD sessions · example illustrative', next: ['ac', 'po', 'now'] },
+    tools: { q: 'What tools do you use?', a: ['Every week: <b>JIRA</b> and <b>Confluence</b> for backlog and documentation, <b>Figma/FigJam</b> and <b>Visio</b> for wireframes and workflows, <b>SQL</b> and <b>Power BI</b> for data, and <b>Postman</b> for checking APIs.'], src: 'Résumé · Technical & Tools', next: ['now', 'testing', 'po'] },
+    testing: { q: 'How do you run UAT?', a: ['I set entry criteria, pick users from each role, and write scenarios in business language with real test data. During UAT I triage issues daily and retest fixes.', 'Sign-off lists every open issue, its workaround and the residual risk the business is accepting, so nothing is hidden.'], src: 'Résumé: led UAT planning, defect triage and sign-offs', next: ['ac', 'po', 'tools'] },
+    po: { q: 'Why hire you as a Product Owner?', a: ['Product decisions depend on understanding problems, users, rules and constraints, and that\'s what I\'ve done for seven years.', 'On Rajmarg Pravesh I support product ownership: prioritising backlogs with MoRTH, NHAI and DIC, and taking work from discovery to release. As a PO I\'d own those decisions directly, with outcomes measured, not just features shipped.'], src: 'Résumé: product ownership support. I haven\'t held a PO title.', next: ['contact', 'now', 'conflict'] },
+    contact: { q: 'How can I reach you?', a: ['Email <b>ba.abhiy@gmail.com</b> or connect at <b>linkedin.com/in/abhiyknp</b>. I\'m based in Noida and open to Senior BA, Product Owner and Product Analyst roles.'], src: 'Résumé', next: ['now', 'ac'] }
+  };
+  var dReady = false, dTimer = 0;
+  function initD() { if (dReady) return; dReady = true; dReset(); }
+  function dReset() {
+    clearTimeout(dTimer); $('#msgs').innerHTML = '';
+    addMsg('me', '<p>Hi, I\'m Abhishek, a Senior IT Business Analyst. Ask me anything about my work. Pick a question below.</p>');
+    sugs(['now', 'ac', 'conflict', 'tools', 'po']);
+  }
+  function addMsg(who, html) { var m = document.createElement('div'); m.className = 'msg ' + who; m.innerHTML = html; $('#msgs').appendChild(m); return m; }
+  function sugs(keys) { $('#sugs').innerHTML = keys.map(function (k) { return '<button type="button" data-q="' + k + '">' + QA[k].q + '</button>'; }).join(''); }
+  function ask(k) {
+    var item = QA[k]; $('#sugs').innerHTML = '';
+    addMsg('you', '<p>' + item.q + '</p>');
+    var typing = addMsg('me', '<span class="typing"><i></i><i></i><i></i></span>');
+    dTimer = setTimeout(function () {
+      typing.remove();
+      var html = item.a.map(function (p) { return '<p>' + p + '</p>'; }).join('');
+      if (item.card) html += '<div class="card-d"><b>' + item.card[0] + '</b><ul>' + item.card[1].map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></div>';
+      html += '<span class="src">Source: ' + item.src + '</span>';
+      var m = addMsg('me', html); sugs(item.next);
+      var r = m.getBoundingClientRect(); if (r.bottom > innerHeight) scrollBy({ top: r.bottom - innerHeight + 120, behavior: reduce ? 'auto' : 'smooth' });
+    }, reduce ? 0 : 750);
+  }
+  document.addEventListener('click', function (e) { var t = e.target.closest('[data-q]'); if (t) ask(t.getAttribute('data-q')); if (e.target.closest('[data-act="d-reset"]')) dReset(); });
+
+  /* ---------- E: story mode ---------- */
+  var eReady = false;
+  function initE() {
+    if (eReady) return; eReady = true;
+    var steps = $$('#e-steps .e-step');
+    function activate(st) {
+      steps.forEach(function (s) { s.classList.toggle('on', s === st); });
+      var hot = (st.getAttribute('data-hot') || '').split(' '), warn = (st.getAttribute('data-warn') || '').split(' ');
+      $$('#opt-e .nd, #opt-e .ed').forEach(function (n) { n.classList.toggle('hot', hot.indexOf(n.id) > -1); n.classList.toggle('warn', warn.indexOf(n.id) > -1); });
+      $$('#opt-e .lane-r').forEach(function (l) { l.classList.toggle('hot', hot.indexOf('lane-all') > -1); });
+      $('#e-cap').textContent = $('.k', st).textContent;
+    }
+    activate(steps[0]);
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting) activate(en.target); }); }, { rootMargin: '-45% 0px -45% 0px' });
+      steps.forEach(function (s) { io.observe(s); });
+    } else steps.forEach(function (s) { s.classList.add('on'); });
+  }
+
+  /* ---------- Scroll and resize ---------- */
+  var ticking = false;
+  function onScroll() { if (ticking) return; ticking = true; requestAnimationFrame(function () { ticking = false; scrollA(); scrollC(); }); }
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', function () { if (current === 'a') initA(); if (current === 'c' && cReady) drawTracks(); onScroll(); });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () { if (cReady) { drawTracks(); var i = cardIdx; cardIdx = -1; setCard(i); } });
+
+  addEventListener('hashchange', function () { var k = location.hash.slice(1); if (V[k] && k !== current) select(k); });
+  var start = (location.hash || '#a').slice(1);
+  select(V[start] ? start : 'a');
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (current === 'a') initA(); if (cReady) drawTracks(); onScroll(); });
+})();
+</script>
+</body>
+</html>
