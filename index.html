@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Abhishek Yadav, Business Analyst</title>
+<meta name="description" content="Abhishek Yadav, Senior IT Business Analyst: a working BA knowledge base with a skills library, case studies, sample artifacts and decision scenarios.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<link rel="stylesheet" href="assets/css/main.css">
+<script>
+  /* Apply a saved theme before first paint. Storage may be unavailable; the page works without it. */
+  try { var t = localStorage.getItem('pf-theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="scene" aria-hidden="true">
+  <canvas id="scene-canvas"></canvas>
+  <div class="scene-fallback" id="scene-fallback"></div>
+</div>
+
+<header class="site-header">
+  <div class="bar">
+    <a class="brand" href="#home" aria-label="Abhishek Yadav, home">
+      <span class="brand-mark" aria-hidden="true">AY</span>
+      <span class="brand-text"><strong>Abhishek Yadav</strong><span>Business Analyst</span></span>
+    </a>
+    <nav class="nav" id="site-nav" aria-label="Main">
+      <a href="#home" data-nav="home">Overview</a>
+      <a href="#skills" data-nav="skills">Skills</a>
+      <a href="#cases" data-nav="cases">Case studies</a>
+      <a href="#studio" data-nav="studio">Artifact Studio</a>
+      <a href="#scenarios" data-nav="scenarios">Scenarios</a>
+      <a href="#evidence" data-nav="evidence">Evidence map</a>
+    </nav>
+    <div class="bar-tools">
+      <button class="icon-btn search-btn" type="button" data-act="palette" aria-label="Search everything (press /)">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M13 13l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span class="kbd">/</span>
+      </button>
+      <button class="icon-btn" type="button" data-act="theme" aria-label="Switch colour theme" id="theme-btn">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 3.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/></svg>
+      </button>
+      <button class="icon-btn menu-btn" type="button" data-act="menu" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main" tabindex="-1"></main>
+
+<div class="chainage" id="chainage" title="Reading progress, shown as highway chainage">
+  <span class="ch-km" id="ch-km">km 0+000</span>
+  <span class="ch-phase" id="ch-phase">Discover</span>
+  <span class="ch-track"><span class="ch-fill" id="ch-fill"></span></span>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap foot">
+    <p><strong>Abhishek Yadav</strong> · Business Analyst · Noida, India</p>
+    <p class="muted">Every scenario, rule, number and sample document on this site is labelled. "Source-supported" items come from the résumé or the owner's own project description; everything else is an illustrative example or a recommended approach. No confidential client material is reproduced.</p>
+  </div>
+</footer>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal-backdrop" data-act="close-modal"></div>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <button class="icon-btn modal-close" type="button" data-act="close-modal" aria-label="Close">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script src="assets/js/data/skills-a.js"></script>
+<script src="assets/js/data/skills-b.js"></script>
+<script src="assets/js/data/skills-c.js"></script>
+<script src="assets/js/data/cases.js"></script>
+<script src="assets/js/data/flows.js"></script>
+<script src="assets/js/data/artifacts.js"></script>
+<script src="assets/js/data/scenarios.js"></script>
+<script src="assets/js/widgets.js"></script>
+<script src="assets/js/app.js"></script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
+<script type="module" src="assets/js/scene.js"></script>
+</body>
+</html>
