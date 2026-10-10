@@ -30,7 +30,9 @@ No confidential client material is reproduced. IDs, ticket keys, endpoints, sche
 ## Files
 
 ```
-index.html                 page shell
+index.html                 page shell (with social-preview tags)
+assets/img/                portrait (abhishek-yadav.webp/.jpg) and social card (og-card.jpg)
+assets/Abhishek_Yadav_Business_Analyst_Resume.pdf   résumé for the download buttons
 assets/css/main.css        design tokens (light and dark) and all styles
 assets/js/app.js           router, views, search, filters, tabs, modal, palette, progress
 assets/js/widgets.js       swimlane flows, decision table, KPI dashboard, ERD

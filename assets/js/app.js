@@ -83,11 +83,12 @@
     return '<section class="intro intro-thread" id="intro" aria-label="Introduction"></section>' +
       '<div class="home" id="home-main"><svg class="home-thread" aria-hidden="true"><path class="t-bg"/><path class="t-fg"/></svg><div class="wrap">' +
       '<section class="h-hero" id="hero" data-node aria-labelledby="h-title">' +
+        '<figure class="h-photo"><img src="assets/img/abhishek-yadav.webp" alt="Abhishek Yadav, Senior IT Business Analyst" width="560" height="700" fetchpriority="high"></figure>' +
         '<span class="h-status"><i></i> Open to Senior BA, Product Owner and Product Analyst roles</span>' +
         '<h1 id="h-title">Senior IT<br>Business <span>Analyst.</span></h1>' +
         '<p class="h-state">Turning complexity into clarity.</p>' +
         '<p class="lede" style="max-width:60ch">Seven years turning policy and process into requirements that teams can build and test. Currently working on the Rajmarg Pravesh portal for Digital India Corporation (MeitY), across MoRTH and NHAI.</p>' +
-        '<div class="btn-row"><button class="btn" type="button" data-act="goto" data-target="summary">Read the 60-second summary</button><button class="btn ghost" type="button" data-act="goto" data-target="work">See the case studies</button><button class="btn ghost" type="button" data-act="goto" data-target="contact">Contact</button></div>' +
+        '<div class="btn-row"><button class="btn" type="button" data-act="goto" data-target="summary">Read the 60-second summary</button><button class="btn ghost" type="button" data-act="goto" data-target="work">See the case studies</button><a class="btn ghost" href="assets/Abhishek_Yadav_Business_Analyst_Resume.pdf" download>Download résumé (PDF)</a></div>' +
         '<div class="glance" aria-label="At a glance">' +
           '<div><span class="v">7+ yrs</span><span class="l">Business analysis, from discovery to production support</span></div>' +
           '<div><span class="v">10+</span><span class="l">Workflow modules owned on Rajmarg Pravesh</span></div>' +
@@ -176,7 +177,7 @@
         '<p class="kicker">07 · Let\'s talk</p><h2 id="ct-h">Clear requirements. Better delivery.</h2>' +
         '<p class="muted" style="max-width:56ch">Open to Senior Business Analyst, Product Owner and Product Analyst roles.</p>' +
         '<div class="copy-line" style="justify-content:center"><code id="email-text">ba.abhiy@gmail.com</code><button class="btn ghost" type="button" data-act="copy" data-copy="ba.abhiy@gmail.com">Copy email</button><span class="small muted" id="copy-status" aria-live="polite"></span></div>' +
-        '<div class="btn-row" style="justify-content:center"><a class="btn" href="mailto:ba.abhiy@gmail.com">Email me</a><a class="btn ghost" href="https://www.linkedin.com/in/abhiyknp" target="_blank" rel="noopener">LinkedIn ↗</a><button class="btn ghost" type="button" data-act="palette">Search everything</button></div>' +
+        '<div class="btn-row" style="justify-content:center"><a class="btn" href="mailto:ba.abhiy@gmail.com">Email me</a><a class="btn ghost" href="assets/Abhishek_Yadav_Business_Analyst_Resume.pdf" download>Download résumé (PDF)</a><a class="btn ghost" href="https://www.linkedin.com/in/abhiyknp" target="_blank" rel="noopener">LinkedIn ↗</a><button class="btn ghost" type="button" data-act="palette">Search everything</button></div>' +
       '</section>' +
       '</div></div>';
   }
@@ -457,7 +458,7 @@
     host.classList.toggle('i-static', reduceMotion.matches);
     var skip = '<button class="i-skip" type="button" data-act="skip-intro">Skip intro</button>';
     host.innerHTML = '<section class="i-sec i-chaos"><div class="i-stage" role="img" aria-label="Animated introduction: stakeholder phrases fade away as four words form the line: Turning complexity into clarity.">' + skip + '</div></section>';
-    stopIntro = window.PFIntros.chaos(host.querySelector('.i-chaos'), { sub: '<span class="i-name">That is the job.</span><span>Here is how I do it ↓</span>' });
+    stopIntro = window.PFIntros.chaos(host.querySelector('.i-chaos'), { sub: '<span class="i-name">That is the job.</span><span>Here is how I do it ↓</span>', fadeOut: true });
   }
   function layoutThread() {
     var home = document.getElementById('home-main'); if (!home) { threadLen = 0; return; }

@@ -55,23 +55,25 @@
       els.forEach(function (el, i) { if (words[i].head) el.style.fontSize = FT + 'px'; else el.style.fontSize = (13 + words[i].z * 9) + 'px'; });
     }
     function render(t) {
-      var settle = win(t, 0.2, 0.62), drift = t * 60;
+      var settle = win(t, 0.16, 0.56), drift = t * 60;
       els.forEach(function (el, i) {
         var o = words[i], sx = o.x * W + (o.z - 1) * drift, sy = o.y * H, x, y, s, op;
         if (o.head) {
-          var k = win(t, 0.24 + o.hi * 0.05, 0.58 + o.hi * 0.03), s0 = (14 + o.z * 9) / FT;
+          var k = win(t, 0.2 + o.hi * 0.05, 0.52 + o.hi * 0.03), s0 = (14 + o.z * 9) / FT;
           x = sx + (T[o.hi][0] - sx) * k; y = sy + (T[o.hi][1] - sy) * k; s = s0 + (1 - s0) * k; op = 0.85 + 0.15 * k;
-          el.classList.toggle('lit', t > 0.6);
+          el.classList.toggle('lit', t > 0.56);
         } else {
-          var f = win(t, 0.18 + o.d * 0.25, 0.42 + o.d * 0.25), cx = sx - W / 2, cy = sy - H / 2;
+          var f = win(t, 0.14 + o.d * 0.22, 0.36 + o.d * 0.22), cx = sx - W / 2, cy = sy - H / 2;
           x = sx + cx * 0.5 * f; y = sy + cy * 0.5 * f; s = 1 - 0.4 * f; op = (0.35 + 0.6 * (o.z - 0.55) / 0.75) * (1 - f);
         }
         el.style.transform = 'translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) scale(' + s.toFixed(3) + ')';
         el.style.opacity = op.toFixed(3); el.style.visibility = op < 0.01 ? 'hidden' : 'visible';
       });
-      c1.style.opacity = band(t, -0.1, 0.2).toFixed(3); c2.style.opacity = band(t, 0.24, 0.52).toFixed(3);
-      var so = win(t, 0.64, 0.78); sub.style.opacity = so.toFixed(3); sub.style.transform = 'translate(-50%,' + ((1 - so) * 14).toFixed(1) + 'px)';
-      cue.style.opacity = win(t, 0.8, 0.9).toFixed(3);
+      c1.style.opacity = band(t, -0.1, 0.16).toFixed(3); c2.style.opacity = band(t, 0.2, 0.46).toFixed(3);
+      var so = win(t, 0.58, 0.72); sub.style.opacity = so.toFixed(3); sub.style.transform = 'translate(-50%,' + ((1 - so) * 14).toFixed(1) + 'px)';
+      cue.style.opacity = (win(t, 0.62, 0.7) * (1 - win(t, 0.74, 0.8))).toFixed(3);
+      /* Crossfade into the page: the overview rises over the last stretch while the stage fades. */
+      if (opts.fadeOut && !reduce) stage.style.opacity = (1 - win(t, 0.8, 0.98)).toFixed(3);
     }
     layout();
     var p = new Pinned(host, render);
