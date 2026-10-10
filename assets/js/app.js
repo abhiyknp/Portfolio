@@ -42,6 +42,13 @@
       return '<div role="tabpanel" id="' + id + '-p' + i + '" aria-labelledby="' + id + '-t' + i + '" tabindex="0"' + (i ? ' hidden' : '') + '>' + t[1] + '</div>';
     }).join('') + '</div>';
   }
+  function tabsHtml(id, items) {
+    return '<div class="tabs" data-tabs><div class="tablist" role="tablist">' + items.map(function (t, i) {
+      return '<button type="button" role="tab" id="' + id + '-t' + i + '" aria-controls="' + id + '-p' + i + '" aria-selected="' + (i === 0) + '" tabindex="' + (i === 0 ? 0 : -1) + '">' + t[0] + '</button>';
+    }).join('') + '</div>' + items.map(function (t, i) {
+      return '<div role="tabpanel" id="' + id + '-p' + i + '" aria-labelledby="' + id + '-t' + i + '" tabindex="0"' + (i ? ' hidden' : '') + '>' + t[1] + '</div>';
+    }).join('') + '</div>';
+  }
   function block(n, title, body, open, ev, anchor) {
     return '<details class="block"' + (open ? ' open' : '') + (anchor ? ' id="' + anchor + '"' : '') + '><summary><span class="num">' + (n < 10 ? '0' + n : n) + '</span><h3>' + title + '</h3>' + (ev ? badge(ev) : '') + '</summary><div class="block-body"><div class="prose">' + body + '</div></div></details>';
   }
@@ -64,80 +71,112 @@
     { t: 'Backlog prioritisation with government stakeholders', d: 'Prioritised backlogs with MoRTH, NHAI, DIC, engineering, QA and UI/UX teams for Agile releases.', s: ['backlog', 'scrum', 'jira'], a: 'jira', c: 'rajmarg' },
     { t: 'Data, dashboards and reporting', d: 'Power BI dashboards and SQL analysis on the Healthcare Management System; M.S. in Data Science.', s: ['powerbi', 'sqlanalysis', 'metrics'], a: 'kpi', c: 'healthcare' }
   ];
+  var CASE_INSIDE = {
+    rajmarg: ['Clickable end-to-end workflow', 'Requirements, stories and rules', 'Integrations: GIS, BharatKosh, eSign', 'UAT, risks and release'],
+    datalake: ['Representative data-platform analysis', 'Lineage and reconciliation', 'Access and data quality', 'Clearly labelled scope'],
+    healthcare: ['Appointment-to-billing workflow', 'Dashboards and SQL reporting', 'Privacy and access rules', 'Workshops and adoption'],
+    'ats-vms': ['Requisition-to-offer workflow', 'Duplicate-candidate rule', 'JAD sessions and gap analysis', 'UAT cases']
+  };
   function home() {
     var counts = { s: PF.skills.length, a: PF.artifacts.length, c: PF.cases.length, sc: PF.scenarios.length };
-    return '<section class="intro" id="intro" aria-label="Introduction"></section>' +
-      '<div class="wrap">' +
-      '<section class="hero" id="hero" aria-labelledby="h-title">' +
-        '<p class="kicker"><span class="km">km 0+000</span> Senior IT Business Analyst · Product Owner and Product Analyst readiness</p>' +
-        '<h1 id="h-title">I turn policy and process into <em>traceable</em>, testable software.</h1>' +
-        '<p class="lede">Seven years of business analysis across government, healthcare, HR tech and enterprise systems. Currently working on the Rajmarg Pravesh portal for Digital India Corporation (MeitY), across MoRTH and NHAI initiatives.</p>' +
-        '<div class="btn-row"><button class="btn" type="button" data-act="goto" data-target="summary">Read the 60-second summary</button><a class="btn ghost" href="#skills">Explore the BA knowledge base</a><button class="btn ghost" type="button" data-act="goto" data-target="contact">Contact</button></div>' +
-        '<div class="hero-meta"><span>Noida, India</span><span>Ascra Technologies LLP · Apr 2025 – present</span><span>M.S. Data Science · B.Tech IT</span></div>' +
-      '</section>' +
-      '<div class="page" style="padding-top:0">' +
-      '<section class="glance" aria-label="At a glance">' +
-        '<div><span class="v">7+ yrs</span><span class="l">Business analysis, from discovery to production support</span></div>' +
-        '<div><span class="v">10+</span><span class="l">Workflow modules owned on Rajmarg Pravesh</span></div>' +
-        '<div><span class="v">5</span><span class="l">Domains: government, enterprise, healthcare, HR, e-commerce</span></div>' +
-        '<div><span class="v">4</span><span class="l">Flagship case studies, with evidence labels</span></div>' +
+    return '<section class="intro intro-thread" id="intro" aria-label="Introduction"></section>' +
+      '<div class="home" id="home-main"><svg class="home-thread" aria-hidden="true"><path class="t-bg"/><path class="t-fg"/></svg><div class="wrap">' +
+      '<section class="h-hero" id="hero" data-node aria-labelledby="h-title">' +
+        '<span class="h-status"><i></i> Open to Senior BA, Product Owner and Product Analyst roles</span>' +
+        '<h1 id="h-title">Senior IT<br>Business <span>Analyst.</span></h1>' +
+        '<p class="h-state">Turning complexity into clarity.</p>' +
+        '<p class="lede" style="max-width:60ch">Seven years turning policy and process into requirements that teams can build and test. Currently working on the Rajmarg Pravesh portal for Digital India Corporation (MeitY), across MoRTH and NHAI.</p>' +
+        '<div class="btn-row"><button class="btn" type="button" data-act="goto" data-target="summary">Read the 60-second summary</button><button class="btn ghost" type="button" data-act="goto" data-target="work">See the case studies</button><button class="btn ghost" type="button" data-act="goto" data-target="contact">Contact</button></div>' +
+        '<div class="glance" aria-label="At a glance">' +
+          '<div><span class="v">7+ yrs</span><span class="l">Business analysis, from discovery to production support</span></div>' +
+          '<div><span class="v">10+</span><span class="l">Workflow modules owned on Rajmarg Pravesh</span></div>' +
+          '<div><span class="v">5</span><span class="l">Domains: government, enterprise, healthcare, HR, e-commerce</span></div>' +
+          '<div><span class="v">' + counts.c + '</span><span class="l">Detailed case studies, every claim labelled</span></div>' +
+        '</div>' +
       '</section>' +
 
-      '<section class="section summary60" id="summary" aria-labelledby="sum-h">' +
-        '<div class="stack"><p class="kicker"><span class="km">km 1+200</span> Executive view</p><h2 id="sum-h">In about 60 seconds</h2><p class="muted">Every line here comes from the résumé. Deeper pages explain how the work is done, with illustrative examples clearly labelled.</p>' + badge('source') + '</div>' +
+      '<section class="summary60" id="summary" data-node aria-labelledby="sum-h">' +
+        '<div class="h-head"><p class="kicker">01 · In 60 seconds</p><h2 id="sum-h">The short version</h2><p>Every line here comes from my résumé. ' + badge('source') + '</p></div>' +
         '<ol>' +
           '<li>Business Analyst at <strong>Ascra Technologies</strong>, delivering business analysis and product ownership support for Digital India Corporation (MeitY) on MoRTH and NHAI initiatives.</li>' +
-          '<li>Owns business analysis and product delivery across <strong>10+ workflow modules</strong> of the Rajmarg Pravesh portal, from requirement discovery to UAT, production release and post-production support.</li>' +
-          '<li>Writes the full requirements set: BRD, FRD, SRS, RTM, user stories, acceptance criteria, functional specifications and process workflows.</li>' +
-          '<li>Defines business requirements for <strong>GIS workflows, BharatKosh payment, eSign, role-based access, APIs, workflow automation and legacy data migration</strong>.</li>' +
-          '<li>Leads UAT planning, defect triage, release validation and stakeholder sign-off; produces wireframes (Figma), workflows (Visio), SOPs and user manuals.</li>' +
+          '<li>Own business analysis and product delivery across <strong>10+ workflow modules</strong> of the Rajmarg Pravesh portal, from requirement discovery to UAT, production release and post-production support.</li>' +
+          '<li>Write the full requirements set: BRD, FRD, SRS, RTM, user stories, acceptance criteria, functional specifications and process workflows.</li>' +
+          '<li>Define business requirements for <strong>GIS workflows, BharatKosh payment, eSign, role-based access, APIs, workflow automation and legacy data migration</strong>.</li>' +
+          '<li>Lead UAT planning, defect triage, release validation and stakeholder sign-off; produce wireframes (Figma), workflows (Visio), SOPs and user manuals.</li>' +
           '<li>Before that: four years on a <strong>Healthcare Management System</strong> (Power BI and SQL dashboards, workshops, training), then ATS and VMS platforms, then business development analysis.</li>' +
         '</ol>' +
       '</section>' +
 
-      '<section class="section" aria-labelledby="cap-h"><div class="section-head"><div class="stack"><p class="kicker"><span class="km">km 2+600</span> Strongest capabilities</p><h2 id="cap-h">Where the evidence is strongest</h2></div><p class="muted">Each capability links to the skill explanation, a sample artifact and the case study where it applies.</p></div>' +
+      '<section data-node aria-labelledby="how-h">' +
+        '<div class="h-head"><p class="kicker">02 · How I work</p><h2 id="how-h">One request, followed all the way to release.</h2><p>The gold thread on the left is the same idea: every step stays connected to the one before it.</p></div>' +
+        '<div class="h-cards">' +
+          '<div class="h-card"><span class="n">01 Discover</span><h3>Find the real problem</h3><p>Separate symptoms, causes and constraints before anyone proposes a feature.</p><span class="out">→ Problem statement · stakeholder map</span></div>' +
+          '<div class="h-card"><span class="n">02 Specify</span><h3>Write what to build</h3><p>Numbered, testable requirements and the business rules behind them.</p><span class="out">→ BRD · FRD · SRS</span></div>' +
+          '<div class="h-card"><span class="n">03 Deliver</span><h3>Keep the team moving</h3><p>Stories with acceptance criteria, refined and prioritised with stakeholders.</p><span class="out">→ Backlog · user stories</span></div>' +
+          '<div class="h-card"><span class="n">04 Validate</span><h3>Prove it works</h3><p>Trace every requirement to a test, run UAT with real users, get sign-off.</p><span class="out">→ RTM · UAT · release notes</span></div>' +
+        '</div>' +
+        '<div class="panel stack"><p class="kicker">Follow one requirement ' + badge('illustrative') + '</p><div class="chain" role="group" aria-label="Traceability chain">' + CHAIN.map(function (c, i) {
+          return (i ? '<span class="arrow" aria-hidden="true">→</span>' : '') + '<button type="button" data-act="chain" data-i="' + i + '" aria-pressed="' + (i === 0) + '">' + c[0] + '</button>';
+        }).join('') + '</div><div class="chain-out" id="chain-out" aria-live="polite"></div></div>' +
+      '</section>' +
+
+      '<section data-node aria-labelledby="proof-h">' +
+        '<div class="h-head"><p class="kicker">03 · Proof, not claims</p><h2 id="proof-h">What my acceptance criteria look like.</h2></div>' +
+        '<div class="h-proof"><div class="h-card">' + badge('illustrative') + '<p class="h-story"><b>As a</b> reviewing officer, <b>I want</b> to raise a clarification with a specific reason, <b>so that</b> the applicant knows exactly what to fix.</p><div class="btn-row"><button class="btn ghost" type="button" data-act="h-ac" aria-expanded="false" aria-controls="h-ac">Show acceptance criteria</button><a class="btn ghost" href="#studio.story">Full story and wireframe</a></div></div>' +
+        '<ul class="h-ac" id="h-ac" hidden>' +
+          '<li><b>Given</b> an application assigned to me, <b>when</b> I raise a clarification with a reason, <b>then</b> the applicant is notified and the authority clock pauses.</li>' +
+          '<li><b>Given</b> no reason is selected, <b>then</b> I see "Select at least one reason" and nothing is saved.</li>' +
+          '<li><b>Given</b> I am not the assigned reviewer, <b>then</b> the action is not available.</li>' +
+          '<li><b>Given</b> the applicant responds, <b>then</b> the file returns to my queue marked "changed".</li></ul></div>' +
+      '</section>' +
+
+      '<section id="work" data-node aria-labelledby="work-h">' +
+        '<div class="h-head"><p class="kicker">04 · Case studies</p><h2 id="work-h">Complex systems. Clearer delivery.</h2><p>Each case study is told in five short chapters: the problem, discovery, the solution, quality and delivery, and results and lessons. It includes workflows, requirements, user stories, test scenarios and a sample backlog.</p></div>' +
+        '<div class="h-cases">' + PF.cases.map(function (c) {
+          return '<a class="h-case" href="#case.' + c.id + '"><span class="n">' + esc(c.domain) + ' · ' + c.period + '</span><h3>' + esc(c.name) + '</h3><p>' + esc(c.lede) + '</p><div class="inside">' + (CASE_INSIDE[c.id] || []).map(function (x) { return '<span>' + x + '</span>'; }).join('') + '</div><span class="go">Read the case study →</span></a>';
+        }).join('') + '</div>' +
+      '</section>' +
+
+      '<section data-node aria-labelledby="cap-h">' +
+        '<div class="h-head"><p class="kicker">05 · Skills, with evidence</p><h2 id="cap-h">Where the evidence is strongest.</h2><p>Each capability links to the skill explained in depth, a sample artifact and the case study where it applies.</p></div>' +
         '<div class="grid g3">' + CAPS.map(function (c) {
           return '<article class="card cap"><div class="meta">' + badge('source') + '</div><h3>' + c.t + '</h3><p class="small muted">' + c.d + '</p><div class="chips">' + c.s.map(skillLink).join('') + '</div><div class="card-foot"><a href="#studio.' + c.a + '">Artifact: ' + esc(art(c.a).name) + '</a><a href="#case.' + c.c + '">' + esc(cs(c.c).short) + ' case</a></div></article>';
-        }).join('') + '</div></section>' +
-
-      '<section class="section" aria-labelledby="chain-h"><div class="section-head"><div class="stack"><p class="kicker"><span class="km">km 4+100</span> How the work connects</p><h2 id="chain-h">From objective to release, one thread</h2></div><p class="muted">Select a link in the chain. This is how one requirement is traced through every deliverable. ' + badge('illustrative') + '</p></div>' +
-        '<div class="panel stack"><div class="chain" role="group" aria-label="Traceability chain">' + CHAIN.map(function (c, i) {
-          return (i ? '<span class="arrow" aria-hidden="true">→</span>' : '') + '<button type="button" data-act="chain" data-i="' + i + '" aria-pressed="' + (i === 0) + '">' + c[0] + '</button>';
-        }).join('') + '</div><div class="chain-out" id="chain-out" aria-live="polite"></div></div></section>' +
-
-      '<section class="section" aria-labelledby="proj-h"><div class="section-head"><div class="stack"><p class="kicker"><span class="km">km 5+800</span> Flagship projects</p><h2 id="proj-h">Case studies</h2></div><p class="muted">Each case has 20 sections and labels every claim: résumé-backed, owner-described, illustrative or recommended.</p></div>' +
-        '<div class="grid g2">' + PF.cases.map(caseCard).join('') + '</div></section>' +
-
-      '<section class="section" aria-labelledby="exp-h"><div class="section-head"><div class="stack"><p class="kicker"><span class="km">km 7+300</span> Experience</p><h2 id="exp-h">Career route</h2></div></div>' +
-        '<div class="timeline">' +
-          tl('Apr 2025 – present', 'Business Analyst · Ascra Technologies LLP', 'Rajmarg Pravesh Portal, NHAI DataLake 3.0. BA and product ownership support for DIC (MeitY) on MoRTH and NHAI initiatives; 10+ workflow modules; UAT, triage, release readiness.', ['rajmarg', 'datalake']) +
-          tl('Apr 2021 – Apr 2025', 'Business Analyst · Intechglobe Pvt. Ltd.', 'Healthcare Management System. End-to-end BA; Confluence and Visio documentation; Scrum delivery; Figma, Power BI, SQL and Excel; workshops, demos, training, change management.', ['healthcare']) +
-          tl('Feb 2020 – Mar 2021', 'Business Analyst · Coditro LLP', 'ATS and VMS. BRD, FRD, SRS, RTM; stories and acceptance criteria; refinement, sprint planning, GAP analysis, JAD sessions, defect tracking; Figma and Visio.', ['ats-vms']) +
-          tl('Mar 2019 – Feb 2020', 'Business Development Analyst · RTL Technologies', 'Client requirement analysis, proposals, requirement documents and project reports; market and competitor research; client presentations.', []) +
-        '</div></section>' +
-
-      '<section class="section" aria-labelledby="deep-h"><div class="section-head"><div class="stack"><p class="kicker"><span class="km">km 9+000</span> Deep-dive view</p><h2 id="deep-h">For a 15 to 30 minute review</h2></div></div>' +
+        }).join('') + '</div>' +
         '<div class="grid g4">' +
-          deep('#skills', 'Skills Library', counts.s + ' skills, each with method, scenario, artifact, mistakes, collaboration, interview question and model answer.') +
-          deep('#studio', 'Artifact Studio', counts.a + ' sample deliverables, from BRD to release checklist, with business, functional, technical and testing views.') +
-          deep('#scenarios', 'Decision scenarios', counts.sc + ' interactive situations. Choose an option to see reasoning, rules, UX, workflow, criteria and tests.') +
-          deep('#evidence', 'Evidence map', 'Every skill mapped to a project, an artifact, a case study and an interview question, with its evidence status.') +
-        '</div></section>' +
+          deep('#skills', 'Skills Library', counts.s + ' skills, each with method, example, artifact, collaboration and interview preparation.') +
+          deep('#studio', 'Artifact Studio', counts.a + ' sample deliverables, from BRD to release checklist.') +
+          deep('#scenarios', 'Decision scenarios', counts.sc + ' situations. Choose an option and see the reasoning.') +
+          deep('#evidence', 'Evidence map', 'Every skill mapped to a project, artifact and interview question.') +
+        '</div>' +
+      '</section>' +
 
-      '<section class="section" aria-labelledby="leg-h"><div class="stack"><p class="kicker">Reading the labels</p><h2 id="leg-h">How claims are marked</h2></div>' +
+      '<section data-node aria-labelledby="exp-h">' +
+        '<div class="h-head"><p class="kicker">06 · Experience</p><h2 id="exp-h">Seven years, four teams.</h2></div>' +
+        '<div class="h-exp">' +
+          '<div><span class="when">Apr 2025 – now</span><div><h3>Ascra Technologies · Business Analyst</h3><p>Rajmarg Pravesh Portal and NHAI DataLake 3.0 for Digital India Corporation (MeitY): 10+ workflow modules, integrations, UAT, triage, release readiness.</p><div class="chips">' + caseLink('rajmarg') + caseLink('datalake') + '</div></div></div>' +
+          '<div><span class="when">Apr 2021 – Apr 2025</span><div><h3>Intechglobe · Business Analyst</h3><p>Healthcare Management System: end-to-end BA, Confluence and Visio documentation, Scrum delivery, Power BI and SQL, workshops and training.</p><div class="chips">' + caseLink('healthcare') + '</div></div></div>' +
+          '<div><span class="when">Feb 2020 – Mar 2021</span><div><h3>Coditro · Business Analyst</h3><p>ATS and VMS: BRD, FRD, SRS, RTM; stories and acceptance criteria; JAD sessions, gap analysis, defect tracking.</p><div class="chips">' + caseLink('ats-vms') + '</div></div></div>' +
+          '<div><span class="when">Mar 2019 – Feb 2020</span><div><h3>RTL Technologies · Business Development Analyst</h3><p>Client requirement analysis, proposals, market and competitor research, client presentations.</p></div></div>' +
+        '</div>' +
+        '<p class="small muted">M.S. Data Science, Chandigarh University · B.Tech Information Technology, AKTU · English and Hindi</p>' +
+      '</section>' +
+
+      '<section data-node aria-labelledby="leg-h">' +
+        '<div class="h-head"><p class="kicker">How claims are marked</p><h2 id="leg-h" style="font-size:var(--t-xl)">Honest by design.</h2></div>' +
         '<div class="legend panel">' +
           '<div>' + badge('source') + '<p class="small">Stated in the résumé. Safe to discuss as personal experience.</p></div>' +
-          '<div>' + badge('brief') + '<p class="small">From the owner\'s own project description (for example, the Rajmarg Pravesh lifecycle), beyond what the résumé lists.</p></div>' +
+          '<div>' + badge('brief') + '<p class="small">From my own project description, beyond what the résumé lists.</p></div>' +
           '<div>' + badge('illustrative') + '<p class="small">A realistic example written for this portfolio. Not a project document, incident or result.</p></div>' +
-          '<div>' + badge('recommended') + '<p class="small">How the work should be done; practice capability rather than a documented project claim.</p></div>' +
-        '</div></section>' +
+          '<div>' + badge('recommended') + '<p class="small">How the work should be done; practice capability rather than a documented claim.</p></div>' +
+        '</div>' +
+      '</section>' +
 
-      '<section class="section" id="contact" aria-labelledby="ct-h"><div class="stack"><p class="kicker"><span class="km">km 12+000</span> Contact</p><h2 id="ct-h">Talk about a Senior BA, Product Owner or Product Analyst role</h2></div>' +
-        '<div class="contact">' +
-          '<div class="panel stack"><h3>Email</h3><div class="copy-line"><code id="email-text">ba.abhiy@gmail.com</code><button class="btn ghost" type="button" data-act="copy" data-copy="ba.abhiy@gmail.com">Copy</button><span class="small muted" id="copy-status" aria-live="polite"></span></div><a href="mailto:ba.abhiy@gmail.com">Open in your email app</a></div>' +
-          '<div class="panel stack"><h3>LinkedIn</h3><p class="small muted">linkedin.com/in/abhiyknp</p><a class="btn" href="https://www.linkedin.com/in/abhiyknp" target="_blank" rel="noopener">View LinkedIn profile</a></div>' +
-          '<div class="panel stack"><h3>Start anywhere</h3><p class="small muted">Press <span class="kbd">/</span> to search every skill, artifact, case study and scenario.</p><button class="btn ghost" type="button" data-act="palette">Search the knowledge base</button></div>' +
-        '</div></section>' +
+      '<section class="h-contact" id="contact" data-node aria-labelledby="ct-h">' +
+        '<p class="kicker">07 · Let\'s talk</p><h2 id="ct-h">Clear requirements. Better delivery.</h2>' +
+        '<p class="muted" style="max-width:56ch">Open to Senior Business Analyst, Product Owner and Product Analyst roles.</p>' +
+        '<div class="copy-line" style="justify-content:center"><code id="email-text">ba.abhiy@gmail.com</code><button class="btn ghost" type="button" data-act="copy" data-copy="ba.abhiy@gmail.com">Copy email</button><span class="small muted" id="copy-status" aria-live="polite"></span></div>' +
+        '<div class="btn-row" style="justify-content:center"><a class="btn" href="mailto:ba.abhiy@gmail.com">Email me</a><a class="btn ghost" href="https://www.linkedin.com/in/abhiyknp" target="_blank" rel="noopener">LinkedIn ↗</a><button class="btn ghost" type="button" data-act="palette">Search everything</button></div>' +
+      '</section>' +
       '</div></div>';
   }
   function tl(when, title, body, cases) {
@@ -180,54 +219,67 @@
   }
 
   /* ---------------- Skill detail ---------------- */
+  function sec(n, title, body, ev, anchor) {
+    return '<section class="sec"' + (anchor ? ' id="' + anchor + '"' : '') + '><div class="sec-h">' + (n ? '<span class="num">' + (n < 10 ? '0' + n : n) + '</span>' : '') + '<h3>' + title + '</h3>' + (ev ? badge(ev) : '') + '</div><div class="prose">' + body + '</div></section>';
+  }
   function skillView(id) {
     var s = skill(id); if (!s) return notFound();
     var idx = PF.skills.indexOf(s), prev = PF.skills[idx - 1], next = PF.skills[idx + 1];
     var a = art(s.artifact);
-    var titles = ['Definition', 'Why it matters', 'When to use it, and when not to', 'Step-by-step method', 'Realistic business scenario', 'Enterprise software example', 'Sample inputs and outputs', 'Common mistakes and how to avoid them', 'Collaboration', 'Relevant tools', 'Example artifact', 'Related skills and dependencies', 'Interview questions', 'Model answer', 'Explaining it without overstating'];
-    var bodies = [
-      '<p>' + s.def + '</p>',
-      '<p>' + s.why + '</p>',
-      '<div class="two"><div><h4>Use it when</h4>' + list(s.use) + '</div><div><h4>Avoid or adapt when</h4>' + list(s.avoid) + '</div></div>',
-      '<ol>' + s.steps.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ol>',
-      '<p>' + s.scenario + '</p>',
-      '<p>' + s.enterprise + '</p>',
-      '<div class="two"><div><h4>Inputs</h4>' + list(s.inputs) + '</div><div><h4>Outputs</h4>' + list(s.outputs) + '</div></div>',
-      '<div class="mistakes">' + s.mistakes.map(function (m) { return '<div><p class="m">' + m[0] + '</p><p class="f">' + m[1] + '</p></div>'; }).join('') + '</div>',
-      '<dl class="collab">' + [['Business stakeholders', 'biz'], ['Designers', 'design'], ['Developers', 'dev'], ['Testers', 'qa'], ['Product owner / manager', 'pm']].map(function (r) { return s.collab[r[1]] && s.collab[r[1]] !== '-' ? '<div><dt>' + r[0] + '</dt><dd>' + s.collab[r[1]] + '</dd></div>' : ''; }).join('') + '</dl>',
-      '<div class="chips">' + s.tools.map(function (t) { return '<span class="chip" style="cursor:default">' + esc(t) + '</span>'; }).join('') + '</div>',
-      a ? '<p>' + esc(s.artifactNote) + '</p><p class="small muted"><strong>' + esc(a.name) + '</strong>: ' + esc(a.purpose) + '</p><div class="btn-row"><button class="btn" type="button" data-act="artifact-preview" data-id="' + a.id + '">Preview artifact</button><a class="btn ghost" href="#studio.' + a.id + '">Open in Artifact Studio</a></div>' : '',
-      '<div class="chips">' + s.related.map(skillLink).join('') + '</div><p class="small muted">Case studies: </p><div class="chips">' + s.cases.map(caseLink).join('') + '</div>',
-      '<div class="qa"><p class="q">' + esc(s.q.q) + '</p></div>' + (s.more.length ? '<p class="small muted">Follow-up questions to prepare:</p>' + list(s.more.map(esc)) : ''),
-      '<div class="qa"><p class="q">"' + esc(s.q.q) + '"</p><p>' + esc(s.q.a) + '</p></div>',
-      '<p>' + esc(s.honest) + '</p><p class="small muted">Evidence note: ' + esc(s.evNote) + '</p>'
+    var T = [
+      ['Understand', [
+        ['Definition', '<p>' + s.def + '</p>'],
+        ['Why it matters', '<p>' + s.why + '</p>'],
+        ['When to use it, and when not to', '<div class="two"><div><h4>Use it when</h4>' + list(s.use) + '</div><div><h4>Avoid or adapt when</h4>' + list(s.avoid) + '</div></div>']]],
+      ['How I do it', [
+        ['Step-by-step method', '<ol>' + s.steps.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ol>', 'recommended'],
+        ['Realistic business scenario', '<p>' + s.scenario + '</p>', 'illustrative'],
+        ['Enterprise software example', '<p>' + s.enterprise + '</p>', 'illustrative'],
+        ['Sample inputs and outputs', '<div class="two"><div><h4>Inputs</h4>' + list(s.inputs) + '</div><div><h4>Outputs</h4>' + list(s.outputs) + '</div></div>']]],
+      ['Proof and practice', [
+        ['Example artifact', a ? '<p>' + esc(s.artifactNote) + '</p><p class="small muted"><strong>' + esc(a.name) + '</strong>: ' + esc(a.purpose) + '</p><div class="btn-row"><button class="btn" type="button" data-act="artifact-preview" data-id="' + a.id + '">Preview artifact</button><a class="btn ghost" href="#studio.' + a.id + '">Open in Artifact Studio</a></div>' : '', 'illustrative'],
+        ['Common mistakes and how to avoid them', '<div class="mistakes">' + s.mistakes.map(function (m) { return '<div><p class="m">' + m[0] + '</p><p class="f">' + m[1] + '</p></div>'; }).join('') + '</div>'],
+        ['Collaboration', '<dl class="collab">' + [['Business stakeholders', 'biz'], ['Designers', 'design'], ['Developers', 'dev'], ['Testers', 'qa'], ['Product owner / manager', 'pm']].map(function (r) { return s.collab[r[1]] && s.collab[r[1]] !== '-' ? '<div><dt>' + r[0] + '</dt><dd>' + s.collab[r[1]] + '</dd></div>' : ''; }).join('') + '</dl>'],
+        ['Relevant tools', '<div class="chips">' + s.tools.map(function (t) { return '<span class="chip" style="cursor:default">' + esc(t) + '</span>'; }).join('') + '</div>'],
+        ['Related skills and case studies', '<div class="chips">' + s.related.map(skillLink).join('') + '</div><div class="chips">' + s.cases.map(caseLink).join('') + '</div>']]],
+      ['Interview', [
+        ['Interview questions', '<div class="qa"><p class="q">' + esc(s.q.q) + '</p></div>' + (s.more.length ? '<p class="small muted">Follow-up questions to prepare:</p>' + list(s.more.map(esc)) : '')],
+        ['Model answer', '<div class="qa"><p class="q">"' + esc(s.q.q) + '"</p><p>' + esc(s.q.a) + '</p></div>'],
+        ['Explaining it without overstating', '<p>' + esc(s.honest) + '</p><p class="small muted">Evidence note: ' + esc(s.evNote) + '</p>']]]
     ];
-    var evs = [null, null, null, 'recommended', 'illustrative', 'illustrative', null, null, null, null, 'illustrative', null, null, null, null];
-    var openSet = [0, 1, 2];
-    var toc = titles.map(function (t, i) { return '<a href="#skill.' + s.id + '" data-act="jump" data-target="sk-' + i + '">' + (i + 1) + '. ' + t + '</a>'; }).join('');
+    var n = 0;
+    var panels = T.map(function (tab) { return [tab[0], '<div class="secs">' + tab[1].map(function (x) { n++; return sec(n, x[0], x[1], x[2]); }).join('') + '</div>']; });
     return '<div class="wrap page"><nav class="crumbs" aria-label="Breadcrumb"><a href="#skills">Skills Library</a><span aria-hidden="true">/</span><span>' + AREAS[s.area] + '</span></nav>' +
-      '<header class="page-head"><p class="kicker"><span class="area-letter">' + s.area + '</span>' + AREAS[s.area] + '</p><h1>' + esc(s.name) + '</h1><p class="lede">' + esc(s.sum) + '</p>' +
+      '<header class="page-head"><p class="kicker"><span class="area-letter">' + s.area + '</span>' + AREAS[s.area] + '</p><h1 style="font-size:clamp(2.2rem,5.4vw,3.8rem)">' + esc(s.name) + '</h1><p class="lede">' + esc(s.sum) + '</p>' +
         '<div class="illus-flag">' + badge(s.ev) + '<span class="small muted">' + esc(s.evNote) + '</span></div></header>' +
-      '<div class="detail"><div class="stack"><div class="tool-row"><p class="small muted">Sections 1 to 3 are open. Expand the rest for method, examples, artifacts and interview preparation.</p><button class="btn ghost" type="button" data-act="expand-all">Expand all</button></div>' +
-        '<div class="blocks">' + titles.map(function (t, i) { return block(i + 1, t, bodies[i], openSet.indexOf(i) > -1, evs[i], 'sk-' + i); }).join('') + '</div>' +
-        '<nav class="pager" aria-label="More skills">' + (prev ? '<a class="btn ghost" href="#skill.' + prev.id + '">← ' + esc(prev.name) + '</a>' : '<span></span>') + (next ? '<a class="btn ghost" href="#skill.' + next.id + '">' + esc(next.name) + ' →</a>' : '') + '</nav></div>' +
-        '<aside class="toc" aria-label="On this page"><span class="toc-title">On this page</span>' + toc + '</aside></div></div>';
+      '<div class="skill-tabs">' + tabs('sk-' + s.id, panels) + '</div>' +
+      '<nav class="pager" aria-label="More skills">' + (prev ? '<a class="btn ghost" href="#skill.' + prev.id + '">← ' + esc(prev.name) + '</a>' : '<span></span>') + (next ? '<a class="btn ghost" href="#skill.' + next.id + '">' + esc(next.name) + ' →</a>' : '') + '</nav></div>';
   }
 
   /* ---------------- Case studies ---------------- */
+  var CHAPTERS = [
+    ['The problem', 'Context, people, my role, goals', [0, 1, 2, 3]],
+    ['Discovery', 'Before, pain points, how I found out', [4, 5, 6]],
+    ['The solution', 'Requirements, stories, workflow, UX, data', [7, 8, 9, 10, 11]],
+    ['Quality and delivery', 'Edge cases, UAT, risks, backlog, release', [12, 13, 14, 15, 16, 17]],
+    ['Results and lessons', 'What to measure, what I learned', [18, 19]]
+  ];
   function casesView() {
-    return '<div class="wrap page"><header class="page-head"><p class="kicker">Deep-dive · Case studies</p><h1>Case studies</h1><p class="lede">Four projects from the résumé, each explored in 20 sections. Labels show what is documented and what is a realistic illustration.</p></header><div class="grid g2">' + PF.cases.map(caseCard).join('') + '</div></div>';
+    return '<div class="wrap page"><header class="page-head"><p class="kicker">Case studies</p><h1 style="font-size:clamp(2.4rem,6vw,4.4rem)">Complex systems. Clearer delivery.</h1><p class="lede">Four projects from my résumé, each told in five chapters with workflows, requirements, stories, tests and backlog examples. Labels show what is documented and what is a realistic illustration.</p></header><div class="h-cases">' +
+      PF.cases.map(function (c) { return '<a class="h-case" href="#case.' + c.id + '"><span class="n">' + esc(c.domain) + ' · ' + c.period + '</span><h3>' + esc(c.name) + '</h3><p>' + esc(c.lede) + '</p><div class="inside">' + (CASE_INSIDE[c.id] || []).map(function (x) { return '<span>' + x + '</span>'; }).join('') + '</div><span class="go">Read the case study →</span></a>'; }).join('') + '</div></div>';
   }
   function caseView(id) {
     var c = cs(id); if (!c) return notFound();
-    var toc = PF.caseTitles.map(function (t, i) { return '<a href="#case.' + c.id + '" data-act="jump" data-target="cs-' + i + '">' + (i + 1) + '. ' + t + '</a>'; }).join('');
+    var panels = CHAPTERS.map(function (ch, ci) {
+      var body = '<div class="secs">' + ch[2].map(function (k) { return sec(k + 1, PF.caseTitles[k], c.sections[k].html, c.sections[k].ev, 'cs-' + k); }).join('') + '</div>' +
+        '<div class="chap-foot"><span>Chapter ' + (ci + 1) + ' of ' + CHAPTERS.length + '</span>' + (CHAPTERS[ci + 1] ? '<button class="btn" type="button" data-act="next-chapter" data-i="' + (ci + 1) + '">Next: ' + CHAPTERS[ci + 1][0] + ' →</button>' : '<a class="btn ghost" href="#cases">All case studies</a>') + '</div>';
+      return ['<b>Chapter ' + (ci + 1) + '</b><span>' + ch[0] + '</span><small>' + ch[1] + '</small>', body];
+    });
     return '<div class="wrap page"><nav class="crumbs" aria-label="Breadcrumb"><a href="#cases">Case studies</a><span aria-hidden="true">/</span><span>' + esc(c.short) + '</span></nav>' +
-      '<header class="page-head"><p class="kicker">' + esc(c.domain) + '</p><h1>' + esc(c.name) + '</h1><p class="lede">' + esc(c.lede) + '</p><p class="small muted">' + esc(c.org) + ' · ' + c.period + '</p></header>' +
-      '<section class="panel stack" aria-label="Evidence summary"><h2 style="font-size:var(--t-lg)">What the sources say</h2><div class="facts">' + c.facts.map(function (f) { return '<div><span class="k">' + esc(f[0]) + '</span><span>' + esc(f[1]) + '</span>' + badge(f[2]) + '</div>'; }).join('') + '</div>' +
-        '<div class="two"><div><h4 class="small muted">Skills applied</h4><div class="chips">' + c.skills.map(skillLink).join('') + '</div></div><div><h4 class="small muted">Artifacts</h4><div class="chips">' + c.artifacts.map(artLink).join('') + '</div></div></div></section>' +
-      '<div class="detail"><div class="stack"><div class="tool-row"><p class="small muted">Sections 1 to 3 are open; the rest expand on demand.</p><button class="btn ghost" type="button" data-act="expand-all">Expand all</button></div><div class="blocks">' +
-        c.sections.map(function (s, i) { return block(i + 1, PF.caseTitles[i], s.html, i < 3, s.ev, 'cs-' + i); }).join('') +
-      '</div></div><aside class="toc" aria-label="Sections"><span class="toc-title">20 sections</span>' + toc + '</aside></div></div>';
+      '<header class="page-head"><p class="kicker">' + esc(c.domain) + '</p><h1 style="font-size:clamp(2.4rem,6vw,4.6rem)">' + esc(c.name) + '</h1><p class="lede">' + esc(c.lede) + '</p><p class="small muted">' + esc(c.org) + ' · ' + c.period + '</p></header>' +
+      '<section class="panel stack" aria-label="At a glance"><p class="kicker">At a glance · what the sources say</p><div class="facts">' + c.facts.map(function (f) { return '<div><span class="k">' + esc(f[0]) + '</span><span>' + esc(f[1]) + '</span>' + badge(f[2]) + '</div>'; }).join('') + '</div></section>' +
+      '<div class="chapters" id="chapters">' + tabsHtml('ch-' + c.id, panels) + '</div>' +
+      '<section class="panel stack" aria-label="Skills and artifacts"><p class="kicker">In this case study</p><div class="two"><div><h4 class="small muted">Skills applied (' + c.skills.length + ')</h4><div class="chips">' + c.skills.map(skillLink).join('') + '</div></div><div><h4 class="small muted">Sample artifacts (' + c.artifacts.length + ')</h4><div class="chips">' + c.artifacts.map(artLink).join('') + '</div></div></div></section></div>';
   }
 
   /* ---------------- Artifact Studio ---------------- */
@@ -331,8 +383,9 @@
     window.PFW.hydrate(main); hydrateTabs(main);
     if (view === 'skills') { drawLib(); }
     if (view === 'evidence') { drawEvidence(); }
-    if (view === 'home') { chain(0); if (window.PFIntro) window.PFIntro.mount(document.getElementById('intro')); }
-    else if (window.PFIntro) window.PFIntro.unmount();
+    if (stopIntro) { stopIntro(); stopIntro = null; }
+    if (view === 'home') { chain(0); mountIntro(); }
+    layoutThread();
     closeMenu();
     if (current !== h) { window.scrollTo(0, 0); main.focus({ preventScroll: true }); }
     var anchor = decodeURIComponent(location.hash.slice(1));
@@ -340,6 +393,36 @@
     current = h;
     onScroll();
     document.dispatchEvent(new CustomEvent('pf:route', { detail: { view: view } }));
+  }
+
+  /* Home: thread intro and the gold thread that runs down the overview. */
+  var stopIntro = null, threadLen = 0;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  function setTb() { var hd = document.querySelector('.site-header'); document.documentElement.style.setProperty('--tb', (hd ? hd.offsetHeight : 64) + 'px'); }
+  function mountIntro() {
+    var host = document.getElementById('intro');
+    if (!host || !window.PFIntros) return;
+    host.classList.toggle('i-static', reduceMotion.matches);
+    host.innerHTML = '<section class="i-sec"><div class="i-stage" role="img" aria-label="Animated introduction: one question becomes a decision, three roles, a clarification loop and one agreed solution, then underlines my name."><button class="i-skip" type="button" data-act="skip-intro">Skip intro</button></div></section>';
+    stopIntro = window.PFIntros.thread(host.querySelector('.i-sec'));
+  }
+  function layoutThread() {
+    var home = document.getElementById('home-main'); if (!home) { threadLen = 0; return; }
+    var svg = home.querySelector('.home-thread'), H = home.offsetHeight;
+    svg.setAttribute('viewBox', '0 0 24 ' + H); svg.setAttribute('height', H); svg.style.height = H + 'px';
+    var seg = (H - 80) / 14, d = 'M12 0 V40 ';
+    for (var i = 0; i < 14; i++) { var y = 40 + seg * (i + 1); d += 'C ' + (i % 2 ? 2 : 22) + ' ' + (y - seg * 0.66).toFixed(1) + ', ' + (i % 2 ? 22 : 2) + ' ' + (y - seg * 0.33).toFixed(1) + ', 12 ' + y.toFixed(1) + ' '; }
+    svg.querySelectorAll('path').forEach(function (p) { p.setAttribute('d', d); });
+    var fg = svg.querySelector('.t-fg'); threadLen = fg.getTotalLength(); fg.style.strokeDasharray = threadLen;
+    home.querySelectorAll('.node-dot').forEach(function (n) { n.remove(); });
+    home.querySelectorAll('[data-node]').forEach(function (sct) { var dot = document.createElement('span'); dot.className = 'node-dot'; dot.style.top = (sct.offsetTop + 64) + 'px'; home.appendChild(dot); sct.__dot = dot; });
+    drawThread();
+  }
+  function drawThread() {
+    var home = document.getElementById('home-main'); if (!home || !threadLen) return;
+    var r = home.getBoundingClientRect(), reach = innerHeight * 0.62 - r.top, p = Math.max(0, Math.min(1, reach / home.offsetHeight));
+    home.querySelector('.t-fg').style.strokeDashoffset = reduceMotion.matches ? 0 : (threadLen * (1 - p)).toFixed(1);
+    home.querySelectorAll('[data-node]').forEach(function (sct) { if (sct.__dot) sct.__dot.classList.toggle('on', reduceMotion.matches || sct.offsetTop + 64 < reach); });
   }
 
   function wrapTables(root) {
@@ -433,7 +516,7 @@
   function closeMenu() { nav.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); }
   function themeCycle() {
     var root = document.documentElement, cur = root.getAttribute('data-theme');
-    var dark = cur ? cur === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var dark = cur !== 'light';
     var nextT = dark ? 'light' : 'dark';
     root.setAttribute('data-theme', nextT);
     try { localStorage.setItem('pf-theme', nextT); } catch (e) {}
@@ -455,7 +538,9 @@
       case 'goto': var el = document.getElementById(t.getAttribute('data-target')); if (el) { el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); } break;
       case 'jump': e.preventDefault(); var b = document.getElementById(t.getAttribute('data-target')); if (b) { b.open = true; b.scrollIntoView(); b.querySelector('summary').focus({ preventScroll: true }); } break;
       case 'chain': chain(+t.getAttribute('data-i')); break;
-      case 'skip-intro': var hero = document.getElementById('hero'); if (hero) { window.scrollTo(0, hero.getBoundingClientRect().top + scrollY - 70); var h1 = document.getElementById('h-title'); h1.setAttribute('tabindex', '-1'); h1.focus({ preventScroll: true }); } break;
+      case 'skip-intro': var hero = document.getElementById('hero'); if (hero) { window.scrollTo(0, hero.getBoundingClientRect().top + scrollY - (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--tb')) || 64)); var h1 = document.getElementById('h-title'); h1.setAttribute('tabindex', '-1'); h1.focus({ preventScroll: true }); } break;
+      case 'h-ac': var ul = document.getElementById('h-ac'), open = ul.hidden; ul.hidden = !open; t.setAttribute('aria-expanded', String(open)); t.textContent = open ? 'Hide acceptance criteria' : 'Show acceptance criteria'; break;
+      case 'next-chapter': var tb2 = document.querySelectorAll('#chapters [role="tab"]')[+t.getAttribute('data-i')]; if (tb2) { tb2.click(); document.getElementById('chapters').scrollIntoView(); tb2.focus({ preventScroll: true }); } break;
       case 'expand-all': var blocks = main.querySelectorAll('.blocks > details'), anyClosed = Array.prototype.some.call(blocks, function (d) { return !d.open; }); blocks.forEach(function (d) { d.open = anyClosed; }); t.textContent = anyClosed ? 'Collapse all' : 'Expand all'; break;
       case 'artifact-preview': artifactPreview(t.getAttribute('data-id')); break;
       case 'opt': showOption(t.getAttribute('data-sc'), t.getAttribute('data-o')); break;
@@ -483,7 +568,7 @@
   var kmEl = document.getElementById('ch-km'), phEl = document.getElementById('ch-phase'), fillEl = document.getElementById('ch-fill'), sceneEl = document.querySelector('.scene'), ticking = false;
   var PHASES = ['Discover', 'Specify', 'Trace', 'Release'];
   /* Scroll offset where the pinned intro ends and the overview begins (0 when there is no animated intro). */
-  function introBase() { var el = document.getElementById('intro'); return el && !el.classList.contains('is-static') ? el.offsetTop + el.offsetHeight - innerHeight : 0; }
+  function introBase() { var el = document.getElementById('intro'); return el && !el.classList.contains('is-static') && !el.classList.contains('i-static') ? el.offsetTop + el.offsetHeight - innerHeight : 0; }
   window.PFIntroBase = introBase;
   function onScroll() {
     if (ticking) return; ticking = true;
@@ -498,6 +583,7 @@
       kmEl.textContent = 'km ' + whole + '+' + ('00' + m).slice(-3);
       phEl.textContent = PHASES[Math.min(3, Math.floor(p * 4))];
       fillEl.style.width = (p * 100).toFixed(1) + '%';
+      drawThread();
       if (document.body.getAttribute('data-route') === 'home') {
         var base = introBase(), past = scrollY - base;
         sceneEl.style.setProperty('--scene-o', past < 0 ? '0' : (Math.min(1, past / (innerHeight * 0.25) + 0.001) * (1 - 0.8 * Math.min(1, past / (innerHeight * 0.9)))).toFixed(3));
@@ -506,7 +592,8 @@
     });
   }
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll);
+  window.addEventListener('resize', function () { setTb(); layoutThread(); onScroll(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { setTb(); layoutThread(); });
 
   /* Static fallback illustration for no-WebGL / blocked CDN. Deterministic, decorative. */
   (function fallbackArt() {
@@ -518,5 +605,6 @@
     host.innerHTML = s + '</svg>';
   })();
 
+  setTb();
   route();
 })();

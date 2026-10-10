@@ -29,11 +29,11 @@ const go = async (pg, hash) => { await pg.evaluate((h) => { location.hash = h; }
     await pg.goto(URL + '#home'); await pg.waitForTimeout(800);
     log(tag, 'scene:', await pg.evaluate(() => document.documentElement.getAttribute('data-scene') || 'fallback'));
     await shot(pg, tag + '-home');
-    const ib = await pg.evaluate(() => { const el = document.getElementById('intro'); return { top: el.offsetTop, h: el.offsetHeight, ih: innerHeight, cards: el.querySelectorAll('.ic-card').length }; });
+    const ib = await pg.evaluate(() => { const el = document.getElementById('intro'); return { top: el.offsetTop, h: el.offsetHeight, ih: innerHeight, cards: el.querySelectorAll('.i3-p').length }; });
     await pg.evaluate(([y]) => window.scrollTo(0, y), [ib.top + 0.6 * (ib.h - ib.ih)]); await pg.waitForTimeout(900);
-    const is = await pg.evaluate(() => window.PFIntro.state());
-    log(tag, 'intro:', ib.cards, 'cards | progress at 60% scroll =', is.t.toFixed(2), '| trace caption visible:', await pg.evaluate(() => getComputedStyle(document.querySelectorAll('.ic-cap')[2]).visibility), '| chip hidden:', await pg.evaluate(() => document.getElementById('chainage').classList.contains('is-hidden')));
-    if (ib.cards !== 42 || Math.abs(is.t - 0.6) > 0.05) errs.push(`${tag} intro did not follow scroll`);
+    const drawn = await pg.evaluate(() => [...document.querySelectorAll('#intro .i3-p')].filter((p) => p.style.visibility === 'visible').length);
+    log(tag, 'thread intro:', ib.cards, 'paths |', drawn, 'drawn at 60% scroll | chip hidden:', await pg.evaluate(() => document.getElementById('chainage').classList.contains('is-hidden')));
+    if (ib.cards !== 11 || drawn < 6 || drawn > 10) errs.push(`${tag} intro did not follow scroll`);
     await shot(pg, tag + '-intro-trace');
     await pg.evaluate(() => window.scrollTo(0, 0)); await pg.waitForTimeout(100); await pg.click('[data-act="skip-intro"]'); await pg.waitForTimeout(300);
     log(tag, 'skip intro → hero top', await pg.evaluate(() => Math.round(document.getElementById('hero').getBoundingClientRect().top)));
@@ -58,17 +58,17 @@ const go = async (pg, hash) => { await pg.evaluate((h) => { location.hash = h; }
     await pg.fill('#lib-q', 'zzzz'); log(tag, 'empty state:', await pg.isVisible('.empty')); await pg.click('[data-act="lib-reset"]');
 
     const ids = await pg.evaluate(() => ({ s: PF.skills.map((x) => x.id), c: PF.cases.map((x) => x.id), a: PF.artifacts.map((x) => x.id), sc: PF.scenarios.map((x) => x.id) }));
-    for (const id of ids.s) { await go(pg, 'skill.' + id); const n = await pg.$$eval('.blocks > details', (d) => d.length); if (n !== 15) errs.push(`${tag} skill ${id} has ${n} sections`); await overflow(pg, tag, 'skill.' + id); }
-    for (const id of ids.c) { await go(pg, 'case.' + id); const n = await pg.$$eval('.blocks > details', (d) => d.length); if (n !== 20) errs.push(`${tag} case ${id} has ${n} sections`); await pg.click('[data-act="expand-all"]'); await overflow(pg, tag, 'case.' + id); }
+    for (const id of ids.s) { await go(pg, 'skill.' + id); const n = await pg.$$eval('.sec', (d) => d.length); if (n !== 15) errs.push(`${tag} skill ${id} has ${n} sections`); await overflow(pg, tag, 'skill.' + id); }
+    for (const id of ids.c) { await go(pg, 'case.' + id); const n = await pg.$$eval('.sec', (d) => d.length); if (n !== 20) errs.push(`${tag} case ${id} has ${n} sections`); for (const t of await pg.$$('#chapters [role="tab"]')) { await t.click(); await overflow(pg, tag, 'case.' + id + ' chapter'); } await overflow(pg, tag, 'case.' + id); }
     for (const id of ids.a) { await go(pg, 'studio.' + id); const tabs = await pg.$$('[role="tab"]'); for (const t of tabs) { await t.click(); } await overflow(pg, tag, 'studio.' + id); }
     for (const id of ids.sc) { await go(pg, 'scenario.' + id); const opts = await pg.$$('.opt'); for (const o of opts) await o.click(); await overflow(pg, tag, 'scenario.' + id); }
     log(tag, 'rendered', ids.s.length, 'skills,', ids.c.length, 'cases,', ids.a.length, 'artifacts,', ids.sc.length, 'scenarios');
 
-    await go(pg, 'skill.brd'); await pg.click('[data-act="expand-all"]'); log(tag, 'expand all open:', await pg.$$eval('.blocks > details[open]', (d) => d.length));
-    await pg.click('[data-act="artifact-preview"]'); log(tag, 'modal visible:', await pg.isVisible('#modal')); await shot(pg, tag + '-modal');
+    await go(pg, 'skill.brd'); await pg.click('.skill-tabs [role="tab"] >> nth=3'); log(tag, 'skill interview tab:', (await pg.textContent('.skill-tabs [role="tabpanel"]:not([hidden]) h3')).trim());
+    await pg.click('.skill-tabs [role="tab"] >> nth=2'); await pg.click('[data-act="artifact-preview"]'); log(tag, 'modal visible:', await pg.isVisible('#modal')); await shot(pg, tag + '-modal');
     await pg.keyboard.press('Escape'); log(tag, 'modal closed:', await pg.isHidden('#modal'));
 
-    await go(pg, 'case.rajmarg'); await pg.click('[data-act="expand-all"]'); await pg.click('[data-node="r9"]'); log(tag, 'flow detail:', (await pg.textContent('.flow-detail')).slice(0, 70)); await shot(pg, tag + '-case');
+    await go(pg, 'case.rajmarg'); await pg.click('[data-act="next-chapter"] >> nth=0'); log(tag, 'next chapter →', (await pg.textContent('#chapters [aria-selected="true"] span')).trim()); await pg.click('#chapters [role="tab"] >> nth=2'); await pg.click('[data-node="r9"]'); log(tag, 'flow detail:', (await pg.textContent('.flow-detail')).slice(0, 70)); await shot(pg, tag + '-case');
     await go(pg, 'studio.decision'); await pg.selectOption('select[data-k="c"]', 'Not eligible'); log(tag, 'decision:', (await pg.textContent('.outcome strong')));
     await go(pg, 'studio.kpi'); const before = await pg.textContent('.kpi-note'); await pg.check('.switch input >> nth=0'); log(tag, 'kpi toggle changes note:', before !== await pg.textContent('.kpi-note')); await shot(pg, tag + '-kpi');
     await go(pg, 'scenario.missing-info'); await pg.click('.opt >> nth=1'); await pg.click('#opt-out [role="tab"] >> nth=3'); log(tag, 'scenario tab:', (await pg.textContent('#opt-out [role="tabpanel"]:not([hidden])')).slice(0, 60)); await shot(pg, tag + '-scenario');
@@ -80,7 +80,7 @@ const go = async (pg, hash) => { await pg.evaluate((h) => { location.hash = h; }
     await pg.context().close();
   }
   { const pg = await page(b, { reduced: true, tag: 'reduced' }); await pg.goto(URL + '#home'); await pg.waitForTimeout(500); await pg.evaluate(() => window.scrollTo(0, 99999)); await pg.waitForTimeout(400);
-    log('reduced motion: scene', await pg.evaluate(() => document.documentElement.getAttribute('data-scene')), 'formation = target:', await pg.evaluate(() => window.__pfScene.formation === window.__pfScene.target)); log('reduced motion: intro storyboard', await pg.isVisible('.ic-board'), '| pinned stage present', await pg.$$eval('.ic-stage', (e) => e.length)); await overflow(pg, 'reduced', 'home'); await pg.context().close(); }
+    log('reduced motion: scene', await pg.evaluate(() => document.documentElement.getAttribute('data-scene')), 'formation = target:', await pg.evaluate(() => window.__pfScene.formation === window.__pfScene.target)); log('reduced motion: static intro', await pg.$$eval('#intro.i-static', (e) => e.length), '| thread fully drawn', await pg.evaluate(() => [...document.querySelectorAll('#intro .i3-p')].every((p) => p.style.strokeDashoffset === '0.0000'))); await overflow(pg, 'reduced', 'home'); await pg.context().close(); }
   { const pg = await page(b, { blockThree: true, tag: 'no-cdn' }); await pg.goto(URL + '#home'); await pg.waitForTimeout(600);
     log('three.js blocked: scene attr', await pg.evaluate(() => document.documentElement.getAttribute('data-scene')), '| fallback visible:', await pg.isVisible('#scene-fallback svg')); await shot(pg, 'no-cdn-home'); await pg.context().close(); }
   { const b2 = await chromium.launch({ args: ['--disable-webgl', '--disable-webgl2'] }); const ctx = await b2.newContext(); await ctx.route(/fonts\./, (r) => r.abort());
