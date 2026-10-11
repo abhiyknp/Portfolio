@@ -6,8 +6,10 @@
   var SITE = 'https://abhiyknp.goatcounter.com', KEY = 'pf-owner-gc';
   var RANGES = [['1', 'Today'], ['7', '7 days'], ['30', '30 days'], ['90', '90 days']];
   var EVENTS = { 'resume-download': 'Résumé downloaded', 'email-click': 'Email link clicked', 'email-copy': 'Email address copied', 'linkedin-click': 'LinkedIn opened', 'compare-used': 'Before/after slider used', 'puzzle-solved': 'Puzzle solved' };
-  var state = { days: '7', data: null, error: '', loading: false, status: 'Loading…', cache: {} };
-  var CACHE_MS = 5 * 60 * 1000;
+  var state = { days: '7', data: null, error: '', loading: false, status: 'Loading…', cache: {}, step: 0, total: 7 };
+  var CACHE_MS = 10 * 60 * 1000, CACHE_KEY = 'pf-owner-cache';
+  try { state.cache = JSON.parse(sessionStorage.getItem(CACHE_KEY)) || {}; } catch (e) {}
+  function saveCache() { try { sessionStorage.setItem(CACHE_KEY, JSON.stringify(state.cache)); } catch (e) {} }
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function getKey() { try { return localStorage.getItem(KEY) || ''; } catch (e) { return ''; } }
@@ -54,9 +56,9 @@
     var d = state.data;
     var head = '<div class="owner-bar"><div class="chips" role="group" aria-label="Date range">' + RANGES.map(function (r) {
         return '<button class="chip" type="button" data-act="own-range" data-v="' + r[0] + '" aria-pressed="' + (state.days === r[0]) + '">' + r[1] + '</button>';
-      }).join('') + '</div><div class="btn-row"><button class="btn ghost" type="button" data-act="own-refresh">Refresh</button><a class="btn ghost" href="' + SITE + '" target="_blank" rel="noopener">Full dashboard ↗</a><button class="btn ghost" type="button" data-act="own-lock">Lock</button></div></div>';
+      }).join('') + '</div><div class="btn-row"><button class="btn ghost" type="button" data-act="own-refresh"' + (state.loading ? ' disabled aria-busy="true"><span class="spin" aria-hidden="true"></span>Loading' : '>Refresh') + '</button><a class="btn ghost" href="' + SITE + '" target="_blank" rel="noopener">Full dashboard ↗</a><button class="btn ghost" type="button" data-act="own-lock">Lock</button></div></div>';
     if (state.error) { host.innerHTML = head + '<p class="owner-err" role="alert">' + state.error + '</p>'; return; }
-    if (state.loading || !d) { host.innerHTML = head + '<p class="muted" role="status" id="own-status">' + esc(state.status) + '</p>'; return; }
+    if (state.loading || !d) { host.innerHTML = head + loader(); return; }
 
     var pages = d.hits.filter(function (h) { return !h.event; }), events = d.hits.filter(function (h) { return h.event; });
     var ev = function (name) { var h = events.filter(function (e) { return e.path === name; })[0]; return h ? cnt(h) : 0; };
@@ -83,6 +85,18 @@
         ranked('Operating systems', d.systems.map(function (r) { return [r.name || 'Unknown', cnt(r)]; }), 'No data yet.') +
       '</div>' +
       '<p class="small muted">Your own visits are not counted on a device where this page is unlocked.</p>';
+  }
+
+  /* Loading state: a progress bar, what is happening now, and a placeholder of the layout that is coming. */
+  function loader() {
+    var sk = function (cls) { return '<span class="sk ' + cls + '"></span>'; };
+    var panel = function () { return '<div class="panel owner-sec">' + sk('sk-h') + [1, 2, 3, 4].map(function () { return '<span class="sk-row">' + sk('sk-t') + sk('sk-b') + '</span>'; }).join('') + '</div>'; };
+    return '<div class="owner-load" aria-busy="true">' +
+      '<div class="owner-prog" role="progressbar" aria-label="Loading visitor stats" aria-valuemin="0" aria-valuemax="' + state.total + '" aria-valuenow="' + state.step + '"><i style="width:' + (state.step / state.total * 100).toFixed(1) + '%"></i></div>' +
+      '<p class="owner-status" role="status" id="own-status"><span class="spin" aria-hidden="true"></span><span id="own-status-t">' + esc(state.status) + '</span></p>' +
+      '<div class="owner-tiles" aria-hidden="true">' + [1, 2, 3, 4, 5].map(function () { return '<div class="owner-tile">' + sk('sk-l') + sk('sk-v') + sk('sk-t') + '</div>'; }).join('') + '</div>' +
+      '<div class="panel owner-sec" aria-hidden="true">' + sk('sk-h') + '<span class="sk sk-chart"></span></div>' +
+      '<div class="owner-grid" aria-hidden="true">' + panel() + panel() + '</div></div>';
   }
 
   /* Ranked list: label, a bar scaled to the largest value, and the number. */
@@ -116,24 +130,34 @@
 
   /* ---------------- GoatCounter API ---------------- */
   function wait(ms) { return new Promise(function (res) { setTimeout(res, ms); }); }
-  function status(t) { state.status = t; var el = document.getElementById('own-status'); if (el) el.textContent = t; }
-  /* GoatCounter allows only a few API requests at a time. When it says "slow down" (429), wait as long as it asks
-     (or 3, 8, 15, then 30 seconds) and try again, up to four times. */
+  function status(t) { state.status = t; var el = document.getElementById('own-status-t'); if (el) el.textContent = t; }
+  function progress(i) {
+    state.step = i; var bar = document.querySelector('.owner-prog');
+    if (bar) { bar.setAttribute('aria-valuenow', String(i)); bar.firstChild.style.width = (i / state.total * 100).toFixed(1) + '%'; }
+  }
+  /* Wait with a visible countdown: "Trying again in 8 seconds…", "7 seconds…" and so on. */
+  function countdown(secs, lead) {
+    return new Promise(function (res) {
+      (function tick(n) { status(lead + ' Trying again in ' + n + ' second' + (n === 1 ? '' : 's') + '…'); if (n <= 0) return res(); setTimeout(function () { tick(n - 1); }, 1000); })(secs);
+    });
+  }
+  /* GoatCounter allows 4 API requests per second and 500 per hour from one address, and the browser's permission
+     check before each request counts too. A refused permission check shows up as a network error rather than a 429,
+     so both are retried: wait as long as GoatCounter asks (or 3, 8, 15, then 30 seconds), up to four times. */
   function api(path, params, tries) {
     tries = tries || 0;
     var q = Object.keys(params).map(function (k) { return k + '=' + encodeURIComponent(params[k]); }).join('&');
-    return fetch(SITE + '/api/v0/' + path + '?' + q, { headers: { Authorization: 'Bearer ' + getKey(), 'Content-Type': 'application/json' } }).then(function (r) {
+    var retry = function (secs, why) {
+      if (tries >= 4) throw { msg: why === 'net' ? 'Could not reach GoatCounter from this page. Check your connection, wait a few minutes and press Refresh, or open the <a href="' + SITE + '" target="_blank" rel="noopener">full dashboard</a>.' : 'GoatCounter is still limiting requests. Wait a few minutes, then press Refresh.' };
+      secs = Math.min(60, Math.max(1, secs || [3, 8, 15, 30][tries]));
+      return countdown(secs, why === 'net' ? 'GoatCounter did not answer.' : 'GoatCounter asked to slow down.').then(function () { status('Trying again…'); return api(path, params, tries + 1); });
+    };
+    return fetch(SITE + '/api/v0/' + path + '?' + q, { headers: { Authorization: 'Bearer ' + getKey() } }).then(function (r) {
       if (r.status === 401 || r.status === 403) throw { auth: true };
-      if (r.status === 429) {
-        if (tries >= 4) throw { msg: 'GoatCounter is still limiting requests. Wait a couple of minutes, then press Refresh.' };
-        var hdr = parseFloat(r.headers.get('X-Rate-Limit-Reset') || r.headers.get('Retry-After') || '');
-        var secs = Math.min(60, Math.max(1, isFinite(hdr) && hdr > 0 ? Math.ceil(hdr) : [3, 8, 15, 30][tries]));
-        status('GoatCounter asked to slow down. Trying again in ' + secs + ' seconds…');
-        return wait(secs * 1000).then(function () { return api(path, params, tries + 1); });
-      }
+      if (r.status === 429) { var hdr = parseFloat(r.headers.get('X-Rate-Limit-Reset') || r.headers.get('Retry-After') || ''); return retry(isFinite(hdr) && hdr > 0 ? Math.ceil(hdr) : 0, 'limit'); }
       if (!r.ok) throw { msg: 'GoatCounter returned an error (' + r.status + '). Try Refresh, or open the full dashboard.' };
       return r.json();
-    });
+    }, function () { return retry(0, 'net'); });
   }
   function load(force) {
     var hit = state.cache[state.days];
@@ -141,22 +165,22 @@
     var days = +state.days, end = new Date(), start = new Date(); start.setDate(end.getDate() - (days - 1));
     var p = { start: ymd(start), end: ymd(end) }, out = {};
     var token = state.token = {};
-    state.loading = true; state.error = ''; state.status = 'Loading…'; draw();
-    /* One request at a time keeps well inside GoatCounter's rate limit. */
+    state.loading = true; state.error = ''; state.status = 'Connecting to GoatCounter…'; state.step = 0; draw();
+    /* One request every 1.2 seconds keeps well inside GoatCounter's rate limit. */
     var steps = [
-      ['total', 'stats/total', p],
-      ['hits', 'stats/hits', { start: p.start, end: p.end, limit: 100, daily: true }],
-      ['refs', 'stats/toprefs', { start: p.start, end: p.end, limit: 10 }],
-      ['locations', 'stats/locations', { start: p.start, end: p.end, limit: 10 }],
-      ['sizes', 'stats/sizes', { start: p.start, end: p.end, limit: 10 }],
-      ['browsers', 'stats/browsers', { start: p.start, end: p.end, limit: 10 }],
-      ['systems', 'stats/systems', { start: p.start, end: p.end, limit: 10 }]
+      ['total', 'stats/total', p, 'visitor totals'],
+      ['hits', 'stats/hits', { start: p.start, end: p.end, limit: 100, daily: true }, 'pages and actions'],
+      ['refs', 'stats/toprefs', { start: p.start, end: p.end, limit: 10 }, 'sources'],
+      ['locations', 'stats/locations', { start: p.start, end: p.end, limit: 10 }, 'countries'],
+      ['sizes', 'stats/sizes', { start: p.start, end: p.end, limit: 10 }, 'screen sizes'],
+      ['browsers', 'stats/browsers', { start: p.start, end: p.end, limit: 10 }, 'browsers'],
+      ['systems', 'stats/systems', { start: p.start, end: p.end, limit: 10 }, 'operating systems']
     ];
     steps.reduce(function (chain, s, i) {
       return chain.then(function () {
         if (state.token !== token) throw { stale: true };
-        status('Loading ' + (i + 1) + ' of ' + steps.length + '…');
-        return (i ? wait(700) : Promise.resolve()).then(function () { return api(s[1], s[2]); }).then(function (j) { out[s[0]] = j; });
+        status('Loading ' + s[3] + ' (' + (i + 1) + ' of ' + steps.length + ')…');
+        return (i ? wait(1200) : Promise.resolve()).then(function () { return api(s[1], s[2]); }).then(function (j) { out[s[0]] = j; progress(i + 1); });
       });
     }, Promise.resolve())
       .then(function () {
@@ -175,7 +199,7 @@
           label: days === 1 ? 'Today' : 'Last ' + days + ' days (' + label(p.start) + ' to ' + label(p.end) + ')',
           at: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
         };
-        state.cache[state.days] = { data: state.data, t: Date.now() };
+        state.cache[state.days] = { data: state.data, t: Date.now() }; saveCache();
         state.loading = false; draw();
       })
       .catch(function (e) {
@@ -198,7 +222,7 @@
     var a = t.getAttribute('data-act');
     if (a === 'own-range') { state.days = t.getAttribute('data-v'); load(); }
     else if (a === 'own-refresh') load(true);
-    else if (a === 'own-lock') { setKey(''); state.token = {}; state.cache = {}; state.data = null; state.error = ''; draw(); }
+    else if (a === 'own-lock') { setKey(''); state.token = {}; state.cache = {}; saveCache(); state.data = null; state.error = ''; draw(); }
   });
   /* Hover readout for the daily columns. */
   document.addEventListener('pointermove', function (e) {

@@ -758,3 +758,20 @@ a.h-case:hover { transform: translateY(-3px); border-color: color-mix(in srgb, v
 .owner-axis span:last-child:not(:first-child) { transform: translateX(-100%); }
 .owner-tip { position: absolute; top: -.4rem; padding: .35rem .6rem; border-radius: 6px; background: var(--ink); color: var(--paper); font: 600 var(--t-xs)/1.2 var(--f-body); pointer-events: none; white-space: nowrap; box-shadow: var(--shadow); }
 .owner details table { margin-top: .5rem; }
+/* Owner view loading state */
+.owner-load { display: grid; gap: var(--s-4); }
+.owner-prog { height: 4px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+.owner-prog i { display: block; height: 100%; width: 0; background: var(--signal); border-radius: 4px; transition: width .4s ease; }
+.owner-status { margin: 0; display: flex; align-items: center; gap: .6rem; color: var(--ink-2); }
+.spin { width: 1em; height: 1em; flex: none; border-radius: 50%; border: 2px solid color-mix(in srgb, currentColor 25%, transparent); border-top-color: currentColor; animation: spin .8s linear infinite; }
+.btn .spin { margin-right: .1rem; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.owner-load .owner-tiles { margin: 0; }
+.sk { display: block; border-radius: 6px; background: linear-gradient(90deg, var(--surface-2) 0%, color-mix(in srgb, var(--ink) 9%, var(--surface-2)) 50%, var(--surface-2) 100%); background-size: 200% 100%; animation: sk 1.4s ease-in-out infinite; }
+.sk-l { width: 55%; height: .7rem; } .sk-v { width: 40%; height: 2.2rem; margin: .35rem 0; } .sk-t { width: 80%; height: .75rem; }
+.sk-h { width: 35%; height: 1.1rem; }
+.sk-chart { height: 190px; }
+.sk-row { display: grid; grid-template-columns: 1.4fr 1fr; gap: .7rem; align-items: center; }
+.sk-row .sk-t { width: 90%; } .sk-b { height: 10px; }
+@keyframes sk { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+@media (prefers-reduced-motion: reduce) { .sk, .spin { animation: none; } .owner-prog i { transition: none; } }
