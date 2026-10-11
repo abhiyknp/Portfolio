@@ -403,7 +403,7 @@
   function parentOf(h) { var v = h.split('.')[0]; return { skill: 'skills', case: 'cases', scenario: 'scenarios', puzzle: 'scenarios' }[v] || (v === 'studio' && h.indexOf('.') > -1 ? 'studio' : 'home'); }
   function route() {
     var h = decodeURIComponent(location.hash.slice(1)) || 'home';
-    if (h === 'summary' || h === 'contact') { h = 'home'; }
+    if (h === 'summary' || h === 'contact' || h === 'toggle-goatcounter') { h = 'home'; }
     /* Remember where the reader was, and whether this navigation goes back one step. */
     if (current) scrollMemo[current] = scrollY;
     var goingBack = navStack.length > 1 && navStack[navStack.length - 2] === h && current !== h;

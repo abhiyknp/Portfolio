@@ -15,7 +15,7 @@
   document.addEventListener('pf:route', function () {
     var h = location.hash.slice(1) || 'home';
     if (h === 'summary' || h === 'contact') h = 'home';
-    if (h === 'stats') return;
+    if (h === 'stats' || h === 'toggle-goatcounter') return;
     send({ path: '/' + h.split('.')[0] + (h.indexOf('.') > -1 ? '/' + h.split('.').slice(1).join('.') : ''), title: document.title });
   });
   /* Events worth knowing about: résumé downloads, contact clicks and the interactive pieces. */

@@ -5,6 +5,8 @@
   'use strict';
   var SITE = 'https://abhiyknp.goatcounter.com', KEY = 'pf-owner-gc';
   var RANGES = [['1', 'Today'], ['7', '7 days'], ['30', '30 days'], ['90', '90 days']];
+  /* GoatCounter groups screen widths into these codes and sends no display name for them. */
+  var SIZES = { phone: 'Phones (up to 600px)', tablet: 'Tablets (601 to 1000px)', desktop: 'Laptops and desktops', desktophd: 'Large screens (over 1920px)', unknown: 'Unknown' };
   var EVENTS = { 'resume-download': 'Résumé downloaded', 'email-click': 'Email link clicked', 'email-copy': 'Email address copied', 'linkedin-click': 'LinkedIn opened', 'compare-used': 'Before/after slider used', 'puzzle-solved': 'Puzzle solved' };
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   var state = { days: '7', data: null, error: '', loading: false, status: 'Loading…', cache: {}, step: 0, total: 7 };
@@ -59,9 +61,10 @@
         return '<button class="chip" type="button" data-act="own-range" data-v="' + r[0] + '" aria-pressed="' + (state.days === r[0]) + '">' + r[1] + '</button>';
       }).join('') + '</div><div class="btn-row"><button class="btn ghost" type="button" data-act="own-refresh"' + (state.loading ? ' disabled aria-busy="true"><span class="spin" aria-hidden="true"></span>Loading' : '>Refresh') + '</button><a class="btn ghost" href="' + SITE + '" target="_blank" rel="noopener">Full dashboard ↗</a><button class="btn ghost" type="button" data-act="own-lock">Lock</button></div></div>';
     if (state.error) { host.innerHTML = head + '<p class="owner-err" role="alert">' + state.error + '</p>'; return; }
-    if (state.loading || !d) { host.innerHTML = head + loader(); return; }
+    if (state.loading || !d) { host.innerHTML = head + loader(); startOrbit(); progress(state.step); return; }
 
-    var pages = d.hits.filter(function (h) { return !h.event; }), events = d.hits.filter(function (h) { return h.event; });
+    /* "/toggle-goatcounter" was counted before the site learned to skip it; leave it out. */
+    var pages = d.hits.filter(function (h) { return !h.event && h.path !== '/toggle-goatcounter'; }), events = d.hits.filter(function (h) { return h.event; });
     var ev = function (name) { var h = events.filter(function (e) { return e.path === name; })[0]; return h ? cnt(h) : 0; };
     var contact = ev('email-click') + ev('email-copy') + ev('linkedin-click');
     var views = pages.reduce(function (s, h) { return s + cnt(h); }, 0);
@@ -81,43 +84,85 @@
         ranked('Actions', events.map(function (h) { return [EVENTS[h.path] || h.title || h.path, cnt(h)]; }), 'No downloads or clicks yet.') +
         ranked('Where visitors came from', d.refs.map(function (r) { return [r.name || 'Direct or unknown', cnt(r)]; }), 'No sources yet.') +
         ranked('Countries', d.locations.map(function (r) { return [r.name || 'Unknown', cnt(r)]; }), 'No locations yet.') +
-        ranked('Screen size', d.sizes.map(function (r) { return [r.name || 'Unknown', cnt(r)]; }), 'No data yet.') +
+        ranked('Screen size', d.sizes.map(function (r) { return [SIZES[r.id] || r.name || 'Unknown', cnt(r)]; }), 'No data yet.') +
         ranked('Browsers', d.browsers.map(function (r) { return [r.name || 'Unknown', cnt(r)]; }), 'No data yet.') +
         ranked('Operating systems', d.systems.map(function (r) { return [r.name || 'Unknown', cnt(r)]; }), 'No data yet.') +
       '</div>' +
       '<p class="small muted">Your own visits are not counted on a device where this page is unlocked.</p>';
   }
 
-  /* Loading state: a progress bar, what is happening now, and a placeholder of the layout that is coming. */
-  /* Loading state, "chaos to clarity": the messy questions behind each figure drift on the page, and each one settles
-     into a clean, ticked label as its figures arrive. Same order as the requests in load(). */
+  /* One entry per request in load(): the clean label, the short node label, and the scattered words behind it. */
   var CHAOS = [
-    ['how many people came??', 'Visitors', 3, 8, -6],
-    ['which pages do they actually read', 'Pages and actions', 50, 5, 4],
-    ['LinkedIn or Google or what?', 'Sources', 22, 31, -3],
-    ['anyone from outside India?', 'Countries', 55, 36, 6],
-    ['phone or laptop…', 'Screen sizes', 5, 60, 5],
-    ['chrome? safari?', 'Browsers', 40, 66, -5],
-    ['windows / mac / android??', 'Operating systems', 54, 72, 3]
+    ['Visitors', 'Visitors', ['how many??', 'anyone?', 'traffic']],
+    ['Pages and actions', 'Pages', ['which page?', 'case study?', 'CV?']],
+    ['Sources', 'Sources', ['LinkedIn?', 'Google', 'naukri']],
+    ['Countries', 'Countries', ['India?', 'UAE', 'abroad?']],
+    ['Screen sizes', 'Screens', ['phone?', 'laptop', 'tablet']],
+    ['Browsers', 'Browsers', ['chrome', 'safari?', 'edge']],
+    ['Operating systems', 'Systems', ['mac?', 'windows', 'android']]
   ];
+  /* Loading state, "chaos to clarity": small words orbit the gold thread. When a figure arrives, its words are pulled
+     into the head of the thread, which grows to the next node. The thread is the progress bar. */
   function loader() {
+    var n = CHAOS.length;
     return '<div class="owner-load" aria-busy="true">' +
-      '<div class="owner-prog" role="progressbar" aria-label="Loading visitor stats" aria-valuemin="0" aria-valuemax="' + state.total + '" aria-valuenow="' + state.step + '"><i style="width:' + (state.step / state.total * 100).toFixed(1) + '%"></i></div>' +
       '<p class="owner-status" role="status" id="own-status"><span class="spin" aria-hidden="true"></span><span id="own-status-t">' + esc(state.status) + '</span></p>' +
-      '<div class="panel owner-chaos" aria-hidden="true"><div class="oc-targets">' + CHAOS.map(function (c) { return '<span class="oc-chip oc-ghost">✓ ' + c[1] + '</span>'; }).join('') + '</div>' +
-        CHAOS.map(function (c, i) { return '<span class="oc-chip oc-mess" data-i="' + i + '" style="left:' + c[2] + '%;top:' + c[3] + '%;--r:' + c[4] + 'deg;--d:' + (i * -0.7).toFixed(1) + 's">' + c[0] + '</span>'; }).join('') +
-        '<p class="oc-cap">Turning questions into numbers…</p></div></div>';
+      '<div class="panel owner-chaos">' +
+        '<div class="oc-words" aria-hidden="true">' + CHAOS.map(function (c, i) { return c[2].map(function (w) { return '<span class="oc-w" data-i="' + i + '">' + w + '</span>'; }).join(''); }).join('') + '</div>' +
+        '<div class="oc-thread" role="progressbar" aria-label="Loading visitor stats" aria-valuemin="0" aria-valuemax="' + n + '" aria-valuenow="' + state.step + '">' +
+          '<span class="oc-track"></span><span class="oc-fill" style="width:0%"></span>' +
+          CHAOS.map(function (c, i) { return '<span class="oc-node" style="left:' + ((i + 0.5) / n * 100).toFixed(2) + '%"><i></i><b>' + c[1] + '</b></span>'; }).join('') +
+        '</div>' +
+        '<p class="oc-cap" aria-hidden="true">Clarity.</p></div></div>';
   }
-  /* Move chip i onto its place in the neat row and swap its text for the clean label. */
-  function settle(i) {
+  /* Orbit engine: each word follows its own ellipse around the middle of the thread at its own speed. */
+  var orbit = null;
+  function startOrbit() {
     var box = document.querySelector('.owner-chaos'); if (!box) return;
-    var chip = box.querySelector('.oc-mess[data-i="' + i + '"]'), ghost = box.querySelectorAll('.oc-ghost')[i];
-    if (!chip || !ghost) return;
-    chip.classList.add('oc-done'); chip.textContent = '✓ ' + CHAOS[i][1];
-    chip.style.left = ghost.offsetLeft + 'px'; chip.style.top = ghost.offsetTop + 'px';
-    if (box.querySelectorAll('.oc-done').length === CHAOS.length) { box.classList.add('oc-clear'); box.querySelector('.oc-cap').textContent = 'Clarity.'; status('All figures in.'); }
+    var rnd = function (a, b) { return a + Math.random() * (b - a); };
+    var words = Array.prototype.map.call(box.querySelectorAll('.oc-w'), function (el) {
+      return { el: el, i: +el.getAttribute('data-i'), a: rnd(0.12, 0.48), b: rnd(0.45, 1), th: rnd(0, Math.PI * 2), w: rnd(0.7, 1.5) * (Math.random() < 0.5 ? -1 : 1), wob: rnd(0, 6), mode: 'orbit' };
+    });
+    var me = orbit = { box: box, words: words, last: performance.now() };
+    var thread = box.querySelector('.oc-thread');
+    function place(wd, x, y, sc, op) { wd.el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) translate(-50%,-50%) scale(' + sc.toFixed(2) + ')'; wd.el.style.opacity = op.toFixed(2); }
+    (function frame(t) {
+      if (orbit !== me || !box.isConnected) return;
+      var dt = Math.min(0.05, (t - me.last) / 1000); me.last = t;
+      var W = box.clientWidth, cy = thread.offsetTop + 2, cx = W / 2, ry = Math.min(cy - 12, box.clientHeight - cy - 12);
+      words.forEach(function (wd) {
+        if (wd.mode === 'orbit') {
+          if (!reduce.matches) wd.th += wd.w * dt;
+          var x = cx + Math.cos(wd.th) * wd.a * W, y = cy + Math.sin(wd.th) * wd.b * ry + Math.sin(wd.th * 3) * wd.wob;
+          wd.x = x; wd.y = y;
+          place(wd, x, y, 1, 0.45 + 0.4 * (Math.sin(wd.th) * 0.5 + 0.5));
+        } else if (wd.mode === 'abs') {
+          var k = Math.min(1, (t - wd.t0) / 550); if (k < 0) k = 0;
+          var e = k * k * k;
+          var tx = thread.offsetLeft + wd.tx * thread.offsetWidth;
+          place(wd, wd.x + (tx - wd.x) * e, wd.y + (cy - wd.y) * e, 1 - 0.8 * e, 0.9 * (1 - e * e));
+          if (k >= 1) { wd.mode = 'gone'; wd.el.style.opacity = '0'; }
+        }
+      });
+      requestAnimationFrame(frame);
+    })(performance.now());
   }
-  window.addEventListener('resize', function () { document.querySelectorAll('.owner-chaos .oc-done').forEach(function (c) { settle(+c.getAttribute('data-i')); }); });
+  /* Pull step i's words into the head of the thread, then light its node and grow the thread to it. */
+  function absorb(i) {
+    var box = document.querySelector('.owner-chaos'); if (!box || !orbit || orbit.box !== box) return;
+    var node = box.querySelectorAll('.oc-node')[i]; if (!node || node.classList.contains('on') || node._pending) return;
+    node._pending = true;
+    var now = performance.now(), mine = orbit.words.filter(function (w) { return w.i === i && w.mode === 'orbit'; });
+    mine.forEach(function (wd, k) { wd.mode = 'abs'; wd.t0 = now + k * 90; wd.tx = (i + 0.5) / CHAOS.length; wd.el.classList.add('oc-gold'); });
+    var done = function () {
+      if (!box.isConnected) return;
+      node.classList.add('on');
+      var lit = box.querySelectorAll('.oc-node.on').length;
+      box.querySelector('.oc-fill').style.width = (lit === CHAOS.length ? 100 : (i + 0.5) / CHAOS.length * 100).toFixed(2) + '%';
+      if (lit === CHAOS.length) { box.classList.add('oc-clear'); status('All figures in.'); var sp = document.querySelector('#own-status .spin'); if (sp) sp.remove(); }
+    };
+    if (reduce.matches) { mine.forEach(function (wd) { wd.mode = 'gone'; wd.el.style.opacity = '0'; }); done(); } else setTimeout(done, 550 + (mine.length - 1) * 90);
+  }
 
   /* Ranked list: label, a bar scaled to the largest value, and the number. */
   function ranked(title, rows, empty) {
@@ -152,9 +197,9 @@
   function wait(ms) { return new Promise(function (res) { setTimeout(res, ms); }); }
   function status(t) { state.status = t; var el = document.getElementById('own-status-t'); if (el) el.textContent = t; }
   function progress(i) {
-    state.step = i; var bar = document.querySelector('.owner-prog');
-    if (bar) { bar.setAttribute('aria-valuenow', String(i)); bar.firstChild.style.width = (i / state.total * 100).toFixed(1) + '%'; }
-    for (var k = 0; k < i; k++) settle(k);
+    state.step = i; var bar = document.querySelector('.oc-thread');
+    if (bar) bar.setAttribute('aria-valuenow', String(i));
+    for (var k = 0; k < i; k++) absorb(k);
   }
   /* Wait with a visible countdown: "Trying again in 8 seconds…", "7 seconds…" and so on. */
   function countdown(secs, lead) {
@@ -226,7 +271,7 @@
           at: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
         };
         state.cache[state.days] = { data: state.data, t: Date.now() }; saveCache();
-        return wait(reduce.matches ? 0 : 700).then(function () { if (state.token !== token) return; state.loading = false; draw(); });
+        return wait(reduce.matches ? 0 : 1700).then(function () { if (state.token !== token) return; state.loading = false; draw(); });
       })
       .catch(function (e) {
         if (state.token !== token || (e && e.stale)) return;
