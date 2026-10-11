@@ -3,7 +3,7 @@
    here (for https://abhishek.goatcounter.com the code is "abhishek"). GoatCounter ignores localhost visits. */
 (function () {
   'use strict';
-  var GOATCOUNTER_CODE = '';
+  var GOATCOUNTER_CODE = 'abhiyknp';
   if (!GOATCOUNTER_CODE) return;
 
   var queue = [];
