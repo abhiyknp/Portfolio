@@ -91,77 +91,93 @@
       '<p class="small muted">Your own visits are not counted on a device where this page is unlocked.</p>';
   }
 
-  /* One entry per request in load(): the clean label, the short node label, and the scattered words behind it. */
-  var CHAOS = [
-    ['Visitors', 'Visitors', ['how many??', 'anyone?', 'traffic']],
-    ['Pages and actions', 'Pages', ['which page?', 'case study?', 'CV?']],
-    ['Sources', 'Sources', ['LinkedIn?', 'Google', 'naukri']],
-    ['Countries', 'Countries', ['India?', 'UAE', 'abroad?']],
-    ['Screen sizes', 'Screens', ['phone?', 'laptop', 'tablet']],
-    ['Browsers', 'Browsers', ['chrome', 'safari?', 'edge']],
-    ['Operating systems', 'Systems', ['mac?', 'windows', 'android']]
-  ];
-  /* Loading state, "chaos to clarity": small words orbit the gold thread. When a figure arrives, its words are pulled
-     into the head of the thread, which grows to the next node. The thread is the progress bar. */
+  /* The scattered questions behind the figures. They become the loader's moving words. */
+  var WORDS = ['how many??', 'anyone?', 'traffic', 'which page?', 'case study?', 'CV?', 'LinkedIn?', 'Google', 'naukri', 'India?', 'UAE', 'abroad?',
+    'phone?', 'laptop', 'tablet', 'chrome', 'safari?', 'edge', 'mac?', 'windows', 'android'];
+  /* Loading state, "chaos to clarity": small words stream in from the left and spin around the gold line (over,
+     behind, under, in front), gathering just behind its tip. They merge into the tip one at a time and push it on.
+     The line fills smoothly: it creeps forward while a request is in flight and catches up when a figure arrives.
+     When everything is in, the line flashes and "Clarity." appears. The line is the progress bar. */
   function loader() {
-    var n = CHAOS.length;
     return '<div class="owner-load" aria-busy="true">' +
       '<p class="owner-status" role="status" id="own-status"><span class="spin" aria-hidden="true"></span><span id="own-status-t">' + esc(state.status) + '</span></p>' +
       '<div class="panel owner-chaos">' +
-        '<div class="oc-words" aria-hidden="true">' + CHAOS.map(function (c, i) { return c[2].map(function (w) { return '<span class="oc-w" data-i="' + i + '">' + w + '</span>'; }).join(''); }).join('') + '</div>' +
-        '<div class="oc-thread" role="progressbar" aria-label="Loading visitor stats" aria-valuemin="0" aria-valuemax="' + n + '" aria-valuenow="' + state.step + '">' +
-          '<span class="oc-track"></span><span class="oc-fill" style="width:0%"></span>' +
-          CHAOS.map(function (c, i) { return '<span class="oc-node" style="left:' + ((i + 0.5) / n * 100).toFixed(2) + '%"><i></i><b>' + c[1] + '</b></span>'; }).join('') +
-        '</div>' +
+        '<div class="oc-words" aria-hidden="true">' + WORDS.map(function (w) { return '<span class="oc-w">' + w + '</span>'; }).join('') + '</div>' +
+        '<div class="oc-thread" role="progressbar" aria-label="Loading visitor stats" aria-valuemin="0" aria-valuemax="' + state.total + '" aria-valuenow="' + state.step + '">' +
+          '<span class="oc-track"></span><span class="oc-fill"></span></div>' +
         '<p class="oc-cap" aria-hidden="true">Clarity.</p></div></div>';
   }
-  /* Orbit engine: each word follows its own ellipse around the middle of the thread at its own speed. */
-  var orbit = null;
+  var anim = null;
   function startOrbit() {
     var box = document.querySelector('.owner-chaos'); if (!box) return;
-    var rnd = function (a, b) { return a + Math.random() * (b - a); };
-    var words = Array.prototype.map.call(box.querySelectorAll('.oc-w'), function (el) {
-      return { el: el, i: +el.getAttribute('data-i'), a: rnd(0.12, 0.48), b: rnd(0.45, 1), th: rnd(0, Math.PI * 2), w: rnd(0.7, 1.5) * (Math.random() < 0.5 ? -1 : 1), wob: rnd(0, 6), mode: 'orbit' };
+    var thread = box.querySelector('.oc-thread'), fill = box.querySelector('.oc-fill');
+    var rnd = function (a, b) { return a + Math.random() * (b - a); }, t0 = performance.now();
+    var words = Array.prototype.map.call(box.querySelectorAll('.oc-w'), function (el, i) {
+      /* r and off are fractions of the box height, so the swirl keeps its shape at any size. */
+      return { el: el, phi: rnd(0, Math.PI * 2), w: rnd(3, 4.2), r: rnd(0.12, 0.32), off: rnd(0.1, 1.7), sway: rnd(0, 6.3), born: t0 + i * 120, speed: rnd(2.2, 3.2), mode: 'in', x: -40 };
     });
-    var me = orbit = { box: box, words: words, last: performance.now() };
-    var thread = box.querySelector('.oc-thread');
-    function place(wd, x, y, sc, op) { wd.el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) translate(-50%,-50%) scale(' + sc.toFixed(2) + ')'; wd.el.style.opacity = op.toFixed(2); }
+    var me = anim = { box: box, words: words, p: 0, last: t0, stepAt: t0 + 900, step: state.step, eaten: 0, done: false };
+    function setWord(o, x, y, sc, op, front) {
+      o.el.style.zIndex = front ? 3 : 1;
+      o.el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) translate(-50%,-50%) scale(' + sc.toFixed(2) + ')';
+      o.el.style.opacity = op.toFixed(2);
+    }
+    function grab(o, t) { o.mode = 'a'; o.t0 = t; o.x0 = o.x; o.el.classList.add('oc-gold'); }
     (function frame(t) {
-      if (orbit !== me || !box.isConnected) return;
+      if (anim !== me || !box.isConnected) return;
       var dt = Math.min(0.05, (t - me.last) / 1000); me.last = t;
-      var W = box.clientWidth, cy = thread.offsetTop + 2, cx = W / 2, ry = Math.min(cy - 12, box.clientHeight - cy - 12);
-      words.forEach(function (wd) {
-        if (wd.mode === 'orbit') {
-          if (!reduce.matches) wd.th += wd.w * dt;
-          var x = cx + Math.cos(wd.th) * wd.a * W, y = cy + Math.sin(wd.th) * wd.b * ry + Math.sin(wd.th * 3) * wd.wob;
-          wd.x = x; wd.y = y;
-          place(wd, x, y, 1, 0.45 + 0.4 * (Math.sin(wd.th) * 0.5 + 0.5));
-        } else if (wd.mode === 'abs') {
-          var k = Math.min(1, (t - wd.t0) / 550); if (k < 0) k = 0;
-          var e = k * k * k;
-          var tx = thread.offsetLeft + wd.tx * thread.offsetWidth;
-          place(wd, wd.x + (tx - wd.x) * e, wd.y + (cy - wd.y) * e, 1 - 0.8 * e, 0.9 * (1 - e * e));
-          if (k >= 1) { wd.mode = 'gone'; wd.el.style.opacity = '0'; }
+      var H = box.clientHeight, L = thread.offsetLeft, Wd = thread.offsetWidth, cy = thread.offsetTop + thread.offsetHeight / 2;
+      var n = state.total, all = me.step >= n;
+      var target = all ? 1 : (me.step + 0.9 * (1 - Math.exp(-Math.max(0, t - me.stepAt) / 1400))) / n;
+      me.p = reduce.matches ? (all ? 1 : me.step / n) : me.p + (target - me.p) * Math.min(1, dt * (all ? 4 : 2.5));
+      var tip = L + Wd * me.p;
+      fill.style.width = (me.p * 100).toFixed(2) + '%';
+      fill.style.setProperty('--tipo', Math.min(1, me.p * 30).toFixed(2));
+      /* One word merges each time the line covers another share of its length: the one nearest the tip. */
+      while (me.eaten < words.length && me.p >= (me.eaten + 1) / (words.length + 1)) {
+        var c = null; words.forEach(function (o) { if ((o.mode === 'o' || o.mode === 'in') && t >= o.born && (!c || Math.abs(o.x - tip) < Math.abs(c.x - tip))) c = o; });
+        if (!c) break; grab(c, t); me.eaten++;
+      }
+      if (all && me.p > 0.995) words.forEach(function (o) { if (o.mode === 'o' || o.mode === 'in') { o.born = Math.min(o.born, t); grab(o, t); } });
+      words.forEach(function (o) {
+        if (o.mode === 'gone' || t < o.born) return;
+        /* Behind the tip once it has room; before that, swarming over the start of the line. */
+        var R = o.r * H, home = Math.max(tip - o.off * H, L * 0.5 + o.off * H * 0.6);
+        if (reduce.matches) { if (o.mode === 'a') { o.mode = 'gone'; o.el.style.opacity = '0'; return; } setWord(o, home, cy - R * Math.cos(o.phi), 1, 0.45, false); return; }
+        o.phi += o.w * dt * (o.mode === 'a' ? 2 : 1);
+        if (o.mode === 'in') { o.x += o.speed * H * dt; if (o.x >= home) { o.x = home; o.mode = 'o'; } R *= Math.min(1, (o.x + 40) / (H * 0.8)); }
+        else if (o.mode === 'o') { o.sway += dt * 0.8; o.x = Math.max(L * 0.5, home + Math.sin(o.sway) * H * 0.07); }
+        else {
+          var k = Math.max(0, Math.min(1, (t - o.t0) / 600));
+          if (k >= 1) { o.mode = 'gone'; o.el.style.opacity = '0'; fill.classList.remove('hit'); void fill.offsetWidth; fill.classList.add('hit'); return; }
+          R *= Math.pow(1 - k, 1.4); o.x = o.x0 + (tip - o.x0) * k * k;
         }
+        /* phi: 0 above, 90 behind, 180 below, 270 in front */
+        var z = Math.sin(o.phi), front = z < 0, op = front ? 1 : 0.28 + 0.4 * (1 - z);
+        if (o.mode === 'in') op *= Math.min(1, (o.x + 40) / (H * 0.6));
+        if (o.mode === 'a') op = Math.max(0.3, op) * (1 - Math.pow(Math.max(0, Math.min(1, (t - o.t0) / 600)), 3));
+        setWord(o, o.x, cy - R * Math.cos(o.phi), 1 - 0.22 * z, op, front);
       });
+      if (all && me.p > 0.995 && !me.done && words.every(function (o) { return o.mode === 'gone'; })) {
+        me.done = true; box.classList.add('oc-clear'); status('All figures in.');
+        var sp = document.querySelector('#own-status .spin'); if (sp) sp.remove();
+      }
       requestAnimationFrame(frame);
-    })(performance.now());
+    })(t0);
   }
-  /* Pull step i's words into the head of the thread, then light its node and grow the thread to it. */
-  function absorb(i) {
-    var box = document.querySelector('.owner-chaos'); if (!box || !orbit || orbit.box !== box) return;
-    var node = box.querySelectorAll('.oc-node')[i]; if (!node || node.classList.contains('on') || node._pending) return;
-    node._pending = true;
-    var now = performance.now(), mine = orbit.words.filter(function (w) { return w.i === i && w.mode === 'orbit'; });
-    mine.forEach(function (wd, k) { wd.mode = 'abs'; wd.t0 = now + k * 90; wd.tx = (i + 0.5) / CHAOS.length; wd.el.classList.add('oc-gold'); });
-    var done = function () {
-      if (!box.isConnected) return;
-      node.classList.add('on');
-      var lit = box.querySelectorAll('.oc-node.on').length;
-      box.querySelector('.oc-fill').style.width = (lit === CHAOS.length ? 100 : (i + 0.5) / CHAOS.length * 100).toFixed(2) + '%';
-      if (lit === CHAOS.length) { box.classList.add('oc-clear'); status('All figures in.'); var sp = document.querySelector('#own-status .spin'); if (sp) sp.remove(); }
-    };
-    if (reduce.matches) { mine.forEach(function (wd) { wd.mode = 'gone'; wd.el.style.opacity = '0'; }); done(); } else setTimeout(done, 550 + (mine.length - 1) * 90);
+  /* Resolves once the loader has finished its "Clarity." moment (straight away without motion or a loader). */
+  function loaderFinished() {
+    return new Promise(function (res) {
+      if (reduce.matches) return res();
+      var start = Date.now();
+      (function check() {
+        var box = document.querySelector('.owner-chaos');
+        if (!box || !anim || anim.box !== box) return res();
+        if (anim.done) return setTimeout(res, 1100);
+        if (Date.now() - start > 8000) return res();
+        setTimeout(check, 100);
+      })();
+    });
   }
 
   /* Ranked list: label, a bar scaled to the largest value, and the number. */
@@ -199,7 +215,7 @@
   function progress(i) {
     state.step = i; var bar = document.querySelector('.oc-thread');
     if (bar) bar.setAttribute('aria-valuenow', String(i));
-    for (var k = 0; k < i; k++) absorb(k);
+    if (anim && anim.step !== i) { anim.step = i; anim.stepAt = Math.max(anim.stepAt, performance.now()); }
   }
   /* Wait with a visible countdown: "Trying again in 8 seconds…", "7 seconds…" and so on. */
   function countdown(secs, lead) {
@@ -271,7 +287,7 @@
           at: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
         };
         state.cache[state.days] = { data: state.data, t: Date.now() }; saveCache();
-        return wait(reduce.matches ? 0 : 1700).then(function () { if (state.token !== token) return; state.loading = false; draw(); });
+        return loaderFinished().then(function () { if (state.token !== token) return; state.loading = false; draw(); });
       })
       .catch(function (e) {
         if (state.token !== token || (e && e.stale)) return;

@@ -764,22 +764,24 @@ a.h-case:hover { transform: translateY(-3px); border-color: color-mix(in srgb, v
 .spin { width: 1em; height: 1em; flex: none; border-radius: 50%; border: 2px solid color-mix(in srgb, currentColor 25%, transparent); border-top-color: currentColor; animation: spin .8s linear infinite; }
 .btn .spin { margin-right: .1rem; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.owner-chaos { position: relative; height: 150px; overflow: hidden; padding: 0; }
+/* Loader proportions: a 7:1 strip (shorter on phones). The line runs edge to edge with equal margins and sits on the
+   middle line; word size and swirl size follow the strip height. */
+.owner-chaos { position: relative; height: clamp(96px, 14vw, 140px); overflow: hidden; padding: 0; }
 .oc-words { position: absolute; inset: 0; pointer-events: none; }
-.oc-w { position: absolute; left: 0; top: 0; white-space: nowrap; font: 500 .72rem/1 var(--f-mono); color: var(--ink-2); opacity: 0; will-change: transform; transition: color .3s; }
-.oc-w.oc-gold { color: var(--signal); font-weight: 700; }
-.oc-thread { position: absolute; left: 5%; right: 5%; top: 58%; height: 4px; }
-.oc-track { position: absolute; inset: 0; border-radius: 4px; background: repeating-linear-gradient(90deg, var(--rule) 0 8px, transparent 8px 14px); }
-.oc-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; background: var(--signal); box-shadow: 0 0 12px color-mix(in srgb, var(--signal) 60%, transparent); transition: width .45s cubic-bezier(.2, .8, .2, 1); }
-.oc-node { position: absolute; top: 50%; width: 0; height: 0; }
-.oc-node i { position: absolute; left: -6px; top: -6px; width: 12px; height: 12px; border-radius: 50%; background: var(--surface); border: 2px solid var(--rule); transition: background .3s, border-color .3s; }
-.oc-node.on i { background: var(--signal); border-color: var(--signal); animation: oc-pop .5s ease-out; }
-.oc-node b { position: absolute; top: 13px; left: 0; transform: translateX(-50%); white-space: nowrap; font: 500 .68rem/1 var(--f-mono); color: var(--ink-3); opacity: 0; transition: opacity .4s; }
-.oc-node.on b { opacity: 1; color: var(--ink-2); }
-@keyframes oc-pop { 0% { transform: scale(1); box-shadow: 0 0 0 0 color-mix(in srgb, var(--signal) 70%, transparent); } 60% { transform: scale(1.4); box-shadow: 0 0 0 9px transparent; } 100% { transform: scale(1); } }
-.oc-cap { position: absolute; left: 0; right: 0; top: 14%; margin: 0; text-align: center; font: 800 var(--t-xl)/1 var(--f-display); letter-spacing: -.01em; color: var(--signal); opacity: 0; transform: translateY(6px); transition: opacity .5s, transform .5s; }
-.owner-chaos.oc-clear .oc-cap { opacity: 1; transform: none; }
-.owner-chaos.oc-clear .oc-fill { animation: oc-glow 1.2s ease-in-out; }
-@keyframes oc-glow { 50% { box-shadow: 0 0 22px var(--signal); } }
-@media (max-width: 700px) { .oc-node b { display: none; } .owner-chaos { height: 130px; } .oc-thread { top: 55%; } .oc-w { font-size: .66rem; } .oc-w:nth-child(3n) { display: none; } }
-@media (prefers-reduced-motion: reduce) { .spin, .oc-node.on i, .owner-chaos.oc-clear .oc-fill { animation: none; } .oc-fill, .oc-cap { transition: none; } }
+.oc-w { position: absolute; left: 0; top: 0; white-space: nowrap; font: 500 clamp(.62rem, 1.1vw, .74rem)/1 var(--f-mono); color: var(--ink-2); opacity: 0; will-change: transform; transition: color .3s, text-shadow .3s; }
+.oc-w.oc-gold { color: var(--signal); font-weight: 700; text-shadow: 0 0 8px color-mix(in srgb, var(--signal) 70%, transparent); }
+.oc-thread { position: absolute; left: clamp(20px, 4%, 40px); right: clamp(20px, 4%, 40px); top: 50%; height: 3px; margin-top: -1.5px; z-index: 2; }
+.oc-track { position: absolute; inset: 0; border-radius: 3px; background: var(--rule); }
+.oc-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 3px; background: var(--signal); box-shadow: 0 0 10px color-mix(in srgb, var(--signal) 55%, transparent); }
+.oc-fill::after { content: ""; position: absolute; right: -4px; top: 50%; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 50%; background: #fff6dc; box-shadow: 0 0 9px 3px var(--signal); opacity: var(--tipo, 0); }
+.oc-fill.hit::after { animation: oc-tip .35s ease-out; }
+@keyframes oc-tip { 40% { transform: scale(1.6); box-shadow: 0 0 16px 5px var(--signal); } }
+.oc-cap { position: absolute; left: 0; right: 0; top: 50%; margin: 0; text-align: center; font: 800 clamp(1.1rem, 2.2vw, 1.5rem)/1 var(--f-display); letter-spacing: -.01em; color: var(--signal); opacity: 0; transform: translateY(calc(-100% - 14px)) scale(.96); transition: opacity .5s .2s, transform .5s .2s; }
+/* Everything in: a shine sweeps the full line and "Clarity." appears above it. */
+.owner-chaos.oc-clear .oc-cap { opacity: 1; transform: translateY(calc(-100% - 18px)); }
+.owner-chaos.oc-clear .oc-fill { background: linear-gradient(90deg, var(--signal) 0%, var(--signal) 40%, #fff3cf 50%, var(--signal) 60%, var(--signal) 100%); background-size: 250% 100%; animation: oc-shine 1.1s ease-out both; }
+.owner-chaos.oc-clear .oc-fill::after { animation: oc-burst .7s ease-out; }
+@keyframes oc-shine { from { background-position: 100% 0; box-shadow: 0 0 24px var(--signal); } to { background-position: -100% 0; box-shadow: 0 0 10px color-mix(in srgb, var(--signal) 55%, transparent); } }
+@keyframes oc-burst { 35% { transform: scale(2.6); box-shadow: 0 0 26px 10px var(--signal); } }
+@media (max-width: 700px) { .oc-w:nth-child(3n) { display: none; } }
+@media (prefers-reduced-motion: reduce) { .spin, .oc-fill.hit::after, .owner-chaos.oc-clear .oc-fill, .owner-chaos.oc-clear .oc-fill::after { animation: none !important; } .oc-cap { transition: none; } }
