@@ -45,7 +45,7 @@ assets/js/intros.js        scroll intros (the home page uses chaos-to-clarity; t
 assets/js/intro.js         earlier "request's journey" intro, kept for the concepts page
 concepts/                  design study: direction A with four intro prototypes
 assets/js/scene.js         scroll-linked Three.js traceability graph (ES module)
-assets/js/data/*.js        all content: skills-a/b/c, cases, flows, artifacts, scenarios, extras (slider pairs and puzzle steps)
+assets/js/data/*.js        all content: skills-a/b/c, cases, flows, artifacts, scenarios, extras (slider pairs and puzzle steps), legal (privacy, terms, accessibility)
 tools/serve.sh             local server
 tools/test.js              end-to-end Playwright check
 ```
@@ -85,3 +85,17 @@ The background graph shows traceability layers (objectives, requirements, storie
 `assets/js/loader.js` draws the "chaos to clarity" loader: small words spin around a gold line, gather behind its tip and merge into it one at a time while it fills smoothly. The first-visit screen (top of `index.html`) uses it only when the site is not ready within half a second, ending on "Ready."; fast visits never see it. The stats page uses it while GoatCounter answers, ending on "Clarity."
 
 Visitors who open the owner's desk see an "Access request denied" page instead: a role and permission matrix (rule RBAC-07) with a DENIED stamp on the visitor's row, and the acceptance criteria behind it. "I'm the owner" opens the key box. On a device where the page is unlocked, the footer link reads "Visitor stats" and a Stats item appears in the main menu. Each denied visit is counted as the anonymous event `owner-desk-denied`.
+
+## Site pages and footer
+
+The footer on every page links to the main sections, contact details, the résumé, and three site pages: `#privacy` (privacy notice), `#terms` (terms of use, with credits and licences) and `#accessibility` (accessibility statement). Their text lives in `assets/js/data/legal.js`; change `updated` there whenever the wording changes. If the site starts storing anything new in the browser or loading a new outside service, add it to the privacy notice.
+
+## Handover: common updates
+
+| To change | Do this |
+|---|---|
+| Résumé | Replace `assets/Abhishek_Yadav_Business_Analyst_Resume.pdf`, keeping the same file name. Both download buttons pick it up. |
+| Profile photo | Replace `assets/img/abhishek-yadav.webp` and `.jpg` (560 × 700, portrait). Rebuild `assets/img/og-card.jpg` (1200 × 630) so link previews match. |
+| Any text | Edit the files in `assets/js/data/`, or the overview in `home()` in `assets/js/app.js`. |
+| Visitor stats | GoatCounter site `abhiyknp` (`assets/js/stats.js`). The private view is the footer's "Owner's desk". |
+| After any change | Bump the `?v=` tag on the asset links in `index.html` so browsers fetch the new files, then push to `main`. GitHub Pages republishes in a minute or two. |

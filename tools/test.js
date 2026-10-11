@@ -84,6 +84,8 @@ const go = async (pg, hash) => { await pg.evaluate((h) => { location.hash = h; }
     const solved = await pg.$('.pz-done'); log(tag, 'puzzle:', solved ? (await pg.textContent('.pz-done h2')) : 'not solved', '| flow steps', await pg.$$eval('.pz-flow li', (e) => e.length)); if (!solved) errs.push(`${tag} puzzle not solvable`); await overflow(pg, tag, 'puzzle');
     await pg.click('[data-act="pz-again"]'); await pg.click('.pz-tray .pz-card'); log(tag, 'puzzle restart, one placed:', await pg.$$eval('.pz-slot:not(.empty)', (e) => e.length));
     await go(pg, 'stats'); log(tag, 'owner desk denied:', await pg.isVisible('.dm-stamp'), '| footer link:', (await pg.textContent('#owner-link')).trim(), '| not in nav:', !(await pg.$('#site-nav a[href="#stats"]'))); await pg.click('[data-act="own-iam"]'); log(tag, 'owner key box opens:', await pg.isVisible('#owner-key')); await overflow(pg, tag, 'stats');
+    for (const k of ['privacy', 'terms', 'accessibility']) { await go(pg, k); const n = await pg.$$eval('.legal-sec', (e) => e.length); if (!n) errs.push(`${tag} ${k} page empty`); await overflow(pg, tag, k); }
+    log(tag, 'site pages: privacy, terms, accessibility | footer links:', await pg.$$eval('.site-footer a', (e) => e.length));
     await go(pg, 'nope'); log(tag, '404:', await pg.textContent('h1'));
     await pg.click('[data-act="theme"]'); log(tag, 'theme:', await pg.evaluate(() => document.documentElement.getAttribute('data-theme')));
     await go(pg, 'home'); await shot(pg, tag + '-home-dark');

@@ -370,6 +370,14 @@
 
   /* ---------------- Evidence map ---------------- */
   var evf = { ev: 'all', area: 'all', q: '' };
+  /* Privacy notice, terms of use and accessibility statement (content in data/legal.js). */
+  function legalView(key) {
+    var d = PF.legal[key];
+    return '<div class="wrap page legal"><header class="page-head"><p class="kicker">Site information</p><h1>' + d.title + '</h1><p class="lede">' + d.lede + '</p><p class="small muted">Last updated ' + PF.legal.updated + '</p></header>' +
+      '<nav class="legal-toc" aria-label="On this page"><ol>' + d.sections.map(function (s, i) { return '<li><a href="#' + key + '" data-act="jump-sec" data-target="lg-' + i + '">' + s[0] + '</a></li>'; }).join('') + '</ol></nav>' +
+      d.sections.map(function (s, i) { return '<section class="legal-sec" id="lg-' + i + '" aria-labelledby="lg-h-' + i + '"><h2 id="lg-h-' + i + '">' + s[0] + '</h2>' + s[1] + '</section>'; }).join('') +
+      '<p class="legal-more small muted">Also see: ' + ['privacy', 'terms', 'accessibility'].filter(function (k) { return k !== key; }).map(function (k) { return '<a href="#' + k + '">' + PF.legal[k].title + '</a>'; }).join(' · ') + '</p></div>';
+  }
   function evidenceView() {
     return '<div class="wrap page"><header class="page-head"><p class="kicker">Deep-dive · Evidence map</p><h1>Skills-to-evidence map</h1><p class="lede">Where each skill is demonstrated: the explanation, the project or illustrative scenario, the artifact, the case study and the interview question, with an evidence status rather than a proficiency score.</p></header>' +
       '<div class="filters"><label class="search" for="ev-q">' + SEARCH_ICON + '<input id="ev-q" type="search" placeholder="Filter by skill or tool" autocomplete="off" aria-label="Filter the evidence map" value="' + esc(evf.q) + '"></label>' +
@@ -393,7 +401,7 @@
   var current = '', navStack = [], scrollMemo = {};
   function pageLabel(h) {
     var p = h.split('.'), v = p[0], id = p.slice(1).join('.'), x;
-    var L = { home: 'Overview', skills: 'Skills Library', cases: 'Case studies', studio: 'Artifact Studio', scenarios: 'Scenarios', evidence: 'Evidence map', puzzle: 'Process puzzle', stats: 'Visitor stats' };
+    var L = { home: 'Overview', skills: 'Skills Library', cases: 'Case studies', studio: 'Artifact Studio', scenarios: 'Scenarios', evidence: 'Evidence map', puzzle: 'Process puzzle', stats: 'Visitor stats', privacy: 'Privacy notice', terms: 'Terms of use', accessibility: 'Accessibility statement' };
     if (v === 'skill' && (x = skill(id))) return x.name;
     if (v === 'case' && (x = cs(id))) return x.short;
     if (v === 'studio' && id && (x = art(id))) return x.name;
@@ -422,6 +430,7 @@
       case 'puzzle': html = window.PFX.puzzleView(); navKey = 'scenarios'; break;
       case 'stats': html = window.PFOwner.view(); navKey = 'stats'; break;
       case 'evidence': html = evidenceView(); break;
+      case 'privacy': case 'terms': case 'accessibility': html = legalView(view); navKey = ''; break;
       default: html = notFound(); navKey = '';
     }
     closeModal();
@@ -541,7 +550,7 @@
   }
   var INDEX = null;
   function buildIndex() {
-    INDEX = [{ t: 'Page', n: 'Overview and 60-second summary', h: '#home', k: 'home executive summary contact' }, { t: 'Page', n: 'Skills Library', h: '#skills', k: '' }, { t: 'Page', n: 'Artifact Studio', h: '#studio', k: '' }, { t: 'Page', n: 'Decision scenarios', h: '#scenarios', k: '' }, { t: 'Page', n: 'Evidence map', h: '#evidence', k: 'skills evidence matrix' }, { t: 'Page', n: 'Process puzzle: chaos to clarity', h: '#puzzle', k: 'game challenge quick order workflow' }]
+    INDEX = [{ t: 'Page', n: 'Overview and 60-second summary', h: '#home', k: 'home executive summary contact' }, { t: 'Page', n: 'Skills Library', h: '#skills', k: '' }, { t: 'Page', n: 'Artifact Studio', h: '#studio', k: '' }, { t: 'Page', n: 'Decision scenarios', h: '#scenarios', k: '' }, { t: 'Page', n: 'Evidence map', h: '#evidence', k: 'skills evidence matrix' }, { t: 'Page', n: 'Process puzzle: chaos to clarity', h: '#puzzle', k: 'game challenge quick order workflow' }, { t: 'Page', n: 'Privacy notice', h: '#privacy', k: 'privacy data cookies goatcounter analytics' }, { t: 'Page', n: 'Terms of use', h: '#terms', k: 'terms conditions licence credits copyright' }, { t: 'Page', n: 'Accessibility statement', h: '#accessibility', k: 'accessibility wcag keyboard screen reader' }]
       .concat(PF.skills.map(function (s) { return { t: 'Skill', n: s.name, h: '#skill.' + s.id, k: s.tags.join(' ') + ' ' + s.tools.join(' ') + ' ' + s.sum + ' ' + s.evNote + ' ' + strip(s.def + ' ' + s.scenario + ' ' + s.enterprise) }; }))
       .concat(PF.cases.map(function (c) { return { t: 'Case study', n: c.name, h: '#case.' + c.id, k: c.domain + ' ' + c.org + ' ' + c.lede + ' ' + c.facts.map(function (f) { return f[1]; }).join(' ') }; }))
       .concat(PF.artifacts.map(function (a) { return { t: 'Artifact', n: a.name, h: '#studio.' + a.id, k: a.kind + ' ' + a.purpose + ' ' + a.problem + ' ' + strip(a.tabs.map(function (t) { return t[1]; }).join(' ')).slice(0, 4000) }; }))
@@ -596,6 +605,7 @@
       case 'goto': var el = document.getElementById(t.getAttribute('data-target')); if (el) { el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); } break;
       case 'jump': e.preventDefault(); var b = document.getElementById(t.getAttribute('data-target')); if (b) { b.open = true; b.scrollIntoView(); b.querySelector('summary').focus({ preventScroll: true }); } break;
       case 'chain': chain(+t.getAttribute('data-i')); break;
+      case 'jump-sec': e.preventDefault(); var sec = document.getElementById(t.getAttribute('data-target')); if (sec) { sec.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); var hh = sec.querySelector('h2'); hh.setAttribute('tabindex', '-1'); hh.focus({ preventScroll: true }); } break;
       case 'back': if (navStack.length > 1) history.back(); else location.hash = t.getAttribute('data-to'); break;
       case 'skip-intro': var hero = document.getElementById('hero'); if (hero) { window.scrollTo(0, hero.getBoundingClientRect().top + scrollY - (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--tb')) || 64)); var h1 = document.getElementById('h-title'); h1.setAttribute('tabindex', '-1'); h1.focus({ preventScroll: true }); } break;
       case 'h-ac': var ul = document.getElementById('h-ac'), open = ul.hidden; ul.hidden = !open; t.setAttribute('aria-expanded', String(open)); t.textContent = open ? 'Hide acceptance criteria' : 'Show acceptance criteria'; break;

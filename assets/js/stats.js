@@ -36,6 +36,14 @@
   s.onload = function () { queue.splice(0).forEach(send); };
   document.head.appendChild(s);
 
-  var foot = document.querySelector('.site-footer .foot');
-  if (foot) foot.insertAdjacentHTML('beforeend', '<p class="small muted">Visits are counted with GoatCounter: no cookies and no personal data.</p>');
+  /* "#toggle-goatcounter" switches counting off or on for this browser. GoatCounter's script only checks it when a page
+     first loads, so handle it here too for clicks within the site. */
+  window.addEventListener('hashchange', function () {
+    if (location.hash !== '#toggle-goatcounter') return;
+    try {
+      if (localStorage.getItem('skipgc') === 't') { localStorage.removeItem('skipgc'); alert('Visit counting is now ON in this browser.'); }
+      else { localStorage.setItem('skipgc', 't'); alert('Visit counting is now OFF in this browser.'); }
+    } catch (e) {}
+    history.back();
+  });
 })();
