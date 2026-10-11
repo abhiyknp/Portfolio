@@ -7,12 +7,15 @@
   if (!GOATCOUNTER_CODE) return;
 
   var queue = [];
-  function send(o) { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count(o); else queue.push(o); }
+  /* The owner's own browsing is not counted once the private stats page is unlocked on that device. */
+  function isOwner() { try { return !!localStorage.getItem('pf-owner-gc'); } catch (e) { return false; } }
+  function send(o) { if (isOwner()) return; if (window.goatcounter && window.goatcounter.count) window.goatcounter.count(o); else queue.push(o); }
 
   /* The site routes with #hash, so each view is counted as its own page. */
   document.addEventListener('pf:route', function () {
     var h = location.hash.slice(1) || 'home';
     if (h === 'summary' || h === 'contact') h = 'home';
+    if (h === 'stats') return;
     send({ path: '/' + h.split('.')[0] + (h.indexOf('.') > -1 ? '/' + h.split('.').slice(1).join('.') : ''), title: document.title });
   });
   /* Events worth knowing about: résumé downloads, contact clicks and the interactive pieces. */

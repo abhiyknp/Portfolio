@@ -393,7 +393,7 @@
   var current = '', navStack = [], scrollMemo = {};
   function pageLabel(h) {
     var p = h.split('.'), v = p[0], id = p.slice(1).join('.'), x;
-    var L = { home: 'Overview', skills: 'Skills Library', cases: 'Case studies', studio: 'Artifact Studio', scenarios: 'Scenarios', evidence: 'Evidence map', puzzle: 'Process puzzle' };
+    var L = { home: 'Overview', skills: 'Skills Library', cases: 'Case studies', studio: 'Artifact Studio', scenarios: 'Scenarios', evidence: 'Evidence map', puzzle: 'Process puzzle', stats: 'Visitor stats' };
     if (v === 'skill' && (x = skill(id))) return x.name;
     if (v === 'case' && (x = cs(id))) return x.short;
     if (v === 'studio' && id && (x = art(id))) return x.name;
@@ -420,6 +420,7 @@
       case 'scenarios': html = scenariosView(); break;
       case 'scenario': html = scenarioView(id); navKey = 'scenarios'; break;
       case 'puzzle': html = window.PFX.puzzleView(); navKey = 'scenarios'; break;
+      case 'stats': html = window.PFOwner.view(); navKey = ''; break;
       case 'evidence': html = evidenceView(); break;
       default: html = notFound(); navKey = '';
     }
@@ -429,7 +430,7 @@
     document.querySelectorAll('[data-nav]').forEach(function (a) { if (a.getAttribute('data-nav') === navKey) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
     var h1 = main.querySelector('h1');
     document.title = view === 'home' ? 'Abhishek Yadav, Business Analyst' : (h1 ? h1.textContent + ' · ' : '') + 'Abhishek Yadav';
-    window.PFW.hydrate(main); window.PFX.hydrate(main); hydrateTabs(main);
+    window.PFW.hydrate(main); window.PFX.hydrate(main); window.PFOwner.hydrate(main); hydrateTabs(main);
     if (view === 'skills') { drawLib(); }
     if (view === 'evidence') { drawEvidence(); }
     if (stopIntro) { stopIntro(); stopIntro = null; }

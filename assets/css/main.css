@@ -715,3 +715,46 @@ a.h-case:hover { transform: translateY(-3px); border-color: color-mix(in srgb, v
 @keyframes pz-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .pz-flow li { animation: none; } .pz-card, .cmp-knob, .h-pz .go { transition: none; } }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* ---------------- Owner view (#stats) ---------------- */
+:root { --viz-bar: #5288d8; }
+:root[data-theme="light"] { --viz-bar: #2a5fb4; }
+.owner-lock { max-width: 34rem; display: grid; gap: var(--s-3); }
+.owner-lock h2 { margin: 0; font-size: var(--t-xl); }
+.owner-lock p { margin: 0; }
+.owner-lock input { font: 500 var(--t-md)/1.3 var(--f-mono); padding: .7rem .8rem; border-radius: 8px; border: 1px solid var(--rule); background: var(--surface-2); color: var(--ink); width: 100%; }
+.owner-lock input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.owner-lock ol { margin: .5rem 0 0; padding-left: 1.2rem; }
+.owner-err { margin: 0; color: var(--bad); background: var(--bad-bg); padding: .6rem .8rem; border-radius: 8px; }
+.owner-err a { color: inherit; }
+.owner-bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s-3); align-items: center; margin-bottom: var(--s-3); }
+.owner-bar .btn { padding: .45rem .8rem; }
+.owner-tiles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--s-3); margin: var(--s-4) 0; }
+@media (max-width: 980px) { .owner-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } .owner-tiles .owner-tile:first-child { grid-column: 1 / -1; } }
+.owner-tile { display: grid; gap: .25rem; align-content: start; padding: var(--s-4); background: var(--surface); border: 1px solid var(--rule); border-radius: var(--r); min-width: 0; }
+.owner-tile .l { font: 500 var(--t-xs)/1.3 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+.owner-tile .v { font: 800 clamp(1.8rem, 3.4vw, 2.5rem)/1.05 var(--f-display); color: var(--ink); font-variant-numeric: tabular-nums; }
+.owner-sec { display: grid; gap: var(--s-3); align-content: start; }
+.owner-sec h2 { margin: 0; font-size: var(--t-lg); }
+.owner-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-4); margin: var(--s-4) 0; }
+@media (max-width: 780px) { .owner-grid { grid-template-columns: 1fr; } }
+.owner-rank { list-style: none; margin: 0; padding: 0; display: grid; gap: .55rem; }
+.owner-rank li { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) auto; gap: .7rem; align-items: center; font-size: var(--t-sm); }
+.owner-rank .n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); }
+.owner-rank .b { height: 10px; background: var(--surface-2); border-radius: 4px; overflow: hidden; }
+.owner-rank .b i { display: block; height: 100%; background: var(--viz-bar); border-radius: 0 4px 4px 0; }
+.owner-rank .c { font: 500 var(--t-sm)/1 var(--f-mono); color: var(--ink-2); min-width: 2.5ch; text-align: right; font-variant-numeric: tabular-nums; }
+.owner-chart { position: relative; }
+.owner-chart svg { width: 100%; height: 190px; display: block; overflow: visible; }
+.owner-chart .og { stroke: var(--rule); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.owner-plot { position: relative; margin-right: 2.6rem; }
+.owner-y span { position: absolute; left: 100%; margin-left: .4rem; transform: translateY(-50%); font: 500 var(--t-xs)/1 var(--f-mono); color: var(--ink-3); }
+.owner-chart .bar { fill: var(--viz-bar); }
+.owner-chart .hit { fill: transparent; }
+.owner-chart .ob.on .hit { fill: color-mix(in srgb, var(--ink) 6%, transparent); }
+.owner-axis { position: relative; height: 1.4rem; margin-top: .3rem; margin-right: 2.6rem; }
+.owner-axis span { position: absolute; transform: translateX(-50%); white-space: nowrap; font: 500 var(--t-xs)/1 var(--f-mono); color: var(--ink-3); }
+.owner-axis span:first-child { transform: none; }
+.owner-axis span:last-child:not(:first-child) { transform: translateX(-100%); }
+.owner-tip { position: absolute; top: -.4rem; padding: .35rem .6rem; border-radius: 6px; background: var(--ink); color: var(--paper); font: 600 var(--t-xs)/1.2 var(--f-body); pointer-events: none; white-space: nowrap; box-shadow: var(--shadow); }
+.owner details table { margin-top: .5rem; }

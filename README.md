@@ -38,7 +38,8 @@ assets/css/main.css        design tokens (light and dark) and all styles
 assets/js/app.js           router, views, search, filters, tabs, modal, palette, progress
 assets/js/widgets.js       swimlane flows, decision table, KPI dashboard, ERD
 assets/js/extras.js        before/after slider and process puzzle
-assets/js/stats.js         GoatCounter visit counts (off until a site code is set)
+assets/js/stats.js         GoatCounter visit counts
+assets/js/owner.js         private owner view of the stats (#stats)
 assets/js/intros.js        scroll intros (the home page uses chaos-to-clarity; the thread and blueprint intros are kept for reference)
 assets/js/intro.js         earlier "request's journey" intro, kept for the concepts page
 concepts/                  design study: direction A with four intro prototypes
@@ -73,3 +74,7 @@ The background graph shows traceability layers (objectives, requirements, storie
 ## Visitor stats
 
 `assets/js/stats.js` counts visits with [GoatCounter](https://www.goatcounter.com): no cookies, no personal data, no consent banner. It is off until you set `GOATCOUNTER_CODE` at the top of the file to your GoatCounter site code. Each view is counted as its own page (`/case/rajmarg`, `/puzzle`, ...), and these events are recorded: `resume-download`, `email-click`, `email-copy`, `linkedin-click`, `compare-used` and `puzzle-solved`. A footer line tells visitors that visits are counted.
+
+### Private owner view
+
+`#stats` (not linked anywhere) shows the numbers in the site's own design: visitors, page visits, résumé downloads, contact clicks, puzzle and slider use, visitors per day, most-read pages, actions, sources, countries, screen sizes, browsers and operating systems, for today, 7, 30 or 90 days. It stays locked until you enter a GoatCounter API key with only "Read statistics" permission (GoatCounter → Settings → API). The key is kept in that browser only and sent only to GoatCounter; "Lock" removes it. Visits from a browser where the page is unlocked are not counted.
