@@ -40,6 +40,7 @@ assets/js/widgets.js       swimlane flows, decision table, KPI dashboard, ERD
 assets/js/extras.js        before/after slider and process puzzle
 assets/js/stats.js         GoatCounter visit counts
 assets/js/owner.js         private owner view of the stats (#stats)
+assets/js/loader.js        "chaos to clarity" loader shared by the first-visit screen and #stats
 assets/js/intros.js        scroll intros (the home page uses chaos-to-clarity; the thread and blueprint intros are kept for reference)
 assets/js/intro.js         earlier "request's journey" intro, kept for the concepts page
 concepts/                  design study: direction A with four intro prototypes
@@ -78,3 +79,7 @@ The background graph shows traceability layers (objectives, requirements, storie
 ### Private owner view
 
 `#stats` (not linked anywhere) shows the numbers in the site's own design: visitors, page visits, résumé downloads, contact clicks, puzzle and slider use, visitors per day, most-read pages, actions, sources, countries, screen sizes, browsers and operating systems, for today, 7, 30 or 90 days. It stays locked until you enter a GoatCounter API key with only "Read statistics" permission (GoatCounter → Settings → API). The key is kept in that browser only and sent only to GoatCounter; "Lock" removes it. Visits from a browser where the page is unlocked are not counted.
+
+### Loader
+
+`assets/js/loader.js` draws the "chaos to clarity" loader: small words spin around a gold line, gather behind its tip and merge into it one at a time while it fills smoothly. The first-visit screen (top of `index.html`) uses it only when the site is not ready within half a second, ending on "Ready."; fast visits never see it. The stats page uses it while GoatCounter answers, ending on "Clarity."
