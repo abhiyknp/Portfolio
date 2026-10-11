@@ -773,15 +773,15 @@ a.h-case:hover { transform: translateY(-3px); border-color: color-mix(in srgb, v
 .oc-thread { position: absolute; left: clamp(20px, 4%, 40px); right: clamp(20px, 4%, 40px); top: 50%; height: 3px; margin-top: -1.5px; z-index: 2; }
 .oc-track { position: absolute; inset: 0; border-radius: 3px; background: var(--rule); }
 .oc-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 3px; background: var(--signal); box-shadow: 0 0 10px color-mix(in srgb, var(--signal) 55%, transparent); }
-.oc-fill::after { content: ""; position: absolute; right: -4px; top: 50%; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 50%; background: #fff6dc; box-shadow: 0 0 9px 3px var(--signal); opacity: var(--tipo, 0); }
+.oc-fill::after { content: ""; position: absolute; right: -4px; top: 50%; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 50%; background: var(--signal); box-shadow: 0 0 8px 2px color-mix(in srgb, var(--signal) 70%, transparent); opacity: var(--tipo, 0); }
 .oc-fill.hit::after { animation: oc-tip .35s ease-out; }
-@keyframes oc-tip { 40% { transform: scale(1.6); box-shadow: 0 0 16px 5px var(--signal); } }
+@keyframes oc-tip { 40% { transform: scale(1.5); box-shadow: 0 0 14px 4px color-mix(in srgb, var(--signal) 85%, transparent); } }
 .oc-cap { position: absolute; left: 0; right: 0; top: 50%; margin: 0; text-align: center; font: 800 clamp(1.1rem, 2.2vw, 1.5rem)/1 var(--f-display); letter-spacing: -.01em; color: var(--signal); opacity: 0; transform: translateY(calc(-100% - 14px)) scale(.96); transition: opacity .5s .2s, transform .5s .2s; }
 /* Everything in: a shine sweeps the full line and "Clarity." appears above it. */
 .owner-chaos.oc-clear .oc-cap { opacity: 1; transform: translateY(calc(-100% - 18px)); }
-.owner-chaos.oc-clear .oc-fill { background: linear-gradient(90deg, var(--signal) 0%, var(--signal) 40%, #fff3cf 50%, var(--signal) 60%, var(--signal) 100%); background-size: 250% 100%; animation: oc-shine 1.1s ease-out both; }
+.owner-chaos.oc-clear .oc-fill { background: linear-gradient(90deg, var(--signal) 0%, var(--signal) 40%, #ffd97a 50%, var(--signal) 60%, var(--signal) 100%); background-size: 250% 100%; animation: oc-shine 1.1s ease-out both; }
 .owner-chaos.oc-clear .oc-fill::after { animation: oc-burst .7s ease-out; }
 @keyframes oc-shine { from { background-position: 100% 0; box-shadow: 0 0 24px var(--signal); } to { background-position: -100% 0; box-shadow: 0 0 10px color-mix(in srgb, var(--signal) 55%, transparent); } }
-@keyframes oc-burst { 35% { transform: scale(2.6); box-shadow: 0 0 26px 10px var(--signal); } }
+@keyframes oc-burst { 35% { transform: scale(2.4); box-shadow: 0 0 24px 8px color-mix(in srgb, var(--signal) 85%, transparent); } }
 @media (max-width: 700px) { .oc-w:nth-child(3n) { display: none; } }
 @media (prefers-reduced-motion: reduce) { .spin, .oc-fill.hit::after, .owner-chaos.oc-clear .oc-fill, .owner-chaos.oc-clear .oc-fill::after { animation: none !important; } .oc-cap { transition: none; } }
