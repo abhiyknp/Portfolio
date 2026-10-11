@@ -6,8 +6,9 @@
   var SITE = 'https://abhiyknp.goatcounter.com', KEY = 'pf-owner-gc';
   var RANGES = [['1', 'Today'], ['7', '7 days'], ['30', '30 days'], ['90', '90 days']];
   var EVENTS = { 'resume-download': 'Résumé downloaded', 'email-click': 'Email link clicked', 'email-copy': 'Email address copied', 'linkedin-click': 'LinkedIn opened', 'compare-used': 'Before/after slider used', 'puzzle-solved': 'Puzzle solved' };
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   var state = { days: '7', data: null, error: '', loading: false, status: 'Loading…', cache: {}, step: 0, total: 7 };
-  var CACHE_MS = 10 * 60 * 1000, CACHE_KEY = 'pf-owner-cache';
+  var CACHE_MS = 10 * 60 * 1000, CACHE_KEY = 'pf-owner-cache-2';
   try { state.cache = JSON.parse(sessionStorage.getItem(CACHE_KEY)) || {}; } catch (e) {}
   function saveCache() { try { sessionStorage.setItem(CACHE_KEY, JSON.stringify(state.cache)); } catch (e) {} }
 
@@ -88,16 +89,35 @@
   }
 
   /* Loading state: a progress bar, what is happening now, and a placeholder of the layout that is coming. */
+  /* Loading state, "chaos to clarity": the messy questions behind each figure drift on the page, and each one settles
+     into a clean, ticked label as its figures arrive. Same order as the requests in load(). */
+  var CHAOS = [
+    ['how many people came??', 'Visitors', 3, 8, -6],
+    ['which pages do they actually read', 'Pages and actions', 50, 5, 4],
+    ['LinkedIn or Google or what?', 'Sources', 22, 31, -3],
+    ['anyone from outside India?', 'Countries', 55, 36, 6],
+    ['phone or laptop…', 'Screen sizes', 5, 60, 5],
+    ['chrome? safari?', 'Browsers', 40, 66, -5],
+    ['windows / mac / android??', 'Operating systems', 54, 72, 3]
+  ];
   function loader() {
-    var sk = function (cls) { return '<span class="sk ' + cls + '"></span>'; };
-    var panel = function () { return '<div class="panel owner-sec">' + sk('sk-h') + [1, 2, 3, 4].map(function () { return '<span class="sk-row">' + sk('sk-t') + sk('sk-b') + '</span>'; }).join('') + '</div>'; };
     return '<div class="owner-load" aria-busy="true">' +
       '<div class="owner-prog" role="progressbar" aria-label="Loading visitor stats" aria-valuemin="0" aria-valuemax="' + state.total + '" aria-valuenow="' + state.step + '"><i style="width:' + (state.step / state.total * 100).toFixed(1) + '%"></i></div>' +
       '<p class="owner-status" role="status" id="own-status"><span class="spin" aria-hidden="true"></span><span id="own-status-t">' + esc(state.status) + '</span></p>' +
-      '<div class="owner-tiles" aria-hidden="true">' + [1, 2, 3, 4, 5].map(function () { return '<div class="owner-tile">' + sk('sk-l') + sk('sk-v') + sk('sk-t') + '</div>'; }).join('') + '</div>' +
-      '<div class="panel owner-sec" aria-hidden="true">' + sk('sk-h') + '<span class="sk sk-chart"></span></div>' +
-      '<div class="owner-grid" aria-hidden="true">' + panel() + panel() + '</div></div>';
+      '<div class="panel owner-chaos" aria-hidden="true"><div class="oc-targets">' + CHAOS.map(function (c) { return '<span class="oc-chip oc-ghost">✓ ' + c[1] + '</span>'; }).join('') + '</div>' +
+        CHAOS.map(function (c, i) { return '<span class="oc-chip oc-mess" data-i="' + i + '" style="left:' + c[2] + '%;top:' + c[3] + '%;--r:' + c[4] + 'deg;--d:' + (i * -0.7).toFixed(1) + 's">' + c[0] + '</span>'; }).join('') +
+        '<p class="oc-cap">Turning questions into numbers…</p></div></div>';
   }
+  /* Move chip i onto its place in the neat row and swap its text for the clean label. */
+  function settle(i) {
+    var box = document.querySelector('.owner-chaos'); if (!box) return;
+    var chip = box.querySelector('.oc-mess[data-i="' + i + '"]'), ghost = box.querySelectorAll('.oc-ghost')[i];
+    if (!chip || !ghost) return;
+    chip.classList.add('oc-done'); chip.textContent = '✓ ' + CHAOS[i][1];
+    chip.style.left = ghost.offsetLeft + 'px'; chip.style.top = ghost.offsetTop + 'px';
+    if (box.querySelectorAll('.oc-done').length === CHAOS.length) { box.classList.add('oc-clear'); box.querySelector('.oc-cap').textContent = 'Clarity.'; status('All figures in.'); }
+  }
+  window.addEventListener('resize', function () { document.querySelectorAll('.owner-chaos .oc-done').forEach(function (c) { settle(+c.getAttribute('data-i')); }); });
 
   /* Ranked list: label, a bar scaled to the largest value, and the number. */
   function ranked(title, rows, empty) {
@@ -134,6 +154,7 @@
   function progress(i) {
     state.step = i; var bar = document.querySelector('.owner-prog');
     if (bar) { bar.setAttribute('aria-valuenow', String(i)); bar.firstChild.style.width = (i / state.total * 100).toFixed(1) + '%'; }
+    for (var k = 0; k < i; k++) settle(k);
   }
   /* Wait with a visible countdown: "Trying again in 8 seconds…", "7 seconds…" and so on. */
   function countdown(secs, lead) {
@@ -163,7 +184,12 @@
     var hit = state.cache[state.days];
     if (!force && hit && Date.now() - hit.t < CACHE_MS) { state.token = {}; state.loading = false; state.error = ''; state.data = hit.data; draw(); return; }
     var days = +state.days, end = new Date(), start = new Date(); start.setDate(end.getDate() - (days - 1));
-    var p = { start: ymd(start), end: ymd(end) }, out = {};
+    /* GoatCounter reads a bare date as midnight, which would leave out today. Send exact times instead: from the
+       start of the first day to the end of the current hour (GoatCounter counts by the hour). */
+    var from = new Date(start); from.setHours(0, 0, 0, 0);
+    var to = new Date(end); to.setMinutes(0, 0, 0); to.setHours(to.getHours() + 1);
+    var iso = function (d) { return d.toISOString().replace(/\.\d{3}Z$/, 'Z'); };
+    var p = { start: iso(from), end: iso(to) }, out = {}, day0 = ymd(start), day1 = ymd(end);
     var token = state.token = {};
     state.loading = true; state.error = ''; state.status = 'Connecting to GoatCounter…'; state.step = 0; draw();
     /* One request every 1.2 seconds keeps well inside GoatCounter's rate limit. */
@@ -196,11 +222,11 @@
           total: out.total.total != null ? out.total.total : out.total.total_unique,
           hits: hits, daily: Object.keys(byDay).sort().map(function (k) { return [k, byDay[k]]; }),
           refs: out.refs.stats || [], locations: out.locations.stats || [], sizes: out.sizes.stats || [], browsers: out.browsers.stats || [], systems: out.systems.stats || [],
-          label: days === 1 ? 'Today' : 'Last ' + days + ' days (' + label(p.start) + ' to ' + label(p.end) + ')',
+          label: days === 1 ? 'Today' : 'Last ' + days + ' days (' + label(day0) + ' to ' + label(day1) + ')',
           at: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
         };
         state.cache[state.days] = { data: state.data, t: Date.now() }; saveCache();
-        state.loading = false; draw();
+        return wait(reduce.matches ? 0 : 700).then(function () { if (state.token !== token) return; state.loading = false; draw(); });
       })
       .catch(function (e) {
         if (state.token !== token || (e && e.stale)) return;
