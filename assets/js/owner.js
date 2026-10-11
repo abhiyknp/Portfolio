@@ -7,7 +7,8 @@
   var RANGES = [['1', 'Today'], ['7', '7 days'], ['30', '30 days'], ['90', '90 days']];
   /* GoatCounter groups screen widths into these codes and sends no display name for them. */
   var SIZES = { phone: 'Phones (up to 600px)', tablet: 'Tablets (601 to 1000px)', desktop: 'Laptops and desktops', desktophd: 'Large screens (over 1920px)', unknown: 'Unknown' };
-  var EVENTS = { 'resume-download': 'Résumé downloaded', 'email-click': 'Email link clicked', 'email-copy': 'Email address copied', 'linkedin-click': 'LinkedIn opened', 'compare-used': 'Before/after slider used', 'puzzle-solved': 'Puzzle solved' };
+  function track(name) { document.dispatchEvent(new CustomEvent('pf:track', { detail: name })); }
+  var EVENTS = { 'resume-download': 'Résumé downloaded', 'email-click': 'Email link clicked', 'email-copy': 'Email address copied', 'linkedin-click': 'LinkedIn opened', 'compare-used': 'Before/after slider used', 'puzzle-solved': 'Puzzle solved', 'owner-desk-denied': 'Tried the owner\'s desk (denied)' };
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   var state = { days: '7', data: null, error: '', loading: false, status: 'Loading…', cache: {}, step: 0, total: 7 };
   var CACHE_MS = 10 * 60 * 1000, CACHE_KEY = 'pf-owner-cache-2';
@@ -39,7 +40,31 @@
     return path;
   }
 
+  /* Everyone except the owner gets an "access denied" page, written as the access rule that denies them: a role and
+     permission matrix with a DENIED stamp on their row, plus the acceptance criteria. The owner reaches the key box
+     through "I'm the owner". No figures are requested until a key is present. */
+  var LOCK = '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="9" width="12" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9" fill="none" stroke="currentColor" stroke-width="1.7"/></svg>';
+  function denied() {
+    var Y = '<td class="dm-y"><span aria-hidden="true">✓</span><span class="sr-only">Allowed</span></td>';
+    var N = '<td class="dm-n"><span aria-hidden="true">✕</span><span class="sr-only">Denied</span></td>';
+    return '<div class="wrap page owner deny"><header class="page-head"><p class="kicker">' + LOCK + ' Owner\'s desk · restricted</p><h1>Access request denied.</h1>' +
+      '<p class="lede">Good instinct to look behind the curtain. This page shows who visits the portfolio, and that stays with the owner. Here is the rule that stopped you, written the way I would write it for a real system.</p></header>' +
+      '<div class="panel deny-matrix"><div class="tw-auto"><table><caption>Rule RBAC-07 · Role-based access for this site</caption>' +
+        '<thead><tr><th scope="col">Role</th><th scope="col">Read case studies</th><th scope="col">Download résumé</th><th scope="col">Use the Artifact Studio</th><th scope="col">See visitor statistics</th></tr></thead><tbody>' +
+        '<tr class="dm-you"><th scope="row">Visitor <span class="dm-tag">you</span></th>' + Y + Y + Y + '<td class="dm-n dm-stamp-cell"><span aria-hidden="true">✕</span><span class="sr-only">Denied</span><span class="dm-stamp" aria-hidden="true">Denied</span></td></tr>' +
+        '<tr><th scope="row">Recruiter</th>' + Y + Y + Y + N + '</tr>' +
+        '<tr><th scope="row">Product owner <span class="small muted">(Abhishek)</span></th>' + Y + Y + Y + Y + '</tr>' +
+      '</tbody></table></div></div>' +
+      '<div class="panel deny-ac"><h2>Acceptance criteria</h2><ul class="h-ac">' +
+        '<li><b>Given</b> I am not the owner, <b>when</b> I open the owner\'s desk, <b>then</b> I see this page and no figures are loaded.</li>' +
+        '<li><b>Given</b> I am the owner on an unlocked device, <b>when</b> I open it, <b>then</b> I see the visitor statistics.</li>' +
+        '<li><b>Given</b> a denied visit, <b>then</b> it is counted as one anonymous event, with nothing about who you are.</li></ul></div>' +
+      '<div class="btn-row"><a class="btn" href="#cases">Explore the case studies</a><a class="btn ghost" href="#skill.rbac">How I write access rules</a></div>' +
+      '<p class="deny-owner"><button type="button" class="linkish" data-act="own-iam" aria-expanded="false" aria-controls="owner">I\'m the owner</button></p>' +
+      '<div id="owner" hidden></div></div>';
+  }
   function view() {
+    if (!getKey()) return denied();
     return '<div class="wrap page owner"><header class="page-head"><p class="kicker">Owner view · private</p><h1>Visitor stats</h1>' +
       '<p class="lede">Who is reading the portfolio, what they open and what they do next. Only visible on a device where you have unlocked it.</p></header>' +
       '<div id="owner"></div></div>';
@@ -233,7 +258,7 @@
       .catch(function (e) {
         if (state.token !== token || (e && e.stale)) return;
         state.loading = false; state.data = null;
-        if (e && e.auth) { setKey(''); state.error = 'GoatCounter did not accept that key. Check that it has "Read statistics" permission and try again.'; }
+        if (e && e.auth) { setKey(''); state.error = 'GoatCounter did not accept that key. Check that it has "Read statistics" permission and try again.'; rerender(); openKeyBox(); return; }
         else state.error = (e && e.msg) || 'Could not reach GoatCounter from this page. Check your connection, or open the <a href="' + SITE + '" target="_blank" rel="noopener">full dashboard</a>.';
         draw();
       });
@@ -243,14 +268,15 @@
     if (e.target.id !== 'owner-form') return;
     e.preventDefault();
     var v = document.getElementById('owner-key').value.trim(); if (!v) return;
-    setKey(v); state.error = ''; load();
+    setKey(v); state.error = ''; rerender();
   });
   document.addEventListener('click', function (e) {
     var t = e.target.closest('[data-act^="own-"]'); if (!t) return;
     var a = t.getAttribute('data-act');
     if (a === 'own-range') { state.days = t.getAttribute('data-v'); load(); }
     else if (a === 'own-refresh') load(true);
-    else if (a === 'own-lock') { setKey(''); state.token = {}; state.cache = {}; saveCache(); state.data = null; state.error = ''; draw(); }
+    else if (a === 'own-lock') { setKey(''); state.token = {}; state.cache = {}; saveCache(); state.data = null; state.error = ''; rerender(); }
+    else if (a === 'own-iam') { var o = document.getElementById('owner'); o.hidden = !o.hidden; t.setAttribute('aria-expanded', String(!o.hidden)); if (!o.hidden) { draw(); var k = document.getElementById('owner-key'); if (k) k.focus(); } }
   });
   /* Hover readout for the daily columns. */
   document.addEventListener('pointermove', function (e) {
@@ -264,9 +290,28 @@
     tip.style.left = x + 'px';
   });
 
+  /* Re-run the router for #stats (switches between the denied page and the stats), and keep the owner links in step. */
+  function rerender() { syncLinks(); window.dispatchEvent(new HashChangeEvent('hashchange')); }
+  function openKeyBox() { var b = document.querySelector('[data-act="own-iam"]'), o = document.getElementById('owner'); if (b && o) { o.hidden = false; b.setAttribute('aria-expanded', 'true'); draw(); } }
+  /* Footer link for everyone ("Owner's desk", locked); on the owner's unlocked device it reads "Visitor stats" and a
+     Stats item joins the main menu. */
+  function syncLinks() {
+    var own = !!getKey(), a = document.getElementById('owner-link'), nav = document.getElementById('site-nav'), item = document.getElementById('nav-stats');
+    if (a) { a.innerHTML = (own ? '' : LOCK) + '<span>' + (own ? 'Visitor stats' : 'Owner\'s desk') + '</span>'; a.classList.toggle('is-owner', own); }
+    if (nav && own && !item) nav.insertAdjacentHTML('beforeend', '<a href="#stats" data-nav="stats" id="nav-stats">Stats</a>');
+    if (item && !own) item.remove();
+    if (nav) { var cur = (location.hash.slice(1) || '').split('.')[0] === 'stats'; var n = document.getElementById('nav-stats'); if (n) { if (cur) n.setAttribute('aria-current', 'page'); else n.removeAttribute('aria-current'); } }
+  }
+  document.addEventListener('pf:route', syncLinks);
+  syncLinks();
+
   window.PFOwner = {
     view: view,
-    hydrate: function (root) { if (!root.querySelector('#owner')) return; if (getKey()) load(); else draw(); },
+    hydrate: function (root) {
+      if (!root.querySelector('#owner')) return;
+      if (getKey()) load();
+      else if (root.querySelector('.deny')) { if (state.error) openKeyBox(); else track('owner-desk-denied'); }
+    },
     isOwner: function () { return !!getKey(); }
   };
 })();

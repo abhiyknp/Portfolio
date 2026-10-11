@@ -78,8 +78,10 @@ The background graph shows traceability layers (objectives, requirements, storie
 
 ### Private owner view
 
-`#stats` (not linked anywhere) shows the numbers in the site's own design: visitors, page visits, résumé downloads, contact clicks, puzzle and slider use, visitors per day, most-read pages, actions, sources, countries, screen sizes, browsers and operating systems, for today, 7, 30 or 90 days. It stays locked until you enter a GoatCounter API key with only "Read statistics" permission (GoatCounter → Settings → API). The key is kept in that browser only and sent only to GoatCounter; "Lock" removes it. Visits from a browser where the page is unlocked are not counted.
+`#stats` (the "Owner's desk" link in the footer) shows the numbers in the site's own design: visitors, page visits, résumé downloads, contact clicks, puzzle and slider use, visitors per day, most-read pages, actions, sources, countries, screen sizes, browsers and operating systems, for today, 7, 30 or 90 days. It stays locked until you enter a GoatCounter API key with only "Read statistics" permission (GoatCounter → Settings → API). The key is kept in that browser only and sent only to GoatCounter; "Lock" removes it. Visits from a browser where the page is unlocked are not counted.
 
 ### Loader
 
 `assets/js/loader.js` draws the "chaos to clarity" loader: small words spin around a gold line, gather behind its tip and merge into it one at a time while it fills smoothly. The first-visit screen (top of `index.html`) uses it only when the site is not ready within half a second, ending on "Ready."; fast visits never see it. The stats page uses it while GoatCounter answers, ending on "Clarity."
+
+Visitors who open the owner's desk see an "Access request denied" page instead: a role and permission matrix (rule RBAC-07) with a DENIED stamp on the visitor's row, and the acceptance criteria behind it. "I'm the owner" opens the key box. On a device where the page is unlocked, the footer link reads "Visitor stats" and a Stats item appears in the main menu. Each denied visit is counted as the anonymous event `owner-desk-denied`.

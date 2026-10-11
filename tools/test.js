@@ -83,7 +83,7 @@ const go = async (pg, hash) => { await pg.evaluate((h) => { location.hash = h; }
     await go(pg, 'puzzle'); for (let r = 0; r < 8 && !(await pg.$('.pz-done')); r++) { while (await pg.$('.pz-tray .pz-card')) { const k = (await pg.$$eval('.pz-slot', (e) => e.map((x) => x.classList.contains('empty')))).indexOf(true); await pg.click(`[data-act="pz-place"][data-i="${k}"]`); } await pg.click('[data-act="pz-check"]'); }
     const solved = await pg.$('.pz-done'); log(tag, 'puzzle:', solved ? (await pg.textContent('.pz-done h2')) : 'not solved', '| flow steps', await pg.$$eval('.pz-flow li', (e) => e.length)); if (!solved) errs.push(`${tag} puzzle not solvable`); await overflow(pg, tag, 'puzzle');
     await pg.click('[data-act="pz-again"]'); await pg.click('.pz-tray .pz-card'); log(tag, 'puzzle restart, one placed:', await pg.$$eval('.pz-slot:not(.empty)', (e) => e.length));
-    await go(pg, 'stats'); log(tag, 'owner stats locked:', await pg.isVisible('#owner-key'), '| not in nav:', !(await pg.$('#site-nav a[href="#stats"]'))); await overflow(pg, tag, 'stats');
+    await go(pg, 'stats'); log(tag, 'owner desk denied:', await pg.isVisible('.dm-stamp'), '| footer link:', (await pg.textContent('#owner-link')).trim(), '| not in nav:', !(await pg.$('#site-nav a[href="#stats"]'))); await pg.click('[data-act="own-iam"]'); log(tag, 'owner key box opens:', await pg.isVisible('#owner-key')); await overflow(pg, tag, 'stats');
     await go(pg, 'nope'); log(tag, '404:', await pg.textContent('h1'));
     await pg.click('[data-act="theme"]'); log(tag, 'theme:', await pg.evaluate(() => document.documentElement.getAttribute('data-theme')));
     await go(pg, 'home'); await shot(pg, tag + '-home-dark');

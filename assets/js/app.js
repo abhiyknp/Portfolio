@@ -420,7 +420,7 @@
       case 'scenarios': html = scenariosView(); break;
       case 'scenario': html = scenarioView(id); navKey = 'scenarios'; break;
       case 'puzzle': html = window.PFX.puzzleView(); navKey = 'scenarios'; break;
-      case 'stats': html = window.PFOwner.view(); navKey = ''; break;
+      case 'stats': html = window.PFOwner.view(); navKey = 'stats'; break;
       case 'evidence': html = evidenceView(); break;
       default: html = notFound(); navKey = '';
     }
