@@ -6,7 +6,8 @@
   var SITE = 'https://abhiyknp.goatcounter.com', KEY = 'pf-owner-gc';
   var RANGES = [['1', 'Today'], ['7', '7 days'], ['30', '30 days'], ['90', '90 days']];
   var EVENTS = { 'resume-download': 'Résumé downloaded', 'email-click': 'Email link clicked', 'email-copy': 'Email address copied', 'linkedin-click': 'LinkedIn opened', 'compare-used': 'Before/after slider used', 'puzzle-solved': 'Puzzle solved' };
-  var state = { days: '7', data: null, error: '', loading: false };
+  var state = { days: '7', data: null, error: '', loading: false, status: 'Loading…', cache: {} };
+  var CACHE_MS = 5 * 60 * 1000;
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function getKey() { try { return localStorage.getItem(KEY) || ''; } catch (e) { return ''; } }
@@ -55,7 +56,7 @@
         return '<button class="chip" type="button" data-act="own-range" data-v="' + r[0] + '" aria-pressed="' + (state.days === r[0]) + '">' + r[1] + '</button>';
       }).join('') + '</div><div class="btn-row"><button class="btn ghost" type="button" data-act="own-refresh">Refresh</button><a class="btn ghost" href="' + SITE + '" target="_blank" rel="noopener">Full dashboard ↗</a><button class="btn ghost" type="button" data-act="own-lock">Lock</button></div></div>';
     if (state.error) { host.innerHTML = head + '<p class="owner-err" role="alert">' + state.error + '</p>'; return; }
-    if (state.loading || !d) { host.innerHTML = head + '<p class="muted" role="status">Loading…</p>'; return; }
+    if (state.loading || !d) { host.innerHTML = head + '<p class="muted" role="status" id="own-status">' + esc(state.status) + '</p>'; return; }
 
     var pages = d.hits.filter(function (h) { return !h.event; }), events = d.hits.filter(function (h) { return h.event; });
     var ev = function (name) { var h = events.filter(function (e) { return e.path === name; })[0]; return h ? cnt(h) : 0; };
@@ -114,20 +115,33 @@
   function label(day) { var d = new Date(day + 'T00:00:00'); return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); }
 
   /* ---------------- GoatCounter API ---------------- */
-  function api(path, params) {
+  function wait(ms) { return new Promise(function (res) { setTimeout(res, ms); }); }
+  function status(t) { state.status = t; var el = document.getElementById('own-status'); if (el) el.textContent = t; }
+  /* GoatCounter allows only a few API requests at a time. When it says "slow down" (429), wait as long as it asks
+     (or 3, 8, 15, then 30 seconds) and try again, up to four times. */
+  function api(path, params, tries) {
+    tries = tries || 0;
     var q = Object.keys(params).map(function (k) { return k + '=' + encodeURIComponent(params[k]); }).join('&');
     return fetch(SITE + '/api/v0/' + path + '?' + q, { headers: { Authorization: 'Bearer ' + getKey(), 'Content-Type': 'application/json' } }).then(function (r) {
       if (r.status === 401 || r.status === 403) throw { auth: true };
-      if (r.status === 429) throw { msg: 'GoatCounter is limiting requests. Wait a minute, then press Refresh.' };
+      if (r.status === 429) {
+        if (tries >= 4) throw { msg: 'GoatCounter is still limiting requests. Wait a couple of minutes, then press Refresh.' };
+        var hdr = parseFloat(r.headers.get('X-Rate-Limit-Reset') || r.headers.get('Retry-After') || '');
+        var secs = Math.min(60, Math.max(1, isFinite(hdr) && hdr > 0 ? Math.ceil(hdr) : [3, 8, 15, 30][tries]));
+        status('GoatCounter asked to slow down. Trying again in ' + secs + ' seconds…');
+        return wait(secs * 1000).then(function () { return api(path, params, tries + 1); });
+      }
       if (!r.ok) throw { msg: 'GoatCounter returned an error (' + r.status + '). Try Refresh, or open the full dashboard.' };
       return r.json();
     });
   }
-  function load() {
+  function load(force) {
+    var hit = state.cache[state.days];
+    if (!force && hit && Date.now() - hit.t < CACHE_MS) { state.token = {}; state.loading = false; state.error = ''; state.data = hit.data; draw(); return; }
     var days = +state.days, end = new Date(), start = new Date(); start.setDate(end.getDate() - (days - 1));
     var p = { start: ymd(start), end: ymd(end) }, out = {};
     var token = state.token = {};
-    state.loading = true; state.error = ''; draw();
+    state.loading = true; state.error = ''; state.status = 'Loading…'; draw();
     /* One request at a time keeps well inside GoatCounter's rate limit. */
     var steps = [
       ['total', 'stats/total', p],
@@ -138,7 +152,13 @@
       ['browsers', 'stats/browsers', { start: p.start, end: p.end, limit: 10 }],
       ['systems', 'stats/systems', { start: p.start, end: p.end, limit: 10 }]
     ];
-    steps.reduce(function (chain, s) { return chain.then(function () { return api(s[1], s[2]).then(function (j) { out[s[0]] = j; }); }); }, Promise.resolve())
+    steps.reduce(function (chain, s, i) {
+      return chain.then(function () {
+        if (state.token !== token) throw { stale: true };
+        status('Loading ' + (i + 1) + ' of ' + steps.length + '…');
+        return (i ? wait(700) : Promise.resolve()).then(function () { return api(s[1], s[2]); }).then(function (j) { out[s[0]] = j; });
+      });
+    }, Promise.resolve())
       .then(function () {
         if (state.token !== token) return;
         var hits = out.hits.hits || [];
@@ -155,10 +175,11 @@
           label: days === 1 ? 'Today' : 'Last ' + days + ' days (' + label(p.start) + ' to ' + label(p.end) + ')',
           at: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
         };
+        state.cache[state.days] = { data: state.data, t: Date.now() };
         state.loading = false; draw();
       })
       .catch(function (e) {
-        if (state.token !== token) return;
+        if (state.token !== token || (e && e.stale)) return;
         state.loading = false; state.data = null;
         if (e && e.auth) { setKey(''); state.error = 'GoatCounter did not accept that key. Check that it has "Read statistics" permission and try again.'; }
         else state.error = (e && e.msg) || 'Could not reach GoatCounter from this page. Check your connection, or open the <a href="' + SITE + '" target="_blank" rel="noopener">full dashboard</a>.';
@@ -176,8 +197,8 @@
     var t = e.target.closest('[data-act^="own-"]'); if (!t) return;
     var a = t.getAttribute('data-act');
     if (a === 'own-range') { state.days = t.getAttribute('data-v'); load(); }
-    else if (a === 'own-refresh') load();
-    else if (a === 'own-lock') { setKey(''); state.data = null; state.error = ''; draw(); }
+    else if (a === 'own-refresh') load(true);
+    else if (a === 'own-lock') { setKey(''); state.token = {}; state.cache = {}; state.data = null; state.error = ''; draw(); }
   });
   /* Hover readout for the daily columns. */
   document.addEventListener('pointermove', function (e) {
