@@ -634,7 +634,7 @@
   window.addEventListener('hashchange', route);
 
   /* ---------------- Reading progress as chainage ---------------- */
-  var kmEl = document.getElementById('ch-km'), phEl = document.getElementById('ch-phase'), fillEl = document.getElementById('ch-fill'), sceneEl = document.querySelector('.scene'), ticking = false;
+  var kmEl = document.getElementById('ch-km'), phEl = document.getElementById('ch-phase'), fillEl = document.getElementById('ch-fill'), ticking = false;
   var PHASES = ['Discover', 'Specify', 'Trace', 'Release'];
   /* Scroll offset where the pinned intro ends and the overview begins (0 when there is no animated intro). */
   function introBase() {
@@ -657,26 +657,11 @@
       phEl.textContent = PHASES[Math.min(3, Math.floor(p * 4))];
       fillEl.style.width = (p * 100).toFixed(1) + '%';
       drawThread();
-      if (document.body.getAttribute('data-route') === 'home') {
-        var base = introBase(), past = scrollY - base;
-        sceneEl.style.setProperty('--scene-o', past < 0 ? '0' : (Math.min(1, past / (innerHeight * 0.25) + 0.001) * (1 - 0.8 * Math.min(1, past / (innerHeight * 0.9)))).toFixed(3));
-      }
-      else sceneEl.style.removeProperty('--scene-o');
     });
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', function () { setTb(); layoutThread(); onScroll(); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { setTb(); layoutThread(); });
-
-  /* Static fallback illustration for no-WebGL / blocked CDN. Deterministic, decorative. */
-  (function fallbackArt() {
-    var host = document.getElementById('scene-fallback'), cols = [5, 8, 11, 12, 6], s = '<svg viewBox="0 0 600 460" preserveAspectRatio="xMidYMid meet">', pts = [];
-    cols.forEach(function (n, c) { pts[c] = []; for (var i = 0; i < n; i++) pts[c].push([70 + c * 115, 40 + (380 / (n - 1 || 1)) * i]); });
-    for (var c = 1; c < cols.length; c++) pts[c].forEach(function (p, i) { var q = pts[c - 1][Math.floor(i * pts[c - 1].length / pts[c].length)]; s += '<line x1="' + q[0] + '" y1="' + q[1] + '" x2="' + p[0] + '" y2="' + p[1] + '" stroke="var(--ink-3)" stroke-opacity=".45" stroke-width="1"/>'; });
-    var colours = ['var(--viz-1)', 'var(--viz-2)', 'var(--viz-3)', 'var(--viz-4)', 'var(--viz-1)'];
-    pts.forEach(function (col, c) { col.forEach(function (p) { s += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="5" fill="' + colours[c] + '"/>'; }); });
-    host.innerHTML = s + '</svg>';
-  })();
 
   setTb();
   route();

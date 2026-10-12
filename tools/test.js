@@ -1,7 +1,7 @@
-// End-to-end check of every route and interaction at desktop and phone width, plus reduced-motion and no-WebGL runs.
+// End-to-end check of every route and interaction at desktop and phone width, plus a reduced-motion run.
 // Needs a running server (tools/serve.sh) and Playwright. Usage:
-//   PF_URL=http://localhost:8780/ THREE_LOCAL=/path/to/three.module.js SHOTS=/tmp/shots node tools/test.js
-// THREE_LOCAL serves three.js from disk for machines that cannot reach the CDN. SHOTS saves screenshots.
+//   PF_URL=http://localhost:8780/ SHOTS=/tmp/shots node tools/test.js
+// SHOTS saves screenshots.
 const fs = require('fs');
 const { chromium } = require(require('child_process').execSync('npm root -g').toString().trim() + '/playwright');
 const URL = process.env.PF_URL || 'http://localhost:8780/';
@@ -11,8 +11,6 @@ const shot = async (pg, name) => { if (process.env.SHOTS) await pg.screenshot({ 
 async function page(browser, opts = {}) {
   const ctx = await browser.newContext({ viewport: opts.viewport || { width: 1280, height: 900 }, reducedMotion: opts.reduced ? 'reduce' : 'no-preference', colorScheme: opts.dark ? 'dark' : 'light' });
   await ctx.route(/fonts\.(googleapis|gstatic)\.com/, (r) => r.abort());
-  if (process.env.THREE_LOCAL && !opts.blockThree) await ctx.route(/cdn\.jsdelivr\.net\/npm\/three@0\.160\.0\/build\/three\.module\.js/, (r) => r.fulfill({ status: 200, contentType: 'application/javascript', body: fs.readFileSync(process.env.THREE_LOCAL) }));
-  if (opts.blockThree) await ctx.route(/cdn\.jsdelivr\.net/, (r) => r.abort());
   const pg = await ctx.newPage();
   const tag = opts.tag || 'desktop';
   pg.on('pageerror', (e) => errs.push(`${tag} pageerror: ${e.message}`));
@@ -27,7 +25,7 @@ const go = async (pg, hash) => { await pg.evaluate((h) => { location.hash = h; }
   for (const [tag, vp] of [['desktop', { width: 1280, height: 900 }], ['phone', { width: 390, height: 844 }]]) {
     const pg = await page(b, { viewport: vp, tag });
     await pg.goto(URL + '#home'); await pg.waitForTimeout(800);
-    log(tag, 'scene:', await pg.evaluate(() => document.documentElement.getAttribute('data-scene') || 'fallback'));
+    log(tag, 'background words layer:', await pg.evaluate(() => !!document.querySelector('canvas.words-bg') && window.__pfWords.shown));
     await shot(pg, tag + '-home');
     const ib = await pg.evaluate(() => { const el = document.querySelector('#intro .i-chaos'); return { top: el.getBoundingClientRect().top + scrollY, h: el.offsetHeight, ih: innerHeight, threads: document.querySelectorAll('#intro .i-thread').length, chaos: el.querySelectorAll('.i1-w').length }; });
     await pg.evaluate(([y]) => window.scrollTo(0, y), [ib.top + 0.6 * (ib.h - ib.ih)]); await pg.waitForTimeout(900);
@@ -38,13 +36,13 @@ const go = async (pg, hash) => { await pg.evaluate((h) => { location.hash = h; }
     await pg.evaluate(() => window.scrollTo(0, 0)); await pg.waitForTimeout(100); await pg.click('[data-act="skip-intro"]'); await pg.waitForTimeout(300);
     log(tag, 'skip intro → hero top', await pg.evaluate(() => Math.round(document.getElementById('hero').getBoundingClientRect().top)));
     await pg.evaluate(() => window.scrollTo(0, 0)); await pg.waitForTimeout(300);
-    const f0 = await pg.evaluate(() => window.__pfScene && window.__pfScene.target);
+    await pg.evaluate(() => window.scrollTo(0, window.PFIntroBase() + 10)); await pg.waitForTimeout(1500);
+    const w0 = await pg.evaluate(() => [window.__pfWords.answered, window.__pfWords.total, window.__pfWords.blend]);
     const km0 = await pg.textContent('#ch-km');
-    await pg.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight)); await pg.waitForTimeout(900);
-    const f1 = await pg.evaluate(() => window.__pfScene && window.__pfScene.target);
-    const cur1 = await pg.evaluate(() => window.__pfScene && window.__pfScene.formation);
-    log(tag, 'scroll-linked formation target', f0, '→', f1, '| current', cur1 && cur1.toFixed(2), '| chainage', km0, '→', await pg.textContent('#ch-km'), await pg.textContent('#ch-phase'));
-    if (f1 !== undefined && !(f1 > f0)) errs.push(`${tag} scene did not respond to scroll`);
+    await pg.evaluate(() => { const c = document.getElementById('contact'); window.scrollTo(0, c.getBoundingClientRect().top + scrollY - innerHeight * 0.3); }); await pg.waitForTimeout(3000);
+    const w1 = await pg.evaluate(() => [window.__pfWords.answered, window.__pfWords.total, window.__pfWords.blend]);
+    log(tag, 'background words: answered', w0[0] + '/' + w0[1], '→', w1[0] + '/' + w1[1], '| constellation blend', w0[2].toFixed(2), '→', w1[2].toFixed(2), '| chainage', km0, '→', await pg.textContent('#ch-km'));
+    if (!(w1[0] === w1[1] && w1[2] > 0.9 && w0[2] < 0.1 && w0[0] < w1[0])) errs.push(`${tag} background words did not follow the page`);
     await overflow(pg, tag, 'home');
     await pg.evaluate(() => window.scrollTo(0, 0));
     await pg.click('[data-act="chain"][data-i="4"]'); log(tag, 'chain:', (await pg.textContent('#chain-out')).slice(0, 60));
@@ -92,13 +90,9 @@ const go = async (pg, hash) => { await pg.evaluate((h) => { location.hash = h; }
     await pg.context().close();
   }
   { const pg = await page(b, { reduced: true, tag: 'reduced' }); await pg.goto(URL + '#home'); await pg.waitForTimeout(500); await pg.evaluate(() => window.scrollTo(0, 99999)); await pg.waitForTimeout(400);
-    log('reduced motion: scene', await pg.evaluate(() => document.documentElement.getAttribute('data-scene')), 'formation = target:', await pg.evaluate(() => window.__pfScene.formation === window.__pfScene.target)); log('reduced motion: static intro', await pg.$$eval('#intro.i-static', (e) => e.length), '| headline visible', await pg.evaluate(() => [...document.querySelectorAll('#intro .i1-w.h')].every((w) => +w.style.opacity > 0.9))); await overflow(pg, 'reduced', 'home'); await pg.context().close(); }
-  { const pg = await page(b, { blockThree: true, tag: 'no-cdn' }); await pg.goto(URL + '#home'); await pg.waitForTimeout(600);
-    log('three.js blocked: scene attr', await pg.evaluate(() => document.documentElement.getAttribute('data-scene')), '| fallback visible:', await pg.isVisible('#scene-fallback svg')); await shot(pg, 'no-cdn-home'); await pg.context().close(); }
-  { const b2 = await chromium.launch({ args: ['--disable-webgl', '--disable-webgl2'] }); const ctx = await b2.newContext(); await ctx.route(/fonts\./, (r) => r.abort());
-    if (process.env.THREE_LOCAL) await ctx.route(/three\.module\.js/, (r) => r.fulfill({ status: 200, contentType: 'application/javascript', body: fs.readFileSync(process.env.THREE_LOCAL) }));
-    const pg = await ctx.newPage(); pg.on('pageerror', (e) => errs.push('no-webgl pageerror: ' + e.message)); await pg.goto(URL + '#home'); await pg.waitForTimeout(600);
-    log('WebGL disabled: scene attr', await pg.evaluate(() => document.documentElement.getAttribute('data-scene')), '| fallback visible:', await pg.isVisible('#scene-fallback svg')); await b2.close(); }
+    log('reduced motion: background words settle at once:', await pg.evaluate(() => window.__pfWords.vis === 1 || window.__pfWords.vis === 0)); log('reduced motion: static intro', await pg.$$eval('#intro.i-static', (e) => e.length), '| headline visible', await pg.evaluate(() => [...document.querySelectorAll('#intro .i1-w.h')].every((w) => +w.style.opacity > 0.9))); await overflow(pg, 'reduced', 'home'); await pg.context().close(); }
+  { const pg = await page(b, { tag: 'inner' }); await pg.goto(URL + '#skills'); await pg.waitForTimeout(1500);
+    log('inner page background:', await pg.evaluate(() => window.__pfWords.shown), '| visible', (await pg.evaluate(() => window.__pfWords.vis)).toFixed(2)); await pg.context().close(); }
   log('ERRORS:', errs.length ? errs : 'none');
   await b.close();
   process.exit(errs.length ? 1 : 0);

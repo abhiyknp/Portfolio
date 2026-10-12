@@ -85,13 +85,6 @@ li + li { margin-top: .3rem; }
 .note { font-size: var(--t-sm); color: var(--ink-2); border-left: 3px solid var(--signal); padding-left: .75rem; }
 
 /* Scene */
-.scene { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: var(--scene-o, 1); transition: opacity .2s linear; }
-.scene canvas { width: 100%; height: 100%; display: block; }
-.scene-fallback { position: absolute; right: 0; top: 4rem; width: min(58vw, 720px); height: min(70vh, 560px); opacity: .55; }
-.scene-fallback svg { width: 100%; height: 100%; }
-html[data-scene="webgl"] .scene-fallback { display: none; }
-html:not([data-scene="webgl"]) .scene canvas { display: none; }
-body:not([data-route="home"]) .scene { --scene-o: .12 !important; }
 
 /* Header */
 .site-header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--rule); }
@@ -182,7 +175,7 @@ a.card:hover { border-color: var(--accent); }
 
 /* Home */
 .hero { position: relative; isolation: isolate; padding-block: clamp(3rem, 8vw, 6rem) var(--s-6); display: grid; gap: var(--s-5); }
-/* Scrim keeps hero text readable over the scene: solid on the text side, clear where the graph sits. */
+/* Scrim keeps hero text readable over the background words: solid on the text side, clear on the right. */
 .hero::before { content: ""; position: absolute; z-index: -1; top: 0; bottom: 0; left: calc(50% - 50vw); width: 100vw; background: linear-gradient(90deg, var(--paper) 0%, color-mix(in srgb, var(--paper) 88%, transparent) 42%, transparent 68%); pointer-events: none; }
 @media (max-width: 860px) { .hero::before { background: color-mix(in srgb, var(--paper) 80%, transparent); } }
 .hero h1 { max-width: 15ch; }
@@ -590,7 +583,7 @@ a.h-case:hover { transform: translateY(-3px); border-color: color-mix(in srgb, v
 .sec .prose { max-width: 78ch; font-size: var(--t-md); }
 .chap-foot { display: flex; justify-content: space-between; gap: var(--s-3); flex-wrap: wrap; align-items: center; color: var(--ink-3); font-size: var(--t-sm); }
 .skill-tabs .tablist [role="tab"] { font-size: var(--t-md); font-weight: 700; padding: .8rem 1rem; }
-/* Keep hero text readable over the background scene: solid on the text side, clear where the graph sits. */
+/* Keep hero text readable over the background words: solid on the text side, clear on the right. */
 .h-hero { isolation: isolate; }
 .h-hero::before { content: ""; position: absolute; z-index: -1; top: 0; bottom: 0; left: calc(50% - 50vw); width: 100vw; background: linear-gradient(90deg, var(--paper) 0%, color-mix(in srgb, var(--paper) 88%, transparent) 45%, transparent 72%); pointer-events: none; }
 @media (max-width: 860px) { .h-hero::before { background: color-mix(in srgb, var(--paper) 84%, transparent); } }
@@ -863,9 +856,6 @@ html.booting, html.booting body { overflow: hidden; }
 .legal-more { margin-top: var(--s-5); }
 .legal-sec p { margin: 0 0 .7rem; }
 
-/* Fallback background (no WebGL): the dots float gently too */
-.scene-fallback circle { transform-box: fill-box; transform-origin: center; animation: fb-float 6s ease-in-out infinite alternate; }
-.scene-fallback circle:nth-child(3n) { animation-duration: 7.5s; animation-delay: -2s; }
-.scene-fallback circle:nth-child(3n+1) { animation-duration: 5.2s; animation-delay: -4s; }
-@keyframes fb-float { from { transform: translate(-4px, 3px); } to { transform: translate(4px, -4px); } }
-@media (prefers-reduced-motion: reduce) { .scene-fallback circle { animation: none; } }
+
+/* Word background (assets/js/words-bg.js) */
+.words-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }

@@ -44,7 +44,7 @@ assets/js/loader.js        "chaos to clarity" loader shared by the first-visit s
 assets/js/intros.js        scroll intros (the home page uses chaos-to-clarity; the thread and blueprint intros are kept for reference)
 assets/js/intro.js         earlier "request's journey" intro, kept for the concepts page
 concepts/                  design study: direction A with four intro prototypes
-assets/js/scene.js         scroll-linked Three.js traceability graph (ES module)
+assets/js/words-bg.js      background words: questions to answers to constellation
 assets/js/data/*.js        all content: skills-a/b/c, cases, flows, artifacts, scenarios, extras (slider pairs and puzzle steps), legal (privacy, terms, accessibility)
 tools/serve.sh             local server
 tools/test.js              end-to-end Playwright check
@@ -59,14 +59,11 @@ To edit content, change the files in `assets/js/data/`. The views pick up new en
 PF_URL=http://localhost:8780/ node tools/test.js
 ```
 
-`tools/test.js` checks every route and interaction at desktop and phone width, checks for horizontal overflow, and runs the reduced-motion, CDN-blocked and WebGL-disabled cases. Set `THREE_LOCAL=/path/to/three.module.js` if the machine cannot reach the CDN, and `SHOTS=dir` to save screenshots.
+`tools/test.js` checks every route and interaction at desktop and phone width, checks for horizontal overflow, and runs the reduced-motion case. Set `SHOTS=dir` to save screenshots.
 
-## 3D scene and fallbacks
+## Background words
 
-The background graph shows traceability layers (objectives, requirements, stories, tests, releases). It moves from a scattered cloud to clusters, then to linked layers, then to a release route, as the reader scrolls the overview after the intro. Reading progress also appears as highway chainage in the corner chip.
-
-- **Reduced motion**: the scene renders a single static frame for each formation.
-- **No WebGL, or a blocked CDN**: a static SVG version is shown instead.
+`assets/js/words-bg.js` draws the background on one canvas behind the page. On the overview, faint stakeholder questions roam slowly at different depths; as the reader scrolls, each turns into its gold answer ("is this in scope?" → "scope agreed"), and at the contact section the answers glide one by one into a slowly turning constellation with a gold spark hopping between them. Other pages show a faint constellation of Business Analyst terms. Every change eases over time, so fast scrolling never makes anything snap. With reduced motion the words stay still. Reading progress also appears as highway chainage in the corner chip.
 
 ## Publishing
 
