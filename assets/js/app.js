@@ -55,23 +55,6 @@
   }
 
   /* ---------------- Home (executive view) ---------------- */
-  var CHAIN = [
-    ['OBJ-1', 'Business objective', 'Reduce avoidable clarification cycles between reviewers and applicants.', 'brd'],
-    ['BR-02', 'Business requirement', 'Applicants must be able to respond, including documents, within the same application.', 'brd'],
-    ['FR-10', 'Functional requirement', 'The applicant responds with a note and documents. Each requested document must have a file. A lapsed response window follows RULE-04.', 'frd'],
-    ['PERMIT-102', 'User story', 'As an applicant, I want to respond to a clarification in one step, so that my application returns to the reviewer without delay.', 'jira'],
-    ['AC-2', 'Acceptance criterion', 'Given a raised clarification, when the applicant submits the requested document, then status becomes Clarification Responded and the file returns to the reviewer\'s queue.', 'story'],
-    ['TC-06', 'Test case', 'Applicant uploads both requested PDFs and submits. Expect the status change, a reviewer-queue entry marked "changed", and a history event.', 'uat'],
-    ['R5', 'Release', 'Ships with release notes for applicants and reviewers, an updated SOP section, and UAT sign-off with residual risks recorded.', 'release']
-  ];
-  var CAPS = [
-    { t: 'Requirements engineering, end to end', d: 'BRD, FRD, SRS, RTM, user stories and acceptance criteria on every Business Analyst role since 2020.', s: ['brd', 'frd', 'srs', 'rtm'], a: 'rtm', c: 'rajmarg' },
-    { t: 'Multi-role workflow and rules design', d: 'Workflow design across 10+ modules for a national permission portal with reviewing and approving authorities.', s: ['process', 'rules'], a: 'bpmn', c: 'rajmarg' },
-    { t: 'Integration requirements', d: 'Business requirements for GIS workflows, BharatKosh payment, eSign, role-based access, APIs and legacy migration.', s: ['integrations', 'api', 'migration', 'rbac'], a: 'api', c: 'rajmarg' },
-    { t: 'UAT, defect triage and release readiness', d: 'Led UAT planning, triage, release validation, sign-offs and production readiness.', s: ['uat', 'triage', 'release'], a: 'uat', c: 'rajmarg' },
-    { t: 'Backlog prioritisation with government stakeholders', d: 'Prioritised backlogs with MoRTH, NHAI, DIC, engineering, QA and UI/UX teams for Agile releases.', s: ['backlog', 'scrum', 'jira'], a: 'jira', c: 'rajmarg' },
-    { t: 'Data, dashboards and reporting', d: 'Power BI dashboards and SQL analysis on the Healthcare Management System; M.S. in Data Science.', s: ['powerbi', 'sqlanalysis', 'metrics'], a: 'kpi', c: 'healthcare' }
-  ];
   var CASE_INSIDE = {
     rajmarg: ['Clickable end-to-end workflow', 'Requirements, stories and rules', 'Integrations: GIS, BharatKosh, eSign', 'UAT, risks and release'],
     datalake: ['Representative data-platform analysis', 'Lineage and reconciliation', 'Access and data quality', 'Clearly labelled scope'],
@@ -87,99 +70,61 @@
         '<span class="h-status"><i></i> Open to Senior Business Analyst, Product Owner and Product Analyst roles</span>' +
         '<h1 id="h-title">Senior IT<br>Business <span>Analyst.</span></h1>' +
         '<p class="h-state">Turning complexity into clarity.</p>' +
-        '<p class="lede" style="max-width:60ch">Seven years turning policy and process into requirements that teams can build and test. Currently working on the Rajmarg Pravesh portal for Digital India Corporation (MeitY), across MoRTH and NHAI.</p>' +
-        '<div class="btn-row"><button class="btn" type="button" data-act="goto" data-target="summary">Read the 60-second summary</button><button class="btn ghost" type="button" data-act="goto" data-target="work">See the case studies</button><a class="btn ghost" href="assets/Abhishek_Yadav_Business_Analyst_Resume.pdf" download>Download résumé (PDF)</a></div>' +
+        '<p class="lede" style="max-width:60ch">Seven years turning policy and process into requirements that teams can build and test.</p>' +
+        '<ul class="h-short" id="summary" aria-label="In short">' +
+          '<li>Business Analyst at <strong>Ascra Technologies</strong> for Digital India Corporation (MeitY): <strong>10+ workflow modules</strong> on the Rajmarg Pravesh portal, from discovery to UAT and release.</li>' +
+          '<li>The full requirements set: BRD, FRD, SRS, RTM, user stories, acceptance criteria and process flows.</li>' +
+          '<li>Before that: four years on a <strong>Healthcare Management System</strong> (Power BI, SQL, training), then ATS and VMS platforms.</li>' +
+        '</ul>' +
+        '<div class="btn-row"><button class="btn" type="button" data-act="goto" data-target="work">See my work</button><a class="btn ghost" href="assets/Abhishek_Yadav_Business_Analyst_Resume.pdf" download>Download résumé (PDF)</a></div>' +
         '<div class="glance" aria-label="At a glance">' +
           '<div><span class="v">7+ yrs</span><span class="l">Business analysis, from discovery to production support</span></div>' +
           '<div><span class="v">10+</span><span class="l">Workflow modules owned on Rajmarg Pravesh</span></div>' +
           '<div><span class="v">5</span><span class="l">Domains: government, enterprise, healthcare, HR, e-commerce</span></div>' +
-          '<div><span class="v">' + counts.c + '</span><span class="l">Detailed case studies, every claim labelled</span></div>' +
         '</div>' +
       '</section>' +
 
-      '<section class="summary60" id="summary" data-node aria-labelledby="sum-h">' +
-        '<div class="h-head"><p class="kicker">01 · In 60 seconds</p><h2 id="sum-h">The short version</h2><p>Every line here comes from my résumé. ' + badge('source') + '</p></div>' +
-        '<ol>' +
-          '<li>Business Analyst at <strong>Ascra Technologies</strong>, delivering business analysis and product ownership support for Digital India Corporation (MeitY) on MoRTH and NHAI initiatives.</li>' +
-          '<li>Own business analysis and product delivery across <strong>10+ workflow modules</strong> of the Rajmarg Pravesh portal, from requirement discovery to UAT, production release and post-production support.</li>' +
-          '<li>Write the full requirements set: BRD, FRD, SRS, RTM, user stories, acceptance criteria, functional specifications and process workflows.</li>' +
-          '<li>Define business requirements for <strong>GIS workflows, BharatKosh payment, eSign, role-based access, APIs, workflow automation and legacy data migration</strong>.</li>' +
-          '<li>Lead UAT planning, defect triage, release validation and stakeholder sign-off; produce wireframes (Figma), workflows (Visio), SOPs and user manuals.</li>' +
-          '<li>Before that: four years on a <strong>Healthcare Management System</strong> (Power BI and SQL dashboards, workshops, training), then ATS and VMS platforms, then business development analysis.</li>' +
-        '</ol>' +
+      '<section id="work" data-node aria-labelledby="work-h">' +
+        '<div class="h-head"><p class="kicker">01 · Selected work</p><h2 id="work-h">Complex systems. Clearer delivery.</h2><p>Four projects, each told in five short chapters, with workflows, requirements and test scenarios.</p></div>' +
+        '<div class="h-cases">' + PF.cases.map(function (c) {
+          return '<a class="h-case" href="#case.' + c.id + '"><span class="n">' + esc(c.domain) + ' · ' + c.period + '</span><h3>' + esc(c.name) + '</h3><p>' + esc(c.lede) + '</p><div class="inside">' + (CASE_INSIDE[c.id] || []).map(function (x) { return '<span>' + x + '</span>'; }).join('') + '</div><span class="go">Read the case study →</span></a>';
+        }).join('') + '</div>' +
       '</section>' +
 
       '<section data-node aria-labelledby="how-h">' +
-        '<div class="h-head"><p class="kicker">02 · How I work</p><h2 id="how-h">One request, followed all the way to release.</h2><p>The gold thread on the left is the same idea: every step stays connected to the one before it.</p></div>' +
+        '<div class="h-head"><p class="kicker">02 · How I work</p><h2 id="how-h">One request, followed all the way to release.</h2></div>' +
         '<div class="h-cards">' +
           '<div class="h-card"><span class="n">01 Discover</span><h3>Find the real problem</h3><p>Separate symptoms, causes and constraints before anyone proposes a feature.</p><span class="out">→ Problem statement · stakeholder map</span></div>' +
           '<div class="h-card"><span class="n">02 Specify</span><h3>Write what to build</h3><p>Numbered, testable requirements and the business rules behind them.</p><span class="out">→ BRD · FRD · SRS</span></div>' +
           '<div class="h-card"><span class="n">03 Deliver</span><h3>Keep the team moving</h3><p>Stories with acceptance criteria, refined and prioritised with stakeholders.</p><span class="out">→ Backlog · user stories</span></div>' +
           '<div class="h-card"><span class="n">04 Validate</span><h3>Prove it works</h3><p>Trace every requirement to a test, run UAT with real users, get sign-off.</p><span class="out">→ RTM · UAT · release notes</span></div>' +
         '</div>' +
-        '<div class="panel stack"><p class="kicker">Follow one requirement ' + badge('illustrative') + '</p><div class="chain" role="group" aria-label="Traceability chain">' + CHAIN.map(function (c, i) {
-          return (i ? '<span class="arrow" aria-hidden="true">→</span>' : '') + '<button type="button" data-act="chain" data-i="' + i + '" aria-pressed="' + (i === 0) + '">' + c[0] + '</button>';
-        }).join('') + '</div><div class="chain-out" id="chain-out" aria-live="polite"></div></div>' +
-      '</section>' +
-
-      '<section data-node aria-labelledby="proof-h">' +
-        '<div class="h-head"><p class="kicker">03 · Proof, not claims</p><h2 id="proof-h">What my acceptance criteria look like.</h2></div>' +
-        '<div class="h-proof"><div class="h-card">' + badge('illustrative') + '<p class="h-story"><b>As a</b> reviewing officer, <b>I want</b> to raise a clarification with a specific reason, <b>so that</b> the applicant knows exactly what to fix.</p><div class="btn-row"><button class="btn ghost" type="button" data-act="h-ac" aria-expanded="false" aria-controls="h-ac">Show acceptance criteria</button><a class="btn ghost" href="#studio.story">Full story and wireframe</a></div></div>' +
-        '<ul class="h-ac" id="h-ac" hidden>' +
-          '<li><b>Given</b> an application assigned to me, <b>when</b> I raise a clarification with a reason, <b>then</b> the applicant is notified and the authority clock pauses.</li>' +
-          '<li><b>Given</b> no reason is selected, <b>then</b> I see "Select at least one reason" and nothing is saved.</li>' +
-          '<li><b>Given</b> I am not the assigned reviewer, <b>then</b> the action is not available.</li>' +
-          '<li><b>Given</b> the applicant responds, <b>then</b> the file returns to my queue marked "changed".</li></ul></div>' +
         '<div class="h-ba"><h3>Before and after</h3><p class="muted">The same work, before and after analysis. Drag the handle across.</p>' + window.PFX.compareHtml() +
         '<a class="h-pz" href="#puzzle"><span class="kicker">Quick challenge · 2 min</span><strong>Try it yourself: put a shuffled process back in order.</strong><span class="go" aria-hidden="true">→</span></a></div>' +
       '</section>' +
 
-      '<section id="work" data-node aria-labelledby="work-h">' +
-        '<div class="h-head"><p class="kicker">04 · Case studies</p><h2 id="work-h">Complex systems. Clearer delivery.</h2><p>Each case study is told in five short chapters: the problem, discovery, the solution, quality and delivery, and results and lessons. It includes workflows, requirements, user stories, test scenarios and a sample backlog.</p></div>' +
-        '<div class="h-cases">' + PF.cases.map(function (c) {
-          return '<a class="h-case" href="#case.' + c.id + '"><span class="n">' + esc(c.domain) + ' · ' + c.period + '</span><h3>' + esc(c.name) + '</h3><p>' + esc(c.lede) + '</p><div class="inside">' + (CASE_INSIDE[c.id] || []).map(function (x) { return '<span>' + x + '</span>'; }).join('') + '</div><span class="go">Read the case study →</span></a>';
-        }).join('') + '</div>' +
-      '</section>' +
-
-      '<section data-node aria-labelledby="cap-h">' +
-        '<div class="h-head"><p class="kicker">05 · Skills, with evidence</p><h2 id="cap-h">Where the evidence is strongest.</h2><p>Each capability links to the skill explained in depth, a sample artifact and the case study where it applies.</p></div>' +
-        '<div class="grid g3">' + CAPS.map(function (c) {
-          return '<article class="card cap"><div class="meta">' + badge('source') + '</div><h3>' + c.t + '</h3><p class="small muted">' + c.d + '</p><div class="chips">' + c.s.map(skillLink).join('') + '</div><div class="card-foot"><a href="#studio.' + c.a + '">Artifact: ' + esc(art(c.a).name) + '</a><a href="#case.' + c.c + '">' + esc(cs(c.c).short) + ' case</a></div></article>';
-        }).join('') + '</div>' +
-        '<div class="grid g4">' +
-          deep('#skills', 'Skills Library', counts.s + ' skills, each with method, example, artifact, collaboration and interview preparation.') +
-          deep('#studio', 'Artifact Studio', counts.a + ' sample deliverables, from BRD to release checklist.') +
-          deep('#scenarios', 'Decision scenarios', counts.sc + ' situations. Choose an option and see the reasoning.') +
-          deep('#evidence', 'Evidence map', 'Every skill mapped to a project, artifact and interview question.') +
-        '</div>' +
-      '</section>' +
-
       '<section data-node aria-labelledby="exp-h">' +
-        '<div class="h-head"><p class="kicker">06 · Experience</p><h2 id="exp-h">Seven years, four teams.</h2></div>' +
+        '<div class="h-head"><p class="kicker">03 · Experience</p><h2 id="exp-h">Seven years, four teams.</h2></div>' +
         '<div class="h-exp">' +
-          '<div><span class="when">Apr 2025 – now</span><div><h3>Ascra Technologies · Business Analyst</h3><p>Rajmarg Pravesh Portal and NHAI DataLake 3.0 for Digital India Corporation (MeitY): 10+ workflow modules, integrations, UAT, triage, release readiness.</p><div class="chips">' + caseLink('rajmarg') + caseLink('datalake') + '</div></div></div>' +
-          '<div><span class="when">Apr 2021 – Apr 2025</span><div><h3>Intechglobe · Business Analyst</h3><p>Healthcare Management System: end-to-end Business Analysis, Confluence and Visio documentation, Scrum delivery, Power BI and SQL, workshops and training.</p><div class="chips">' + caseLink('healthcare') + '</div></div></div>' +
-          '<div><span class="when">Feb 2020 – Mar 2021</span><div><h3>Coditro · Business Analyst</h3><p>ATS and VMS: BRD, FRD, SRS, RTM; stories and acceptance criteria; JAD sessions, gap analysis, defect tracking.</p><div class="chips">' + caseLink('ats-vms') + '</div></div></div>' +
-          '<div><span class="when">Mar 2019 – Feb 2020</span><div><h3>RTL Technologies · Business Development Analyst</h3><p>Client requirement analysis, proposals, market and competitor research, client presentations.</p></div></div>' +
+          '<div><span class="when">Apr 2025 – now</span><div><h3>Ascra Technologies · Business Analyst</h3><p>Rajmarg Pravesh Portal and NHAI DataLake 3.0 for Digital India Corporation (MeitY): 10+ workflow modules, integrations, UAT, triage, release readiness.</p></div></div>' +
+          '<div><span class="when">Apr 2021 – Apr 2025</span><div><h3>Intechglobe · Business Analyst</h3><p>Healthcare Management System: end-to-end business analysis, Scrum delivery, Power BI and SQL, workshops and training.</p></div></div>' +
+          '<div><span class="when">Feb 2020 – Mar 2021</span><div><h3>Coditro · Business Analyst</h3><p>ATS and VMS: requirements, stories and acceptance criteria, JAD sessions, gap analysis, defect tracking.</p></div></div>' +
+          '<div><span class="when">Mar 2019 – Feb 2020</span><div><h3>RTL Technologies · Business Development Analyst</h3><p>Client requirement analysis, proposals, market research and client presentations.</p></div></div>' +
         '</div>' +
         '<p class="small muted">M.S. Data Science, Chandigarh University · B.Tech Information Technology, AKTU · English and Hindi</p>' +
-      '</section>' +
-
-      '<section data-node aria-labelledby="leg-h">' +
-        '<div class="h-head"><p class="kicker">How claims are marked</p><h2 id="leg-h" style="font-size:var(--t-xl)">Honest by design.</h2></div>' +
-        '<div class="legend panel">' +
-          '<div>' + badge('source') + '<p class="small">Stated in the résumé. Safe to discuss as personal experience.</p></div>' +
-          '<div>' + badge('brief') + '<p class="small">From my own project description, beyond what the résumé lists.</p></div>' +
-          '<div>' + badge('illustrative') + '<p class="small">A realistic example written for this portfolio. Not a project document, incident or result.</p></div>' +
-          '<div>' + badge('recommended') + '<p class="small">How the work should be done; practice capability rather than a documented claim.</p></div>' +
-        '</div>' +
+        '<div class="h-deeper"><p class="kicker">Go deeper</p><div class="h-deeper-links">' +
+          '<a href="#skills"><strong>Skills Library</strong><span>' + counts.s + ' skills, with method, example and interview answers</span></a>' +
+          '<a href="#studio"><strong>Artifact Studio</strong><span>' + counts.a + ' sample deliverables, BRD to release checklist</span></a>' +
+          '<a href="#scenarios"><strong>Decision scenarios</strong><span>' + counts.sc + ' situations, with the reasoning behind each option</span></a>' +
+          '<a href="#evidence"><strong>Evidence map</strong><span>Every skill mapped to a project and an artifact</span></a>' +
+        '</div></div>' +
       '</section>' +
 
       '<section class="h-contact" id="contact" data-node aria-labelledby="ct-h">' +
-        '<p class="kicker">07 · Let\'s talk</p><h2 id="ct-h">Clear requirements. Better delivery.</h2>' +
+        '<p class="kicker">04 · Let\'s talk</p><h2 id="ct-h">Clear requirements. Better delivery.</h2>' +
         '<p class="muted" style="max-width:56ch">Open to Senior Business Analyst, Product Owner and Product Analyst roles.</p>' +
         '<div class="copy-line" style="justify-content:center"><code id="email-text">ba.abhiy@gmail.com</code><button class="btn ghost" type="button" data-act="copy" data-copy="ba.abhiy@gmail.com">Copy email</button><span class="small muted" id="copy-status" aria-live="polite"></span></div>' +
-        '<div class="btn-row" style="justify-content:center"><a class="btn" href="mailto:ba.abhiy@gmail.com">Email me</a><a class="btn ghost" href="assets/Abhishek_Yadav_Business_Analyst_Resume.pdf" download>Download résumé (PDF)</a><a class="btn ghost" href="https://www.linkedin.com/in/abhiyknp" target="_blank" rel="noopener">LinkedIn ↗</a><button class="btn ghost" type="button" data-act="palette">Search everything</button></div>' +
+        '<div class="btn-row" style="justify-content:center"><a class="btn" href="mailto:ba.abhiy@gmail.com">Email me</a><a class="btn ghost" href="assets/Abhishek_Yadav_Business_Analyst_Resume.pdf" download>Download résumé (PDF)</a><a class="btn ghost" href="https://www.linkedin.com/in/abhiyknp" target="_blank" rel="noopener">LinkedIn ↗</a></div>' +
       '</section>' +
       '</div></div>';
   }
@@ -443,7 +388,7 @@
     if (view === 'skills') { drawLib(); }
     if (view === 'evidence') { drawEvidence(); }
     if (stopIntro) { stopIntro(); stopIntro = null; }
-    if (view === 'home') { chain(0); mountIntro(); }
+    if (view === 'home') { mountIntro(); }
     layoutThread();
     closeMenu();
     if (view !== 'home') {
@@ -520,12 +465,7 @@
       });
     });
   }
-  function chain(i) {
-    var out = document.getElementById('chain-out'); if (!out) return;
-    var c = CHAIN[i];
-    document.querySelectorAll('[data-act="chain"]').forEach(function (b) { b.setAttribute('aria-pressed', String(+b.getAttribute('data-i') === i)); });
-    out.innerHTML = '<h4><span class="mono">' + c[0] + '</span> · ' + c[1] + '</h4><p>' + esc(c[2]) + '</p><p class="small"><a href="#studio.' + c[3] + '">See it in the ' + esc(art(c[3]).name) + ' →</a></p>';
-  }
+
 
   /* ---------------- Modal and palette ---------------- */
   var modal = document.getElementById('modal'), modalBody = document.getElementById('modal-body'), lastFocus = null;
@@ -604,11 +544,9 @@
       case 'close-modal-nav': closeModal(); break;
       case 'goto': var el = document.getElementById(t.getAttribute('data-target')); if (el) { el.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); } break;
       case 'jump': e.preventDefault(); var b = document.getElementById(t.getAttribute('data-target')); if (b) { b.open = true; b.scrollIntoView(); b.querySelector('summary').focus({ preventScroll: true }); } break;
-      case 'chain': chain(+t.getAttribute('data-i')); break;
       case 'jump-sec': e.preventDefault(); var sec = document.getElementById(t.getAttribute('data-target')); if (sec) { sec.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); var hh = sec.querySelector('h2'); hh.setAttribute('tabindex', '-1'); hh.focus({ preventScroll: true }); } break;
       case 'back': if (navStack.length > 1) history.back(); else location.hash = t.getAttribute('data-to'); break;
       case 'skip-intro': var hero = document.getElementById('hero'); if (hero) { window.scrollTo(0, hero.getBoundingClientRect().top + scrollY - (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--tb')) || 64)); var h1 = document.getElementById('h-title'); h1.setAttribute('tabindex', '-1'); h1.focus({ preventScroll: true }); } break;
-      case 'h-ac': var ul = document.getElementById('h-ac'), open = ul.hidden; ul.hidden = !open; t.setAttribute('aria-expanded', String(open)); t.textContent = open ? 'Hide acceptance criteria' : 'Show acceptance criteria'; break;
       case 'next-chapter': var tb2 = document.querySelectorAll('#chapters [role="tab"]')[+t.getAttribute('data-i')]; if (tb2) { tb2.click(); document.getElementById('chapters').scrollIntoView(); tb2.focus({ preventScroll: true }); } break;
       case 'expand-all': var blocks = main.querySelectorAll('.blocks > details'), anyClosed = Array.prototype.some.call(blocks, function (d) { return !d.open; }); blocks.forEach(function (d) { d.open = anyClosed; }); t.textContent = anyClosed ? 'Collapse all' : 'Expand all'; break;
       case 'artifact-preview': artifactPreview(t.getAttribute('data-id')); break;

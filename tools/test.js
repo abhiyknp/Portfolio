@@ -45,7 +45,7 @@ const go = async (pg, hash) => { await pg.evaluate((h) => { location.hash = h; }
     if (!(w1[0] === w1[1] && w1[2] > 0.9 && w0[2] < 0.1 && w0[0] < w1[0])) errs.push(`${tag} background words did not follow the page`);
     await overflow(pg, tag, 'home');
     await pg.evaluate(() => window.scrollTo(0, 0));
-    await pg.click('[data-act="chain"][data-i="4"]'); log(tag, 'chain:', (await pg.textContent('#chain-out')).slice(0, 60));
+    log(tag, 'overview blocks:', await pg.$$eval('#home-main section', (e) => e.length), '| in-short points:', await pg.$$eval('.h-short li', (e) => e.length), '| go-deeper links:', await pg.$$eval('.h-deeper-links a', (e) => e.length));
     if (tag === 'phone') { await pg.click('[data-act="menu"]'); log(tag, 'menu open:', await pg.isVisible('#site-nav a[data-nav="studio"]')); await pg.click('#site-nav a[data-nav="studio"]'); await pg.waitForTimeout(80); log(tag, 'after menu nav:', await pg.textContent('h1')); }
 
     await go(pg, 'skills'); await overflow(pg, tag, 'skills'); await shot(pg, tag + '-skills');
