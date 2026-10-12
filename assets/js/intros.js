@@ -37,7 +37,9 @@
     var words = [];
     NOISE.concat(HEAD).forEach(function (w, i) {
       var head = i >= NOISE.length;
-      words.push({ w: w, head: head, hi: head ? i - NOISE.length : -1, x: 0.06 + rnd() * 0.84, y: 0.1 + rnd() * 0.8, z: 0.55 + rnd() * 0.75, d: rnd() });
+      words.push({ w: w, head: head, hi: head ? i - NOISE.length : -1, x: 0.06 + rnd() * 0.84, y: 0.1 + rnd() * 0.8, z: 0.55 + rnd() * 0.75, d: rnd(),
+        /* idle drift: each word loops on its own speed and phase */
+        ws: 0.35 + Math.random() * 0.5, p1: Math.random() * 6.3, p2: Math.random() * 6.3 });
     });
     /* Keep headline words away from the centre so they visibly travel. */
     words.filter(function (o) { return o.head; }).forEach(function (o, k) { o.x = [0.12, 0.72, 0.2, 0.8][k]; o.y = [0.22, 0.18, 0.78, 0.74][k]; o.z = 0.9; });
@@ -55,9 +57,14 @@
       els.forEach(function (el, i) { if (words[i].head) el.style.fontSize = FT + 'px'; else el.style.fontSize = (13 + words[i].z * 9) + 'px'; });
     }
     function render(t) {
-      var settle = win(t, 0.16, 0.56), drift = t * 60;
+      var settle = win(t, 0.16, 0.56), drift = t * 60, now = reduce ? 0 : performance.now() / 1000;
       els.forEach(function (el, i) {
         var o = words[i], sx = o.x * W + (o.z - 1) * drift, sy = o.y * H, x, y, s, op;
+        /* Idle motion on top of the scroll position, so the page never looks frozen. Noise words stay a little restless;
+           headline words calm down and stop as they settle into the sentence. */
+        var amp = o.head ? 10 * (1 - win(t, 0.2 + o.hi * 0.05, 0.52 + o.hi * 0.03)) : 7 + o.z * 7;
+        sx += Math.sin(now * o.ws + o.p1) * amp + (o.head ? 0 : Math.sin(now * 2.1 + o.p2) * 1.2);
+        sy += Math.cos(now * o.ws * 0.8 + o.p2) * amp * 0.7;
         if (o.head) {
           var k = win(t, 0.2 + o.hi * 0.05, 0.52 + o.hi * 0.03), s0 = (14 + o.z * 9) / FT;
           x = sx + (T[o.hi][0] - sx) * k; y = sy + (T[o.hi][1] - sy) * k; s = s0 + (1 - s0) * k; op = 0.85 + 0.15 * k;
@@ -81,7 +88,11 @@
     addEventListener('resize', onR);
     if (document.fonts) document.fonts.ready.then(onR);
     p.start();
-    return function () { p.stop(); removeEventListener('resize', onR); };
+    /* Keep redrawing while the intro is on screen, for the idle drift. Stops off screen and in hidden tabs. */
+    var idle = 0, alive = true;
+    function tick() { idle = 0; if (!alive) return; var r = host.getBoundingClientRect(); if (!document.hidden && r.bottom > 0 && r.top < innerHeight) p.refresh(); idle = requestAnimationFrame(tick); }
+    if (!reduce) idle = requestAnimationFrame(tick);
+    return function () { alive = false; if (idle) cancelAnimationFrame(idle); p.stop(); removeEventListener('resize', onR); };
   }
 
   /* ---------------- 3 · The thread is born ---------------- */

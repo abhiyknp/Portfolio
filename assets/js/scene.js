@@ -59,6 +59,9 @@ function start() {
     F[3][k] = new THREE.Vector3(x, -1.2 + Math.sin(t * Math.PI * 1.4) * 1.1, Math.cos(t * Math.PI) * 1.5 + (idx % 2 ? 0.35 : -0.35));
   });
 
+  /* Idle motion: each node floats on its own small loop; a few nodes pulse now and then. */
+  const bob = nodes.map(() => ({ a: rnd() * 6.3, b: rnd() * 6.3, c: rnd() * 6.3, w: 0.35 + rnd() * 0.45, pulse: rnd() < 0.18 ? rnd() * 6.3 : -1 }));
+
   /* Nodes: one instanced mesh; release-route milestones are larger. */
   const geo = new THREE.IcosahedronGeometry(0.13, 1);
   const mat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.95 });
@@ -70,6 +73,10 @@ function start() {
   const lineMat = new THREE.LineBasicMaterial({ transparent: true, opacity: 0.3 });
   const lines = new THREE.LineSegments(lineGeo, lineMat);
   group.add(lines);
+  /* A small light that travels along one link at a time: the traceability idea, in motion. */
+  const spark = new THREE.Mesh(new THREE.IcosahedronGeometry(0.09, 1), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 }));
+  group.add(spark);
+  let sparkLink = 0, sparkT = -1;
 
   function readColours() {
     const cs = getComputedStyle(document.documentElement);
@@ -78,6 +85,7 @@ function start() {
     nodes.forEach((nd, k) => mesh.setColorAt(k, layerCols[nd.layer]));
     mesh.instanceColor.needsUpdate = true;
     lineMat.color = col('--ink-3');
+    spark.material.color = col('--signal');
     needs = true;
   }
 
@@ -105,8 +113,12 @@ function start() {
     lineMat.opacity = linkOp[i] + (linkOp[i + 1] - linkOp[i]) * t;
     for (let k = 0; k < N; k++) {
       tmp.copy(F[i][k]).lerp(F[i + 1][k], t);
+      /* Calmer as the formation becomes more ordered: freer in the scattered cloud, gentle on the route. */
+      const amp = reduce.matches ? 0 : 0.32 - 0.07 * Math.min(3, f), b = bob[k];
+      tmp.x += Math.sin(time * b.w + b.a) * amp; tmp.y += Math.cos(time * b.w * 0.85 + b.b) * amp; tmp.z += Math.sin(time * b.w * 0.7 + b.c) * amp * 0.6;
       const big = f > 2.5 && order.indexOf(k) % 8 === 0 ? 1 + (f - 2.5) * 1.2 : 1;
-      sc.setScalar(big * (nodes[k].layer === 0 ? 1.35 : 1));
+      const pulse = b.pulse >= 0 && !reduce.matches ? 1 + 0.45 * Math.pow(Math.max(0, Math.sin(time * 0.9 + b.pulse)), 12) : 1;
+      sc.setScalar(big * pulse * (nodes[k].layer === 0 ? 1.35 : 1));
       m4.compose(tmp, q, sc); mesh.setMatrixAt(k, m4);
     }
     mesh.instanceMatrix.needsUpdate = true;
@@ -116,6 +128,13 @@ function start() {
       mesh.getMatrixAt(b, m); tmp.setFromMatrixPosition(m); linePos.set([tmp.x, tmp.y, tmp.z], j * 6 + 3);
     });
     lineGeo.attributes.position.needsUpdate = true;
+    /* Spark: 1.4 s along a link, then a short pause, then another link. */
+    if (!reduce.matches) {
+      if (sparkT < 0 || sparkT > 2.2) { sparkT = 0; sparkLink = Math.floor(Math.random() * links.length); }
+      const u = Math.min(1, sparkT / 1.4), o = sparkLink * 6;
+      spark.position.set(linePos[o] + (linePos[o + 3] - linePos[o]) * u, linePos[o + 1] + (linePos[o + 4] - linePos[o + 1]) * u, linePos[o + 2] + (linePos[o + 5] - linePos[o + 2]) * u);
+      spark.material.opacity = sparkT < 1.4 ? Math.sin(u * Math.PI) * Math.min(1, lineMat.opacity * 2.4) : 0;
+    } else spark.material.opacity = 0;
   }
 
   function resize() {
@@ -135,9 +154,10 @@ function start() {
     if (document.hidden) { running = false; return; }
     const diff = target - cur;
     cur = reduce.matches ? target : cur + diff * Math.min(1, dt * 4);
-    if (!reduce.matches) time += dt;
-    group.rotation.y = reduce.matches ? -0.25 : -0.25 + Math.sin(time * 0.12) * 0.12 + (cur - 1.5) * 0.08;
-    group.rotation.x = reduce.matches ? 0.05 : Math.sin(time * 0.09) * 0.05;
+    if (!reduce.matches) { time += dt; sparkT += dt; }
+    /* A slow, visible sway of the whole graph. */
+    group.rotation.y = reduce.matches ? -0.25 : -0.25 + Math.sin(time * 0.16) * 0.28 + (cur - 1.5) * 0.08;
+    group.rotation.x = reduce.matches ? 0.05 : Math.sin(time * 0.11) * 0.09;
     layout(cur);
     renderer.render(scene, camera);
     needs = false;
