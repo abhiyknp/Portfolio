@@ -942,3 +942,7 @@ html.booting, html.booting body { overflow: hidden; }
 .pz-burst i:nth-child(4n) { background: var(--ev-source); width: 5px; height: 9px; }
 @keyframes pz-burst { 0% { opacity: 1; transform: rotate(var(--a)) translateX(0); } 100% { opacity: 0; transform: rotate(var(--a)) translateX(var(--r)) rotate(200deg); } }
 @media (prefers-reduced-motion: reduce) { .pz-slot.pop, .pz-slot.bad, .pz-stars.big .pz-star.on, .pz-slot.pop::after { animation: none; } .pz-meter i { transition: none; } }
+
+/* Overview contact: an open stage above the heading where the background constellation settles */
+#contact.h-contact { padding-top: clamp(200px, 34vh, 360px); }
+@media (max-width: 700px) { #contact.h-contact { padding-top: clamp(170px, 28vh, 260px); } }

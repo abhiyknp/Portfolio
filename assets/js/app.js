@@ -591,7 +591,7 @@
       /* On the overview the chip counts from the end of the intro, and hides while the intro plays. */
       var b0 = document.body.getAttribute('data-route') === 'home' ? introBase() : 0;
       var max = Math.max(1, document.documentElement.scrollHeight - innerHeight - b0), p = Math.min(1, Math.max(0, (scrollY - b0) / max));
-      document.getElementById('chainage').classList.toggle('is-hidden', b0 > 0 && scrollY < b0 - 2);
+      document.getElementById('chainage').classList.toggle('is-hidden', (b0 > 0 && scrollY < b0 - 2) || p < 0.01);
       kmEl.textContent = Math.round(p * 100) + '%';
       phEl.textContent = PHASES[Math.min(3, Math.floor(p * 4))];
       fillEl.style.width = (p * 100).toFixed(1) + '%';

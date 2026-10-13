@@ -53,6 +53,26 @@
     return out;
   }
   var words = makeWords(narrow ? 14 : PAIRS.length), terms = makeWords(narrow ? 16 : TERMS.length);
+  /* Each roaming question gets its own row, in shuffled order, so no two ever sit on top of each other. */
+  (function () { var rows = words.map(function (_, i) { return i; }); for (var j = rows.length - 1; j > 0; j--) { var k = Math.floor(rnd() * (j + 1)), t0 = rows[j]; rows[j] = rows[k]; rows[k] = t0; } words.forEach(function (o, i) { o.row = (rows[i] + 0.5) / rows.length; o.dm = 1; }); })();
+
+  /* Headings and text on the overview, in page coordinates. Words fade back where they would sit behind them. */
+  var TEXT_SEL = '#home-main h1, #home-main h2, #home-main .lede, #home-main .h-state, #home-main .h-short, #home-main .h-status, #home-main .kicker, #home-main .h-head p, #home-main .h-contact p, #home-main .btn-row, #home-main .small, #home-main .h-exp > div, #home-main .h-ba > h3, #home-main .h-ba > p, #home-main .glance, #home-main .h-deeper .kicker';
+  var rects = [], rectsAt = -1;
+  function textRects(now) {
+    if (now - rectsAt < 700) return rects; rectsAt = now; rects = [];
+    document.querySelectorAll(TEXT_SEL).forEach(function (el) {
+      var r = el.getBoundingClientRect(); if (r.width && r.height) rects.push([r.left - 8, r.top + scrollY - 6, r.right + 8, r.bottom + scrollY + 6]);
+    });
+    return rects;
+  }
+  function behindText(x, y, w, fs) {
+    var l = x - w / 2, r = x + w / 2, tp = y - fs * 0.8 + scrollY, bt = y + fs * 0.25 + scrollY;
+    for (var i = 0; i < rects.length; i++) { var q = rects[i]; if (l < q[2] && r > q[0] && tp < q[3] && bt > q[1]) return true; }
+    return false;
+  }
+  /* Fade a word in as it enters from either side, instead of cutting it off at the edge. */
+  function edgeFade(x, w) { return smooth(-6, 36, Math.min(x - w / 2, W - x - w / 2)); }
   /* Links between answers in the final constellation: a ring plus a few cross links. */
   var ALINKS = []; for (var a = 0; a < words.length; a++) { ALINKS.push([a, (a + 1) % words.length]); if (a % 3 === 0) ALINKS.push([a, (a + 7) % words.length]); }
   var ALABELS = words.map(function (o) { return PAIRS[o.i][1]; });
@@ -123,8 +143,14 @@
   function drawStory(dt, alpha) {
     var p = progress();
     blend = ease(blend, nearContact(), 1.8, dt);
-    /* The constellation settles as a wide, slowly turning band in the open space above the contact heading. */
-    var cx = narrow ? W * 0.5 : W * 0.57, cy = H * (narrow ? 0.17 : 0.2), R = narrow ? W * 0.3 : W * 0.23, Ry = H * (narrow ? 0.1 : 0.12);
+    /* The constellation settles as a wide, slowly turning band in the open stage above the contact heading,
+       and scrolls with it, so it never sits on the text whatever the screen size. */
+    var cx = W * 0.5, cy = H * 0.2, R = narrow ? W * 0.26 : Math.min(W * 0.27, 560), Ry = H * 0.1;
+    var ct = document.getElementById('contact'), kk = ct && ct.querySelector('.kicker');
+    if (kk) {
+      var cr = ct.getBoundingClientRect(), kr = kk.getBoundingClientRect(), top = cr.top + 10, bot = kr.top - 18;
+      cy = (top + bot) / 2; Ry = Math.max(24, ((bot - top) / 2 - 12) / 1.35);
+    }
     var cpts = project(words, cx, cy, R, t, Ry), pos = [];
     ctx.textAlign = 'center';
     words.forEach(function (o, i) {
@@ -133,9 +159,17 @@
       if (!reduce.matches) { o.x += o.vx * o.z * (1 - e) * dt; o.ph += dt * 0.4; }
       if (o.x < -260) o.x = W + 40; if (o.x > W + 260) o.x = -40;
       o.m = ease(o.m, smooth(o.th - 0.04, o.th + 0.04, p), 2.5, dt);
-      var ry = ((o.y - scrollY * 0.08 * o.z) % (H + 80) + H + 80) % (H + 80) - 40 + Math.sin(o.ph) * 10;
+      var ry = ((o.row * (H + 80) - scrollY * 0.05) % (H + 80) + H + 80) % (H + 80) - 40 + Math.sin(o.ph) * 4;
       var c = cpts[i], x = o.x + (c.x - o.x) * e, y = ry + (c.y - ry) * e, k = 1 + (c.k - 1) * e;
       pos.push({ x: x, y: y, k: k, e: e, o: o, c: c });
+    });
+    /* In the constellation, a word that a nearer word crosses fades back until they part. */
+    var boxes = [];
+    pos.map(function (q, i) { return i; }).sort(function (a, b) { return pos[b].c.k - pos[a].c.k; }).forEach(function (i) {
+      var q = pos[i], fs = 10 + 6 * q.c.k, w = ALABELS[i].length * fs * 0.6 + 10, bx = [q.x - w / 2, q.y - fs, q.x + w / 2, q.y + fs * 0.4];
+      var hit = q.e > 0.3 && boxes.some(function (b) { return bx[0] < b[2] && bx[2] > b[0] && bx[1] < b[3] && bx[3] > b[1]; });
+      if (q.e > 0.3 && !hit) boxes.push(bx);
+      q.o.cv = ease(q.o.cv == null ? 1 : q.o.cv, hit ? 0.05 : 1, 3, dt);
     });
     var netA = smooth(0.55, 1, blend) * alpha;
     drawLinks(pos, ALINKS, netA);
@@ -144,8 +178,11 @@
       var o = q.o, base = 0.1 + o.z * 0.2, roamFs = 11 + o.z * 10, fs = roamFs + (10 + 6 * q.c.k - roamFs) * q.e;
       var glow = 1 - Math.abs(o.m - 0.5) * 2, lit = netA > 0.3 && ((i === hopHome.b && u > 0.9) || i === hopHome.a) ? 1.6 : 1;
       var answerA = (base * 1.35 + (constAlpha(q.c.k) * 1.6 - base * 1.35) * q.e) * lit;
-      text(PAIRS[o.i][0], q.x, q.y, fs, base * (1 - o.m) * (1 - q.e) * alpha, false, 0);
-      text(ALABELS[i], q.x, q.y, fs, (answerA * o.m + glow * 0.3) * alpha, true, glow);
+      var qs = PAIRS[o.i][0], as = ALABELS[i], w = Math.max(qs.length * (1 - o.m), as.length * o.m) * fs * 0.6;
+      o.dm = ease(o.dm, behindText(q.x, q.y, w, fs) ? 0.12 : 1, 4, dt);
+      var f = o.dm * edgeFade(q.x, w) * (1 + (o.cv - 1) * q.e) * alpha;
+      text(qs, q.x, q.y, fs, base * (1 - o.m) * (1 - q.e) * f, false, 0);
+      text(as, q.x, q.y, fs, (answerA * o.m + glow * 0.3) * f, true, glow * o.dm);
     });
     ctx.textAlign = 'left';
   }
@@ -175,7 +212,7 @@
       /* Fade in over the last stretch of the intro, which has its own words. */
       var base = introBase(), introFade = smooth(base - innerHeight * 0.45, base, scrollY);
       var a = vis * introFade * (narrow ? 0.8 : 1);
-      if (a > 0.004) drawStory(dt, a);
+      if (a > 0.004) { textRects(now); drawStory(dt, a); }
     } else if (vis > 0.004) drawTerms(vis * (narrow ? 0.4 : 0.5));
     ctx.globalAlpha = 1;
     requestAnimationFrame(frame);
