@@ -70,11 +70,11 @@
         '<span class="h-status"><i></i> Open to Senior Business Analyst, Product Owner and Product Analyst roles</span>' +
         '<h1 id="h-title">Senior IT<br>Business <span>Analyst.</span></h1>' +
         '<p class="h-state">Turning complexity into clarity.</p>' +
-        '<p class="lede" style="max-width:60ch">Seven years turning policy and process into requirements that teams can build and test.</p>' +
+        '<p class="lede" style="max-width:60ch">Seven years as the link between the people who need a system and the teams who build it, turning complex requirements into work they can build, test and release.</p>' +
         '<ul class="h-short" id="summary" aria-label="In short">' +
-          '<li>Business Analyst at <strong>Ascra Technologies</strong> for Digital India Corporation (MeitY): <strong>10+ workflow modules</strong> on the Rajmarg Pravesh portal, from discovery to UAT and release.</li>' +
+          '<li>Business Analyst for Digital India Corporation (MeitY): <strong>10+ workflow modules</strong> on the Rajmarg Pravesh portal, which cut highway permission approvals from months to <strong>45 days at most</strong>.</li>' +
           '<li>The full requirements set: BRD, FRD, SRS, RTM, user stories, acceptance criteria and process flows.</li>' +
-          '<li>Before that: four years on a <strong>Healthcare Management System</strong> (Power BI, SQL, training), then ATS and VMS platforms.</li>' +
+          '<li>Before that: four years across a <strong>Healthcare Management System</strong> and <strong>ATS and VMS</strong> platforms.</li>' +
         '</ul>' +
         '<div class="btn-row"><button class="btn" type="button" data-act="goto" data-target="work">See my work</button><a class="btn ghost" href="assets/Abhishek_Yadav_Business_Analyst_Resume.pdf" download>Download résumé (PDF)</a></div>' +
         '<div class="glance" aria-label="At a glance">' +
@@ -107,7 +107,7 @@
         '<div class="h-head"><p class="kicker">03 · Experience</p><h2 id="exp-h">Seven years, four teams.</h2></div>' +
         '<div class="h-exp">' +
           '<div><span class="when">Apr 2025 – now</span><div><h3>Ascra Technologies · Business Analyst</h3><p>Rajmarg Pravesh Portal and NHAI DataLake 3.0 for Digital India Corporation (MeitY): 10+ workflow modules, integrations, UAT, triage, release readiness.</p></div></div>' +
-          '<div><span class="when">Apr 2021 – Apr 2025</span><div><h3>Intechglobe · Business Analyst</h3><p>Healthcare Management System: end-to-end business analysis, Scrum delivery, Power BI and SQL, workshops and training.</p></div></div>' +
+          '<div><span class="when">Apr 2021 – Apr 2025</span><div><h3>Intechglobe · Business Analyst</h3><p>Healthcare Management System: end-to-end business analysis, Scrum delivery, dashboards, workshops and training.</p></div></div>' +
           '<div><span class="when">Feb 2020 – Mar 2021</span><div><h3>Coditro · Business Analyst</h3><p>ATS and VMS: requirements, stories and acceptance criteria, JAD sessions, gap analysis, defect tracking.</p></div></div>' +
           '<div><span class="when">Mar 2019 – Feb 2020</span><div><h3>RTL Technologies · Business Development Analyst</h3><p>Client requirement analysis, proposals, market research and client presentations.</p></div></div>' +
         '</div>' +

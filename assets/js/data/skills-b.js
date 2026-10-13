@@ -149,7 +149,7 @@ PF.skills.push(
 {
   id: 'confluence', area: 'C', name: 'Confluence',
   tags: ['requirements repository', 'meeting notes', 'decision records', 'SOP', 'release notes', 'knowledge base'],
-  ev: 'source', evNote: 'Résumé: Confluence (tools); documentation in Confluence (Intechglobe).',
+  ev: 'source', evNote: 'Résumé: Confluence (tools).',
   sum: 'The project\'s memory: requirements, decisions and guides, linked to the work.',
   def: 'Confluence is a team wiki. Pages are organised in spaces and page trees, with templates, version history, macros (for example JIRA issue lists) and comments.',
   why: 'Decisions and context are lost in email and chat. A structured space with a clear hierarchy and links to JIRA lets anyone find the current truth and its history.',

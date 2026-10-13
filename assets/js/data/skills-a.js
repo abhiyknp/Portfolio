@@ -104,7 +104,7 @@ PF.skills.push(
 {
   id: 'srs', area: 'A', name: 'SRS (Software Requirements Specification)',
   tags: ['system context', 'actors', 'interfaces', 'NFR', 'permissions', 'error handling', 'versioning'],
-  ev: 'source', evNote: 'Résumé: authored SRS documents at Ascra, Intechglobe and Coditro.',
+  ev: 'source', evNote: 'Résumé: authored SRS documents for Rajmarg Pravesh and DataLake 3.0 (Ascra).',
   sum: 'The full behavioural specification of a system, complete enough for design, build, integration and test.',
   def: 'An SRS is the comprehensive specification of a software system. It covers the system context, actors, functional requirements, non-functional requirements, external interfaces, data, permissions, error handling and traceability. Where the FRD is organised around business functions, the SRS describes the system as a whole and is often the contractual reference for vendors.',
   why: 'Large or multi-vendor builds need one source of truth that architects, developers, integrators and auditors can all use. A well-organised SRS also makes version-to-version change visible.',
