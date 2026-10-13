@@ -41,7 +41,7 @@ const go = async (pg, hash) => { await pg.evaluate((h) => { location.hash = h; }
     const km0 = await pg.textContent('#ch-km');
     await pg.evaluate(() => { const c = document.getElementById('contact'); window.scrollTo(0, c.getBoundingClientRect().top + scrollY - innerHeight * 0.3); }); await pg.waitForTimeout(3000);
     const w1 = await pg.evaluate(() => [window.__pfWords.answered, window.__pfWords.total, window.__pfWords.blend]);
-    log(tag, 'background words: answered', w0[0] + '/' + w0[1], '→', w1[0] + '/' + w1[1], '| constellation blend', w0[2].toFixed(2), '→', w1[2].toFixed(2), '| chainage', km0, '→', await pg.textContent('#ch-km'));
+    log(tag, 'background words: answered', w0[0] + '/' + w0[1], '→', w1[0] + '/' + w1[1], '| constellation blend', w0[2].toFixed(2), '→', w1[2].toFixed(2), '| progress', km0, '→', await pg.textContent('#ch-km'));
     if (!(w1[0] === w1[1] && w1[2] > 0.9 && w0[2] < 0.1 && w0[0] < w1[0])) errs.push(`${tag} background words did not follow the page`);
     await overflow(pg, tag, 'home');
     await pg.evaluate(() => window.scrollTo(0, 0));

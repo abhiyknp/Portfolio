@@ -72,14 +72,14 @@
         '<p class="h-state">Turning complexity into clarity.</p>' +
         '<p class="lede" style="max-width:60ch">Seven years as the link between the people who need a system and the teams who build it, turning complex requirements into work they can build, test and release.</p>' +
         '<ul class="h-short" id="summary" aria-label="In short">' +
-          '<li>Business Analyst for Digital India Corporation (MeitY): <strong>10+ workflow modules</strong> on the Rajmarg Pravesh portal, which cut highway permission approvals from months to <strong>45 days at most</strong>.</li>' +
+          '<li>Public-sector platforms for <strong>Digital India Corporation (MeitY)</strong>, and before that healthcare, recruitment and vendor-management systems.</li>' +
           '<li>The full requirements set: BRD, FRD, SRS, RTM, user stories, acceptance criteria and process flows.</li>' +
-          '<li>Before that: four years across a <strong>Healthcare Management System</strong> and <strong>ATS and VMS</strong> platforms.</li>' +
+          '<li>The link between stakeholders and technical teams: authorities, business users, engineering, QA and design working from one agreed set of requirements.</li>' +
         '</ul>' +
         '<div class="btn-row"><button class="btn" type="button" data-act="goto" data-target="work">See my work</button><a class="btn ghost" href="assets/Abhishek_Yadav_Business_Analyst_Resume.pdf" download>Download résumé (PDF)</a></div>' +
         '<div class="glance" aria-label="At a glance">' +
           '<div><span class="v">7+ yrs</span><span class="l">Business analysis, from discovery to production support</span></div>' +
-          '<div><span class="v">10+</span><span class="l">Workflow modules owned on Rajmarg Pravesh</span></div>' +
+          '<div><span class="v">BRD → UAT</span><span class="l">The full lifecycle, from discovery to sign-off and release</span></div>' +
           '<div><span class="v">5</span><span class="l">Domains: government, enterprise, healthcare, HR, e-commerce</span></div>' +
         '</div>' +
       '</section>' +
@@ -574,7 +574,7 @@
   });
   window.addEventListener('hashchange', route);
 
-  /* ---------------- Reading progress as chainage ---------------- */
+  /* ---------------- Reading progress ---------------- */
   var kmEl = document.getElementById('ch-km'), phEl = document.getElementById('ch-phase'), fillEl = document.getElementById('ch-fill'), ticking = false;
   var PHASES = ['Discover', 'Specify', 'Trace', 'Release'];
   /* Scroll offset where the pinned intro ends and the overview begins (0 when there is no animated intro). */
@@ -592,9 +592,7 @@
       var b0 = document.body.getAttribute('data-route') === 'home' ? introBase() : 0;
       var max = Math.max(1, document.documentElement.scrollHeight - innerHeight - b0), p = Math.min(1, Math.max(0, (scrollY - b0) / max));
       document.getElementById('chainage').classList.toggle('is-hidden', b0 > 0 && scrollY < b0 - 2);
-      var km = p * 12, whole = Math.floor(km), m = Math.round((km - whole) * 1000);
-      if (m === 1000) { whole++; m = 0; }
-      kmEl.textContent = 'km ' + whole + '+' + ('00' + m).slice(-3);
+      kmEl.textContent = Math.round(p * 100) + '%';
       phEl.textContent = PHASES[Math.min(3, Math.floor(p * 4))];
       fillEl.style.width = (p * 100).toFixed(1) + '%';
       drawThread();

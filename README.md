@@ -63,7 +63,7 @@ PF_URL=http://localhost:8780/ node tools/test.js
 
 ## Background words
 
-`assets/js/words-bg.js` draws the background on one canvas behind the page. On the overview, faint stakeholder questions roam slowly at different depths; as the reader scrolls, each turns into its gold answer ("is this in scope?" → "scope agreed"), and at the contact section the answers glide one by one into a slowly turning constellation with a gold spark hopping between them. Other pages show a faint constellation of Business Analyst terms. Every change eases over time, so fast scrolling never makes anything snap. With reduced motion the words stay still. Reading progress also appears as highway chainage in the corner chip.
+`assets/js/words-bg.js` draws the background on one canvas behind the page. On the overview, faint stakeholder questions roam slowly at different depths; as the reader scrolls, each turns into its gold answer ("is this in scope?" → "scope agreed"), and at the contact section the answers glide one by one into a slowly turning constellation with a gold spark hopping between them. Other pages show a faint constellation of Business Analyst terms. Every change eases over time, so fast scrolling never makes anything snap. With reduced motion the words stay still. Reading progress appears as a percentage and a phase (Discover, Specify, Trace, Release) in the corner chip.
 
 ## Publishing
 
