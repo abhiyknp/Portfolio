@@ -57,7 +57,7 @@
   (function () { var rows = words.map(function (_, i) { return i; }); for (var j = rows.length - 1; j > 0; j--) { var k = Math.floor(rnd() * (j + 1)), t0 = rows[j]; rows[j] = rows[k]; rows[k] = t0; } words.forEach(function (o, i) { o.row = (rows[i] + 0.5) / rows.length; o.dm = 1; }); })();
 
   /* Headings and text on the overview, in page coordinates. Words fade back where they would sit behind them. */
-  var TEXT_SEL = '#home-main h1, #home-main h2, #home-main .lede, #home-main .h-state, #home-main .h-short, #home-main .h-status, #home-main .kicker, #home-main .h-head p, #home-main .h-contact p, #home-main .btn-row, #home-main .small, #home-main .h-exp > div, #home-main .h-ba > h3, #home-main .h-ba > p, #home-main .glance, #home-main .h-deeper .kicker';
+  var TEXT_SEL = '#home-main h1, #home-main h2, #home-main .lede, #home-main .h-state, #home-main .h-short, #home-main .h-status, #home-main .kicker, #home-main .h-head p, #home-main .h-contact p, #home-main .btn-row > *, #home-main .copy-line > *, #home-main .small, #home-main .h-exp > div, #home-main .h-ba > h3, #home-main .h-ba > p, #home-main .glance, #home-main .h-deeper .kicker';
   var rects = [], rectsAt = -1;
   function textRects(now) {
     if (now - rectsAt < 700) return rects; rectsAt = now; rects = [];
@@ -119,7 +119,7 @@
   function drawLinks(pts, links, alpha) {
     if (alpha < 0.005) return;
     ctx.lineWidth = 1; ctx.strokeStyle = col.line;
-    links.forEach(function (l) { var p = pts[l[0]], q = pts[l[1]]; ctx.globalAlpha = 0.12 * alpha * Math.min(p.k, q.k); ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); });
+    links.forEach(function (l) { var p = pts[l[0]], q = pts[l[1]]; ctx.globalAlpha = 0.12 * alpha * Math.min(p.k, q.k) * (p.o ? Math.min(p.o.dm, q.o.dm) : 1); ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke(); });
   }
   function drawSpark(pts, hop, links, alpha, t) {
     if (alpha < 0.005 || reduce.matches) return 0;
@@ -137,7 +137,7 @@
     ctx.fillText(str, x, y); ctx.shadowBlur = 0;
   }
 
-  var blend = 0, vis = 0, shown = null, last = performance.now(), t = 0;
+  var blend = 0, vis = 0, shown = null, last = performance.now(), t = 0, shape = null;
 
   /* Overview: roaming questions → gold answers → constellation. */
   function drawStory(dt, alpha) {
@@ -148,9 +148,21 @@
     var cx = W * 0.5, cy = H * 0.2, R = narrow ? W * 0.26 : Math.min(W * 0.27, 560), Ry = H * 0.1;
     var ct = document.getElementById('contact'), kk = ct && ct.querySelector('.kicker');
     if (kk) {
-      var cr = ct.getBoundingClientRect(), kr = kk.getBoundingClientRect(), top = cr.top + 10, bot = kr.top - 18;
-      cy = (top + bot) / 2; Ry = Math.max(24, ((bot - top) / 2 - 12) / 1.35);
+      var tb = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--tb')) || 56;
+      var cr = ct.getBoundingClientRect(), kr = kk.getBoundingClientRect(), top = Math.max(cr.top + 10, tb + 8), bot = kr.top - 18;
+      if (bot - top >= 130) { cy = (top + bot) / 2; Ry = Math.max(24, ((bot - top) / 2 - 12) / 1.35); }
+      else {
+        /* The stage has scrolled away (end of the page): spread the constellation wide around the contact text
+           so it stays on screen; words that pass behind the text fade back. */
+        var bt = Math.min(cr.bottom, H - 20), tp = Math.max(kr.top - 30, tb + 20);
+        var th = document.querySelector('.home-thread'), edge = th ? Math.max(30, th.getBoundingClientRect().right + 70) : 30;
+        cy = (tp + bt) / 2; Ry = Math.max(40, (bt - tp) / 2 / 1.35); R = Math.max(80, (W / 2 - edge) / 1.7);
+      }
     }
+    /* Ease the shape so switching between the stage and the wide layout is a glide, not a jump. */
+    if (shape) { shape[0] = ease(shape[0], cx, 3, dt); shape[1] = ease(shape[1], cy, 3, dt); shape[2] = ease(shape[2], R, 3, dt); shape[3] = ease(shape[3], Ry, 3, dt); }
+    else shape = [cx, cy, R, Ry];
+    cx = shape[0]; cy = shape[1]; R = shape[2]; Ry = shape[3];
     var cpts = project(words, cx, cy, R, t, Ry), pos = [];
     ctx.textAlign = 'center';
     words.forEach(function (o, i) {
@@ -179,10 +191,12 @@
       var glow = 1 - Math.abs(o.m - 0.5) * 2, lit = netA > 0.3 && ((i === hopHome.b && u > 0.9) || i === hopHome.a) ? 1.6 : 1;
       var answerA = (base * 1.35 + (constAlpha(q.c.k) * 1.6 - base * 1.35) * q.e) * lit;
       var qs = PAIRS[o.i][0], as = ALABELS[i], w = Math.max(qs.length * (1 - o.m), as.length * o.m) * fs * 0.6;
-      o.dm = ease(o.dm, behindText(q.x, q.y, w, fs) ? 0.12 : 1, 4, dt);
+      o.dm = ease(o.dm, behindText(q.x, q.y, w, fs) ? 0.12 - 0.09 * q.e : 1, 4, dt);
       var f = o.dm * edgeFade(q.x, w) * (1 + (o.cv - 1) * q.e) * alpha;
-      text(qs, q.x, q.y, fs, base * (1 - o.m) * (1 - q.e) * f, false, 0);
-      text(as, q.x, q.y, fs, (answerA * o.m + glow * 0.3) * f, true, glow * o.dm);
+      /* The question fades and lifts away before its answer settles in from below, so the two never overlap. */
+      var qOut = 1 - smooth(0, 0.5, o.m), aIn = smooth(0.45, 1, o.m), lift = 7 * (1 - q.e);
+      text(qs, q.x, q.y - lift * (1 - qOut), fs, base * qOut * (1 - q.e) * f, false, 0);
+      text(as, q.x, q.y + lift * (1 - aIn), fs, (answerA * o.m * aIn + glow * 0.3 * aIn) * f, true, glow * o.dm * aIn);
     });
     ctx.textAlign = 'left';
   }

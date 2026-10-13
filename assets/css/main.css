@@ -521,7 +521,7 @@ th { background: var(--surface-2); }
 
 /* Home, Direction A narrative with the gold thread */
 .home { position: relative; overflow-x: clip; }
-.home-thread { position: absolute; left: max(10px, calc(50% - var(--maxw) / 2 - 8px)); top: 0; width: 24px; pointer-events: none; z-index: 0; }
+.home-thread { position: absolute; left: max(10px, calc(50% - var(--maxw) / 2 - 8px)); top: 0; width: 24px; pointer-events: none; z-index: 3; }
 .home-thread path { fill: none; stroke-width: 2; }
 .home-thread .t-bg { stroke: color-mix(in srgb, var(--ink-3) 25%, transparent); }
 .home-thread .t-fg { stroke: var(--signal); filter: drop-shadow(0 0 6px color-mix(in srgb, var(--signal) 60%, transparent)); }
