@@ -55,53 +55,109 @@
     io.observe(wrap.querySelector('.cmp'));
   }
 
-  /* ---------------- Process puzzle ---------------- */
-  var P = null;
+  /* ---------------- Process puzzle: three levels, score, stars, hints ---------------- */
+  var P = null, BEST_KEY = 'pf-pz-best', HINT_COST = 15, MISS_COST = 20;
+  var RANKS = [[9, 'Senior Business Analyst material', 'Every step in place, first time. You think the way a delivery team needs.'], [7, 'Sharp analyst', 'Nearly flawless. You clearly know how requirements become releases.'], [4, 'Getting the flow', 'The shape is there. One more round and it will be second nature.'], [0, 'Curious mind', 'Every analyst starts here. Play again and watch the hints.']];
+  function getBest() { try { return JSON.parse(localStorage.getItem(BEST_KEY)) || null; } catch (e) { return null; } }
+  function setBest(b) { try { localStorage.setItem(BEST_KEY, JSON.stringify(b)); } catch (e) { /* storage unavailable */ } }
   function shuffle(n) {
     var a; do { a = []; for (var i = 0; i < n; i++) a.push(i); for (var j = n - 1; j > 0; j--) { var k = Math.floor(Math.random() * (j + 1)), t = a[j]; a[j] = a[k]; a[k] = t; } }
     while (a.every(function (v, i) { return v === i; }));
     return a;
   }
-  function reset() { var n = PF.puzzle.length; P = { tray: shuffle(n), slots: new Array(n).fill(null), locked: new Array(n).fill(false), checks: 0, msg: '', done: false }; }
+  function startLevel(L) {
+    var n = PF.puzzle[L].steps.length;
+    P.L = L; P.tray = shuffle(n); P.slots = new Array(n).fill(null); P.locked = new Array(n).fill(false);
+    P.checks = 0; P.hints = 0; P.msg = ''; P.marks = null; P.phase = 'play';
+  }
+  function reset() { P = { score: 0, stars: [], streak: 0, t0: Date.now() }; startLevel(0); }
+  function levelStars() { return P.checks === 1 && !P.hints ? 3 : (P.checks <= 2 && P.hints <= 1 ? 2 : 1); }
+  function starsHtml(n, max, cls) { var s = ''; for (var i = 0; i < (max || 3); i++) s += '<span class="pz-star' + (i < n ? ' on' : '') + '" style="--d:' + i + '" aria-hidden="true">★</span>'; return '<span class="pz-stars ' + (cls || '') + '" role="img" aria-label="' + n + ' of ' + (max || 3) + ' stars">' + s + '</span>'; }
+  function fmtTime(ms) { var s = Math.round(ms / 1000); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
   function puzzleView() {
     reset();
-    return '<div class="wrap page"><header class="page-head"><p class="kicker">Quick challenge · about 2 minutes</p><h1>Chaos to clarity: put the process in order</h1>' +
-      '<p class="lede">Seven steps of a highway permission application have been shuffled. Put them back in the order they happen. This is the first thing I do on any project: turn scattered activity into one clear flow.</p>' +
-      '<p class="note"><span class="ev ev-ill">Illustrative example</span> A simplified version of the permission lifecycle in the Rajmarg Pravesh case study, not the production workflow.</p></header>' +
+    return '<div class="wrap page"><header class="page-head"><p class="kicker">Quick challenge · three levels · about 3 minutes</p><h1>Chaos to clarity: from request to release</h1>' +
+      '<p class="lede">One request, followed all the way to release. In each level the steps have been shuffled: put them back in order. Correct steps lock in, hints cost points, and a clean first check earns three stars.</p></header>' +
       '<div id="puzzle" class="pz"></div><p class="sr-only" id="pz-live" aria-live="polite"></p></div>';
+  }
+  function hud() {
+    var lv = PF.puzzle.map(function (l, i) {
+      var st = i < P.stars.length ? 'done' : (i === P.L ? 'now' : '');
+      return '<li class="pz-lv ' + st + '"' + (i === P.L && P.phase === 'play' ? ' aria-current="step"' : '') + '><span class="pz-lv-n">' + (i + 1) + '</span><span class="pz-lv-name">' + l.name + '</span>' + (i < P.stars.length ? starsHtml(P.stars[i], 3, 'mini') : '') + '</li>';
+    }).join('');
+    return '<div class="pz-hud"><ol class="pz-levels" aria-label="Levels">' + lv + '</ol>' +
+      '<div class="pz-score" aria-label="Score"><span class="k">Score</span><span class="v" id="pz-score">' + P.score + '</span>' + (P.streak > 1 ? '<span class="pz-streak">Streak ×' + P.streak + '</span>' : '') + '</div></div>';
   }
   function drawPuzzle(focus) {
     var host = document.getElementById('puzzle'); if (!host) return;
-    var S = PF.puzzle, filled = P.slots.filter(function (s) { return s !== null; }).length;
-    if (P.done) {
-      host.innerHTML = '<div class="pz-done"><p class="kicker">Clarity</p><h2>Solved' + (P.checks === 1 ? ' on the first check.' : ' in ' + P.checks + ' checks.') + '</h2>' +
-        '<p class="muted">From a pile of activities to one flow that every team can read. Each step has an owner and a reason for its place.</p>' +
-        '<ol class="pz-flow">' + S.map(function (s, i) { return '<li style="--d:' + i + '"><span class="pz-n">' + (i + 1) + '</span><div><span class="pz-lane">' + s.lane + '</span><p>' + s.t + '</p><p class="small muted">' + s.hint + '</p></div></li>'; }).join('') + '</ol>' +
-        '<div class="btn-row"><a class="btn" href="#case.rajmarg">See the full workflow in the case study</a><button class="btn ghost" type="button" data-act="pz-again">Play again</button><a class="btn ghost" href="#scenarios">Try a decision scenario</a></div></div>';
-      var h = host.querySelector('h2'); h.setAttribute('tabindex', '-1'); h.focus();
+    var lvl = PF.puzzle[P.L], S = lvl.steps, filled = P.slots.filter(function (s) { return s !== null; }).length, h;
+    if (P.phase === 'final') {
+      var total = P.stars.reduce(function (a, b) { return a + b; }, 0), rank = RANKS.filter(function (r) { return total >= r[0]; })[0], best = getBest(), isBest = !best || P.score > best.score;
+      if (isBest) setBest({ score: P.score, stars: total });
+      host.innerHTML = '<div class="pz-done">' + burst() + '<p class="kicker">Clarity reached</p><h2>' + rank[1] + '</h2>' + starsHtml(total, 9, 'big') +
+        '<p class="muted">' + rank[2] + '</p>' +
+        '<div class="pz-tally"><div><span class="v">' + P.score + '</span><span class="k">Points' + (isBest ? ' · new best' : ' · best ' + best.score) + '</span></div><div><span class="v">' + total + '/9</span><span class="k">Stars</span></div><div><span class="v">' + fmtTime(P.elapsed) + '</span><span class="k">Time</span></div></div>' +
+        '<ol class="pz-flow">' + PF.puzzle.map(function (l, i) { return '<li style="--d:' + i + '"><span class="pz-n">' + (i + 1) + '</span><div><span class="pz-lane">' + l.name + ' · ' + starsHtml(P.stars[i], 3, 'mini') + '</span><p>' + l.lesson + '</p></div></li>'; }).join('') + '</ol>' +
+        '<p class="small muted">This is how I run every project: one clear flow from the first request to a measured result.</p>' +
+        '<div class="btn-row"><a class="btn" href="#cases">See it on real projects</a><button class="btn ghost" type="button" data-act="pz-again">Play again</button><a class="btn ghost" href="mailto:ba.abhiy@gmail.com">Email me</a></div></div>';
+      h = host.querySelector('h2'); h.setAttribute('tabindex', '-1'); h.focus();
       return;
     }
-    host.innerHTML =
+    if (P.phase === 'level') {
+      var st = P.stars[P.L], last = P.L === PF.puzzle.length - 1;
+      host.innerHTML = hud() + '<div class="pz-level-done">' + (st === 3 ? burst() : '') + '<p class="kicker">Level ' + (P.L + 1) + ' complete</p><h2>' + (st === 3 ? 'Perfect flow.' : st === 2 ? 'Well ordered.' : 'Sorted.') + '</h2>' + starsHtml(st, 3, 'big') +
+        '<p class="pz-gain">+' + P.gain + ' points' + (P.bonus ? ' <span>(includes a streak bonus of ' + P.bonus + ')</span>' : '') + '</p>' +
+        '<div class="pz-lesson"><span class="pz-lane">Why this order</span><p>' + lvl.lesson + '</p></div>' +
+        '<ol class="pz-flow compact">' + S.map(function (s, i) { return '<li style="--d:' + i + '"><span class="pz-n">' + (i + 1) + '</span><div><span class="pz-lane">' + s.lane + '</span><p>' + s.t + '</p></div></li>'; }).join('') + '</ol>' +
+        '<div class="btn-row"><button class="btn" type="button" data-act="pz-next">' + (last ? 'See my result →' : 'Next level: ' + PF.puzzle[P.L + 1].name + ' →') + '</button></div></div>';
+      h = host.querySelector('h2'); h.setAttribute('tabindex', '-1'); h.focus();
+      return;
+    }
+    var M = P.marks || {};
+    host.innerHTML = hud() +
+      '<div class="pz-brief"><p class="kicker">' + lvl.kicker + '</p><p>' + lvl.intro + '</p></div>' +
       '<div class="pz-grid">' +
         '<section class="pz-col" aria-labelledby="pz-tray-h"><h2 id="pz-tray-h" class="pz-h">The pile <span class="small muted">(' + P.tray.length + ' left)</span></h2>' +
           (P.tray.length ? '<ul class="pz-tray">' + P.tray.map(function (i) { return '<li><button class="pz-card" type="button" data-act="pz-place" data-i="' + i + '"><span>' + S[i].t + '</span><span class="pz-act" aria-hidden="true">Add →</span></button></li>'; }).join('') + '</ul>'
             : '<p class="small muted">All steps placed. Check your order.</p>') +
         '</section>' +
-        '<section class="pz-col" aria-labelledby="pz-flow-h"><h2 id="pz-flow-h" class="pz-h">Your flow</h2><ol class="pz-slots">' + P.slots.map(function (v, k) {
-          if (v === null) return '<li class="pz-slot empty"><span class="pz-n">' + (k + 1) + '</span><span class="small muted">Empty</span></li>';
-          if (P.locked[k]) return '<li class="pz-slot ok"><span class="pz-n">' + (k + 1) + '</span><span>' + S[v].t + '</span><span class="pz-tick" aria-label="Correct">✓</span></li>';
-          return '<li class="pz-slot"><span class="pz-n">' + (k + 1) + '</span><button class="pz-card placed" type="button" data-act="pz-remove" data-k="' + k + '" aria-label="Step ' + (k + 1) + ': ' + S[v].t + '. Return to the pile"><span>' + S[v].t + '</span><span class="pz-act" aria-hidden="true">↩</span></button></li>';
+        '<section class="pz-col" aria-labelledby="pz-flow-h"><h2 id="pz-flow-h" class="pz-h">Your flow <span class="pz-meter" aria-hidden="true"><i style="width:' + (filled / S.length * 100) + '%"></i></span></h2><ol class="pz-slots">' + P.slots.map(function (v, k) {
+          if (v === null) return '<li class="pz-slot empty"><span class="pz-n">' + (k + 1) + '</span><span class="small muted">' + (k === P.slots.indexOf(null) ? 'Next step goes here' : 'Empty') + '</span></li>';
+          if (P.locked[k]) return '<li class="pz-slot ok' + (M[k] === 'new' ? ' pop' : '') + '"><span class="pz-n">' + (k + 1) + '</span><span>' + S[v].t + '</span><span class="pz-tick" aria-label="Correct">✓</span></li>';
+          return '<li class="pz-slot' + (M[k] === 'bad' ? ' bad' : '') + '"><span class="pz-n">' + (k + 1) + '</span><button class="pz-card placed" type="button" data-act="pz-remove" data-k="' + k + '" aria-label="Step ' + (k + 1) + ': ' + S[v].t + '. Return to the pile"><span>' + S[v].t + '</span><span class="pz-act" aria-hidden="true">↩</span></button></li>';
         }).join('') + '</ol>' +
-        '<div class="btn-row"><button class="btn" type="button" data-act="pz-check"' + (filled < S.length ? ' disabled' : '') + '>Check my order</button><button class="btn ghost" type="button" data-act="pz-again">Shuffle again</button></div>' +
+        '<div class="btn-row"><button class="btn" type="button" data-act="pz-check"' + (filled < S.length || P.marks ? ' disabled' : '') + '>Check my order</button><button class="btn ghost" type="button" data-act="pz-hint"' + (P.locked.every(Boolean) || P.marks ? ' disabled' : '') + '>Hint <span class="pz-cost">−' + HINT_COST + '</span></button></div>' +
         '<p class="pz-msg">' + P.msg + '</p>' +
         '</section>' +
       '</div>';
     var f = focus && host.querySelector(focus); if (!f) f = host.querySelector('.pz-tray .pz-card') || host.querySelector('[data-act="pz-check"]:not([disabled])');
     if (focus !== null && f) f.focus({ preventScroll: true });
   }
+  function burst() {
+    if (reduce.matches) return '';
+    var s = '<div class="pz-burst" aria-hidden="true">';
+    for (var i = 0; i < 18; i++) s += '<i style="--a:' + (i * 20) + 'deg;--r:' + (90 + (i % 3) * 40) + 'px;--d:' + (i % 4) * 40 + 'ms"></i>';
+    return s + '</div>';
+  }
+  function bumpScore(to) {
+    var el = document.getElementById('pz-score'); if (!el) return;
+    var from = +el.textContent; if (reduce.matches || from === to) { el.textContent = to; return; }
+    var t0 = performance.now();
+    (function step(t) { var p = Math.min(1, (t - t0) / 600); el.textContent = Math.round(from + (to - from) * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(step); })(t0);
+  }
   function announce(t) { var l = document.getElementById('pz-live'); if (l) { l.textContent = ''; setTimeout(function () { l.textContent = t; }, 50); } }
+  function finishLevel() {
+    var st = levelStars(), base = Math.max(20, 100 - (P.checks - 1) * MISS_COST - P.hints * HINT_COST) + st * 10;
+    P.streak = st === 3 ? P.streak + 1 : 0;
+    P.bonus = P.streak > 1 ? (P.streak - 1) * 25 : 0;
+    P.gain = base + P.bonus; P.stars.push(st); P.phase = 'level';
+    var before = P.score; P.score += P.gain;
+    drawPuzzle(); var el = document.getElementById('pz-score'); if (el) { el.textContent = before; bumpScore(P.score); }
+    announce('Level ' + (P.L + 1) + ' complete. ' + st + ' of 3 stars, plus ' + P.gain + ' points.');
+  }
   function act(a, el) {
-    var S = PF.puzzle;
+    if (!P) return;
+    var S = PF.puzzle[P.L].steps;
     if (a === 'pz-place') {
       var i = +el.getAttribute('data-i'), k = P.slots.indexOf(null); if (k < 0) return;
       P.slots[k] = i; P.tray.splice(P.tray.indexOf(i), 1); P.msg = '';
@@ -109,15 +165,32 @@
     } else if (a === 'pz-remove') {
       var k2 = +el.getAttribute('data-k'), v = P.slots[k2]; P.slots[k2] = null; P.tray.push(v); P.msg = '';
       drawPuzzle('[data-act="pz-place"][data-i="' + v + '"]');
+    } else if (a === 'pz-hint') {
+      var at = P.locked.indexOf(false); if (at < 0) return;
+      P.hints++; P.score = Math.max(0, P.score - HINT_COST);
+      var occ = P.slots[at]; if (occ !== null && occ !== at) P.tray.push(occ);
+      var was = P.slots.indexOf(at); if (was >= 0 && was !== at) P.slots[was] = null;
+      var ti = P.tray.indexOf(at); if (ti >= 0) P.tray.splice(ti, 1);
+      P.slots[at] = at; P.locked[at] = true; P.marks = null;
+      P.msg = 'Step ' + (at + 1) + ' is now locked in. ' + S[at].hint;
+      drawPuzzle(); announce(P.msg);
+      if (P.locked.every(Boolean)) { P.checks = Math.max(1, P.checks); finishLevel(); }
     } else if (a === 'pz-check') {
       P.checks++;
-      var wrong = [];
-      P.slots.forEach(function (v, k) { if (v === k) P.locked[k] = true; else { wrong.push(v); P.slots[k] = null; } });
-      if (!wrong.length) { P.done = true; track('puzzle-solved'); drawPuzzle(); announce('Solved. All seven steps are in order.'); return; }
-      P.tray = wrong.concat(P.tray);
-      var right = S.length - wrong.length;
-      P.msg = (right === 0 ? 'None in the right place yet, so all steps are back in the pile.' : right + ' of ' + S.length + ' in the right place. ' + (right === 1 ? 'That one is' : 'Those are') + ' locked; the rest are back in the pile.') + ' Hint: ' + S[wrong[0]].hint;
-      drawPuzzle(); announce(P.msg);
+      var wrong = [], marks = {};
+      P.slots.forEach(function (v, k) { if (P.locked[k]) return; if (v === k) { P.locked[k] = true; marks[k] = 'new'; } else { wrong.push(v); marks[k] = 'bad'; } });
+      if (!wrong.length) { finishLevel(); return; }
+      var right = P.locked.filter(Boolean).length;
+      P.msg = (right === 0 ? 'None in the right place yet.' : right + ' of ' + S.length + ' in place and locked.') + ' The others go back to the pile. Hint: ' + S[wrong[0]].hint;
+      P.marks = marks; drawPuzzle(null); announce(P.msg);
+      setTimeout(function () {
+        if (!P || P.phase !== 'play') return;
+        P.slots.forEach(function (v, k) { if (!P.locked[k]) P.slots[k] = null; });
+        P.tray = wrong.concat(P.tray); P.marks = null; drawPuzzle();
+      }, reduce.matches ? 0 : 900);
+    } else if (a === 'pz-next') {
+      if (P.L < PF.puzzle.length - 1) { startLevel(P.L + 1); drawPuzzle(); }
+      else { P.phase = 'final'; P.elapsed = Date.now() - P.t0; track('puzzle-solved'); drawPuzzle(); announce('All three levels complete.'); }
     } else if (a === 'pz-again') { reset(); drawPuzzle(); }
   }
 

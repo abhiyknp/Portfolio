@@ -100,7 +100,7 @@
           '<div class="h-card"><span class="n">04 Validate</span><h3>Prove it works</h3><p>Trace every requirement to a test, run UAT with real users, get sign-off.</p><span class="out">→ RTM · UAT · release notes</span></div>' +
         '</div>' +
         '<div class="h-ba"><h3>Before and after</h3><p class="muted">The same work, before and after analysis. Drag the handle across.</p>' + window.PFX.compareHtml() +
-        '<a class="h-pz" href="#puzzle"><span class="kicker">Quick challenge · 2 min</span><strong>Try it yourself: put a shuffled process back in order.</strong><span class="go" aria-hidden="true">→</span></a></div>' +
+        '<a class="h-pz" href="#puzzle"><span class="kicker">Quick challenge · 3 levels · 3 min</span><strong>Try it yourself: take one request from idea to release.</strong><span class="go" aria-hidden="true">→</span></a></div>' +
       '</section>' +
 
       '<section data-node aria-labelledby="exp-h">' +
@@ -292,7 +292,7 @@
   /* ---------------- Scenarios ---------------- */
   function scenariosView() {
     return '<div class="wrap page"><header class="page-head"><p class="kicker">Deep-dive · Decision scenarios</p><h1>Decision scenarios</h1><p class="lede">Business situations with several possible responses. Choose one to see the reasoning, rule, user experience, workflow and timing effect, acceptance criteria, tests and backlog items.</p><p class="note">Educational simulations. They are not descriptions of production behaviour on any project.</p></header>' +
-      '<a class="h-pz" href="#puzzle"><span class="kicker">Quick challenge · 2 min</span><strong>Chaos to clarity: put a shuffled permission process back in order.</strong><span class="go" aria-hidden="true">→</span></a><div class="grid g3">' +
+      '<a class="h-pz" href="#puzzle"><span class="kicker">Quick challenge · 3 levels · 3 min</span><strong>Chaos to clarity: take one request from idea to release, in three levels.</strong><span class="go" aria-hidden="true">→</span></a><div class="grid g3">' +
       PF.scenarios.map(function (s) { return '<a class="card" href="#scenario.' + s.id + '"><div class="meta">' + badge('illustrative') + '<span class="kicker">' + s.options.length + ' options</span></div><h3>' + esc(s.short) + '</h3><p class="small muted">' + esc(s.situation) + '</p><span class="card-foot"><span>Explore</span><span aria-hidden="true">→</span></span></a>'; }).join('') + '</div></div>';
   }
   var OPT_FIELDS = [['reasoning', 'Reasoning and trade-offs'], ['rule', 'Business rule'], ['ux', 'UX and notifications'], ['workflow', 'Workflow and TAT effect'], ['ac', 'Acceptance criteria'], ['tests', 'Test cases'], ['jira', 'JIRA story']];

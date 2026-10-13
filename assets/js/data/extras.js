@@ -37,13 +37,45 @@ PF.compare = [
   }
 ];
 
-/* Permission lifecycle, simplified to seven steps. lane is who does the step; hint explains why it sits where it does. */
+/* Process puzzle: three short levels that follow one request from idea to release. lane is who leads the step; hint explains why it sits where it does. */
 PF.puzzle = [
-  { t: 'Applicant submits the application, marks the location and uploads documents', lane: 'Applicant', hint: 'Everything starts with the applicant. Nothing can be checked until something is submitted.' },
-  { t: 'Portal checks mandatory documents and assigns a reviewer', lane: 'Portal', hint: 'The portal checks completeness before any person spends time on the file.' },
-  { t: 'Reviewing officer scrutinises the file and raises a clarification if needed', lane: 'Reviewing officer', hint: 'A reviewer can only scrutinise a file the portal has already assigned.' },
-  { t: 'Field inspector visits the site and uploads a report', lane: 'Field inspector', hint: 'The inspector needs a file the reviewer has already found complete.' },
-  { t: 'Approving authority grants provisional approval', lane: 'Approving authority', hint: 'The authority decides only after reading the inspection report.' },
-  { t: 'Applicant pays the fees and uploads a bank guarantee', lane: 'Applicant', hint: 'Fees are asked for only after provisional approval, so nobody pays for a permission that may be refused.' },
-  { t: 'Finance verifies the payment, then the authority signs the final approval', lane: 'Finance and authority', hint: 'Final sign-off comes last, once finance has confirmed the money.' }
+  {
+    name: 'Discover', kicker: 'Level 1 · Find the real problem',
+    intro: 'A stakeholder says "we need a new report". Put the first five moves in order.',
+    lesson: 'Understand the problem and agree on success before anyone designs a solution. A report request often hides a different need.',
+    steps: [
+      { t: 'A stakeholder raises a request', lane: 'Stakeholder', hint: 'Everything starts with someone asking for something.' },
+      { t: 'Ask "why?" until the real problem behind the request is clear', lane: 'Business Analyst', hint: 'Before mapping people or goals, find out what is actually wrong.' },
+      { t: 'Map who is affected and who decides', lane: 'Business Analyst', hint: 'Once the problem is clear, find everyone it touches and who has the final say.' },
+      { t: 'Agree what success will look like, with a number', lane: 'Stakeholders', hint: 'You can only agree a measure with the people you have just identified.' },
+      { t: 'Write a one-page problem statement and get it signed off', lane: 'Business Analyst', hint: 'The sign-off records everything agreed so far, so it comes last.' }
+    ]
+  },
+  {
+    name: 'Specify', kicker: 'Level 2 · Turn the need into work',
+    intro: 'The problem is agreed. Now turn it into something a team can build.',
+    lesson: 'Requirements are agreed before they are split into stories, and stories are prioritised and refined before a sprint starts.',
+    steps: [
+      { t: 'Write numbered, testable requirements and the business rules behind them', lane: 'Business Analyst', hint: 'Specification starts by writing down exactly what is needed.' },
+      { t: 'Walk stakeholders through the requirements and get sign-off', lane: 'Stakeholders', hint: 'Requirements are reviewed once they exist, and before work is planned.' },
+      { t: 'Split the requirements into user stories with acceptance criteria', lane: 'Business Analyst', hint: 'Only signed-off requirements are broken down into stories.' },
+      { t: 'Prioritise the backlog with the product owner', lane: 'Product owner', hint: 'You can only order stories that have been written.' },
+      { t: 'Refine the top stories with developers and testers', lane: 'Delivery team', hint: 'Refinement works on the stories at the top of the prioritised backlog.' },
+      { t: 'The team builds the stories in a sprint', lane: 'Delivery team', hint: 'Building starts once the stories are clear enough to estimate.' }
+    ]
+  },
+  {
+    name: 'Release', kicker: 'Level 3 · Prove it works, then ship',
+    intro: 'The build is ready. Get it safely to users and check that it worked.',
+    lesson: 'Trace every requirement to a test, let real users accept it, and measure the result against the success measure from level 1.',
+    steps: [
+      { t: 'Link every requirement to a test case in the traceability matrix', lane: 'Business Analyst', hint: 'Plan the tests from the requirements before anyone starts testing.' },
+      { t: 'QA tests the build and logs defects', lane: 'QA', hint: 'Testing runs against the planned test cases.' },
+      { t: 'Triage the defects: fix now, fix later or accept', lane: 'Product owner and team', hint: 'Defects are triaged after they have been logged.' },
+      { t: 'Business users run UAT on their real tasks', lane: 'Business users', hint: 'Users test a build in which the serious defects are already fixed.' },
+      { t: 'Stakeholders sign off the release', lane: 'Stakeholders', hint: 'Sign-off follows a successful UAT.' },
+      { t: 'Go/no-go check, then release to production', lane: 'Product owner', hint: 'Nothing is released without sign-off.' },
+      { t: 'Measure the result against the agreed success measure', lane: 'Business Analyst', hint: 'You can only measure the result once the change is live.' }
+    ]
+  }
 ];
