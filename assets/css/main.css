@@ -875,3 +875,19 @@ html.booting, html.booting body { overflow: hidden; }
 .h-deeper-links span { font-size: var(--t-sm); color: var(--ink-3); line-height: 1.45; }
 .h-cases { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (max-width: 720px) { .h-cases { grid-template-columns: 1fr; } }
+
+/* Case study: "In short" strip and folded detail */
+.cs-brief { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: var(--r); overflow: hidden; margin-bottom: var(--s-5); }
+.cs-brief > div { background: var(--surface); padding: var(--s-4) var(--s-5); display: grid; gap: .4rem; align-content: start; }
+.cs-brief .k { font: 500 var(--t-xs)/1.2 var(--f-mono); text-transform: uppercase; letter-spacing: .06em; color: var(--accent); }
+.cs-brief > div:last-child .k { color: var(--signal); }
+.cs-brief p { margin: 0; }
+@media (max-width: 760px) { .cs-brief { grid-template-columns: 1fr; } }
+.ch-more { border: 1px dashed var(--rule); border-radius: var(--r); margin-top: var(--s-4); min-width: 0; }
+.ch-more > summary { list-style: none; cursor: pointer; padding: var(--s-4) var(--s-5); font-weight: 600; display: flex; gap: .2rem .6rem; flex-wrap: wrap; align-items: baseline; }
+.ch-more > summary::-webkit-details-marker { display: none; }
+.ch-more > summary::before { content: "+"; font: 500 1.1rem/1 var(--f-mono); color: var(--accent); }
+.ch-more[open] > summary::before { content: "−"; }
+.ch-more > summary span { font-weight: 400; color: var(--ink-3); font-size: var(--t-sm); flex-basis: 100%; }
+.ch-more[open] > summary { border-bottom: 1px dashed var(--rule); }
+.ch-more > .secs { padding: 0 var(--s-5) var(--s-5); }

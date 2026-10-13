@@ -207,11 +207,11 @@
 
   /* ---------------- Case studies ---------------- */
   var CHAPTERS = [
-    ['The problem', 'Context, people, my role, goals', [0, 1, 2, 3]],
-    ['Discovery', 'Before, pain points, how I found out', [4, 5, 6]],
-    ['The solution', 'Requirements, stories, workflow, UX, data', [7, 8, 9, 10, 11]],
-    ['Quality and delivery', 'Edge cases, UAT, risks, backlog, release', [12, 13, 14, 15, 16, 17]],
-    ['Results and lessons', 'What to measure, what I learned', [18, 19]]
+    ['The problem', 'Context and my role', [0, 2], [1, 3]],
+    ['Discovery', 'Pain points and causes', [5], [4, 6]],
+    ['The solution', 'Requirements and workflow', [7, 9], [8, 10, 11]],
+    ['Quality and delivery', 'Testing and UAT', [13], [12, 14, 15, 16, 17]],
+    ['Results and lessons', 'Results and what I learned', [18, 19], []]
   ];
   function casesView() {
     return '<div class="wrap page"><header class="page-head"><p class="kicker">Case studies</p><h1 style="font-size:clamp(2.4rem,6vw,4.4rem)">Complex systems. Clearer delivery.</h1><p class="lede">Four projects from my résumé, each told in five chapters with workflows, requirements, stories, tests and backlog examples. Labels show what is documented and what is a realistic illustration.</p></header><div class="h-cases">' +
@@ -220,12 +220,15 @@
   function caseView(id) {
     var c = cs(id); if (!c) return notFound();
     var panels = CHAPTERS.map(function (ch, ci) {
-      var body = '<div class="secs">' + ch[2].map(function (k) { return sec(k + 1, PF.caseTitles[k], c.sections[k].html, c.sections[k].ev, 'cs-' + k); }).join('') + '</div>' +
+      var one = function (k) { return sec(k + 1, PF.caseTitles[k], c.sections[k].html, c.sections[k].ev, 'cs-' + k); };
+      var body = '<div class="secs">' + ch[2].map(one).join('') + '</div>' +
+        (ch[3].length ? '<details class="ch-more"><summary>Read full detail <span>' + ch[3].length + ' more sections: ' + ch[3].map(function (k) { return PF.caseTitles[k].toLowerCase(); }).join(', ') + '</span></summary><div class="secs">' + ch[3].map(one).join('') + '</div></details>' : '') +
         '<div class="chap-foot"><span>Chapter ' + (ci + 1) + ' of ' + CHAPTERS.length + '</span>' + (CHAPTERS[ci + 1] ? '<button class="btn" type="button" data-act="next-chapter" data-i="' + (ci + 1) + '">Next: ' + CHAPTERS[ci + 1][0] + ' →</button>' : '<a class="btn ghost" href="#cases">All case studies</a>') + '</div>';
       return ['<b>Chapter ' + (ci + 1) + '</b><span>' + ch[0] + '</span><small>' + ch[1] + '</small>', body];
     });
     return '<div class="wrap page"><nav class="crumbs" aria-label="Breadcrumb"><a href="#cases">Case studies</a><span aria-hidden="true">/</span><span>' + esc(c.short) + '</span></nav>' +
       '<header class="page-head"><p class="kicker">' + esc(c.domain) + '</p><h1 style="font-size:clamp(2.4rem,6vw,4.6rem)">' + esc(c.name) + '</h1><p class="lede">' + esc(c.lede) + '</p><p class="small muted">' + esc(c.org) + ' · ' + c.period + '</p></header>' +
+      (c.brief ? '<section class="cs-brief" aria-label="In short">' + [['The problem', 0], ['My role', 1], ['The result', 2]].map(function (b) { return '<div><span class="k">' + b[0] + '</span><p>' + esc(c.brief[b[1]]) + '</p></div>'; }).join('') + '</section>' : '') +
       '<section class="panel stack" aria-label="At a glance"><p class="kicker">At a glance · what the sources say</p><div class="facts">' + c.facts.map(function (f) { return '<div><span class="k">' + esc(f[0]) + '</span><span>' + esc(f[1]) + '</span>' + badge(f[2]) + '</div>'; }).join('') + '</div></section>' +
       '<div class="chapters" id="chapters">' + tabsHtml('ch-' + c.id, panels) + '</div>' +
       '<section class="panel stack" aria-label="Skills and artifacts"><p class="kicker">In this case study</p><div class="two"><div><h4 class="small muted">Skills applied (' + c.skills.length + ')</h4><div class="chips">' + c.skills.map(skillLink).join('') + '</div></div><div><h4 class="small muted">Sample artifacts (' + c.artifacts.length + ')</h4><div class="chips">' + c.artifacts.map(artLink).join('') + '</div></div></div></section></div>';

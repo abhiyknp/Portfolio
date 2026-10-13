@@ -10,12 +10,13 @@ PF.cases.push(
   id: 'rajmarg', name: 'Rajmarg Pravesh Portal', short: 'Rajmarg Pravesh',
   org: 'Digital India Corporation (MeitY), for MoRTH and NHAI', period: 'Apr 2025 – present',
   domain: 'Government · Highways · Permissions', flow: 'rajmarg',
+  brief: ['Highway access and Right of Way permissions took months, with files passing between several authorities.', 'Business Analyst for 10+ workflow modules: requirements, alignment with MoRTH, NHAI and DIC, UAT and release.', 'Approvals in 45 days at most, applications in about 25 minutes, thousands of users, ₹6 crore+ collected and client appreciation.'],
   lede: 'A centralised, paperless portal for National Highway access and Right of Way permissions. Approvals that took months now take 45 days at most.',
   facts: [
     ['Client context', 'Digital India Corporation (MeitY), for MoRTH and NHAI', 'source'],
     ['Scope of Business Analysis work', '10+ workflow modules, from discovery to post-production support', 'source'],
     ['Requirement areas named', 'GIS workflows, BharatKosh payment, eSign, role-based access, APIs, workflow automation, legacy data migration', 'source'],
-    ['Results', 'Approval in 45 days at most, down from months; about 25 minutes to submit an application; thousands of users; ₹6 crore+ in fees collected through the portal. Fully digital, faceless and paperless', 'source'],
+    ['Results', 'Approval in 45 days at most, down from months; about 25 minutes to submit an application; thousands of users; ₹6 crore+ in fees collected through the portal. Fully digital, faceless and paperless. Recognised with client appreciation', 'source'],
     ['Lifecycle covered', 'Onboarding → initiation → GIS and chainage → documents → review → inspection → clarification → provisional approval → payment and bank guarantee → eSign → final approval; legacy applications', 'brief']
   ],
   skills: ['discovery', 'elicitation', 'brd', 'frd', 'srs', 'rtm', 'rules', 'process', 'integrations', 'migration', 'rbac', 'uat', 'triage', 'release', 'sop', 'metrics'],
@@ -39,7 +40,7 @@ PF.cases.push(
     { ev: 'illustrative', html: '<p>Keys are invented. This does not reflect a live JIRA instance.</p><table><tr><th>Key</th><th>Type</th><th>Summary</th><th>Priority</th></tr><tr><td>PERMIT-E1</td><td>Epic</td><td>Clarification management</td><td>–</td></tr><tr><td>PERMIT-101</td><td>Story</td><td>Reviewer raises clarification with reason codes</td><td>Must</td></tr><tr><td>PERMIT-102</td><td>Story</td><td>Applicant responds with documents</td><td>Must</td></tr><tr><td>PERMIT-103</td><td>Story</td><td>Pause and resume authority clock</td><td>Must</td></tr><tr><td>PERMIT-104</td><td>Story</td><td>Reviewer queue filter by stage and "changed"</td><td>Should</td></tr><tr><td>PERMIT-E2</td><td>Epic</td><td>Bank guarantee verification</td><td>–</td></tr><tr><td>PERMIT-121</td><td>Story</td><td>Finance marks guarantee invalid with reason</td><td>Must</td></tr><tr><td>PERMIT-122</td><td>Story</td><td>Applicant re-uploads guarantee</td><td>Must</td></tr><tr><td>PERMIT-130</td><td>Bug</td><td>Guarantee ending on required date rejected</td><td>High</td></tr></table>' },
     { ev: 'illustrative', html: '<p>Open the reconstructed examples in the Artifact Studio: BRD excerpt, FRD table, SRS requirement, RTM, user story, BPMN workflow, decision table, JIRA backlog, API contract, UAT plan, defect report, change-impact analysis and release checklist. <mark class="ev ev-source">Résumé</mark> confirms the real project used BRDs, FRDs, SRS, RTMs, SOPs, user manuals and release documentation. The portfolio versions are educational reconstructions.</p>' },
     { ev: 'mixed', html: '<p><mark class="ev ev-source">Résumé</mark> Agile releases, UAT, production release and post-production support.</p><ul><li>Release notes per audience: applicants, authority users, support.</li><li>SOP and user manual updates in the same release as the behaviour change.</li><li>Training for reviewers on clarification reason codes, so reasons stay consistent.</li><li>Post-release watch: support tickets, clarification volume, payment exceptions.</li></ul>' },
-    { ev: 'recommended', html: '<p><mark class="ev ev-source">Reported results</mark> Approval now takes 45 days at most, where it used to take months. An application takes about 25 minutes to submit. The portal serves thousands of users and has collected ₹6 crore+ in fees. The process is fully digital, faceless and paperless. Defects found in UAT were fixed before release.</p><p>Further measures that <em>could</em> be tracked:</p><ul><li>Share of applications receiving a clarification at first review, by reason.</li><li>Median authority-side days per stage (pauses excluded per rule).</li><li>Pending by stage and ageing bucket.</li><li>Payment exceptions open after N days.</li><li>Legacy records claimed vs verified.</li></ul>' },
+    { ev: 'recommended', html: '<p><mark class="ev ev-source">Reported results</mark> Approval now takes 45 days at most, where it used to take months. An application takes about 25 minutes to submit. The portal serves thousands of users and has collected ₹6 crore+ in fees. The process is fully digital, faceless and paperless. Defects found in UAT were fixed before release. The work received client appreciation.</p><p>Further measures that <em>could</em> be tracked:</p><ul><li>Share of applications receiving a clarification at first review, by reason.</li><li>Median authority-side days per stage (pauses excluded per rule).</li><li>Pending by stage and ageing bucket.</li><li>Payment exceptions open after N days.</li><li>Legacy records claimed vs verified.</li></ul>' },
     { ev: 'recommended', html: '<ul><li>Agree the status model and pause rules before building dashboards.</li><li>Keep rules in a catalogue, so policy changes do not ripple through documents.</li><li>Design the "unknown" state for every external integration.</li><li>Talking point: "I worked across 10+ workflow modules from discovery to post-production support. Here is how I approach a clarification workflow, and I will be clear which details are illustrative."</li></ul>' }
   ]
 },
@@ -47,6 +48,7 @@ PF.cases.push(
   id: 'datalake', name: 'NHAI DataLake 3.0', short: 'DataLake 3.0',
   org: 'Digital India Corporation (MeitY), for NHAI', period: 'Apr 2025 – present',
   domain: 'Government · Data platform', flow: null,
+  brief: ['NHAI needed one place for employee attendance, road maintenance and National Highway management.', 'Business Analyst: the SRS, 9+ workflow models and requirements from gathering through UAT and release.', 'One portal covering all three areas.'],
   lede: 'One NHAI portal for everything from employee attendance to road maintenance and National Highway management. I wrote the SRS and 9+ workflow models and took requirements through UAT and release.',
   facts: [
     ['Named project', 'NHAI DataLake 3.0', 'source'],
@@ -83,6 +85,7 @@ PF.cases.push(
   id: 'healthcare', name: 'Healthcare Management System', short: 'Healthcare',
   org: 'Intechglobe Pvt. Ltd.', period: 'Apr 2021 – Apr 2025',
   domain: 'Healthcare · Enterprise application', flow: 'healthcare',
+  brief: ['Hospital and staff operations needed one system, with HR features and clear reporting.', 'End-to-end business analysis: requirements, Visio workflows, Scrum releases, dashboards and user training.', 'Adopted by 20–30 users, with dashboards for inventory, HR and medical records.'],
   lede: 'End-to-end business analysis for a hospital and staff management system with HRMS features: requirements, workflows, dashboards and adoption by 20–30 users. The workflows shown are illustrative.',
   facts: [
     ['Named project', 'Healthcare Management System', 'source'],
@@ -120,6 +123,7 @@ PF.cases.push(
   id: 'ats-vms', name: 'ATS and VMS Platforms', short: 'ATS / VMS',
   org: 'Coditro LLP', period: 'Feb 2020 – Mar 2021',
   domain: 'HR technology · Recruitment and vendors', flow: 'ats',
+  brief: ['Recruitment companies and staffing vendors needed a quicker route from a job opening to a shortlist.', 'Requirements, user stories and acceptance criteria, JAD sessions, gap analysis and defect tracking.', 'A faster path from publishing a job to shortlisting applicants.'],
   lede: 'Requirements and implementation support for an Applicant Tracking System and a Vendor Management System. The workflows below are representative.',
   facts: [
     ['Named projects', 'ATS and VMS', 'source'],
