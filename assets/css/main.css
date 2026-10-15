@@ -946,3 +946,17 @@ html.booting, html.booting body { overflow: hidden; }
 /* Overview contact: an open stage above the heading where the background constellation settles */
 #contact.h-contact { padding-top: clamp(200px, 34vh, 360px); }
 @media (max-width: 700px) { #contact.h-contact { padding-top: clamp(170px, 28vh, 260px); } }
+
+/* About me and recommendations, at the top of the Experience section */
+.h-about { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); align-items: start; }
+@media (max-width: 860px) { .h-about { grid-template-columns: 1fr; } }
+.h-about-text { display: grid; gap: var(--s-3); }
+.h-about-text p:not(.kicker) { color: var(--ink-2); font-size: var(--t-lg); line-height: 1.6; margin: 0; max-width: 62ch; }
+.h-quotes { display: grid; gap: var(--s-3); }
+.h-quote { margin: 0; padding: var(--s-4) var(--s-5); border: 1px solid var(--rule); border-radius: var(--r); background: var(--surface); position: relative; }
+.h-quote::before { content: "\201C"; position: absolute; left: .7rem; top: -.35rem; font: 700 3rem/1 var(--f-body); color: var(--signal); }
+.h-quote blockquote { margin: 0 0 .7rem; padding-left: 1.2rem; color: var(--ink); line-height: 1.55; }
+.h-quote figcaption { display: grid; gap: .1rem; padding-left: 1.2rem; font-size: var(--t-sm); }
+.h-quote figcaption span { color: var(--ink-3); }
+.h-quotes-more { font-size: var(--t-sm); color: var(--accent); justify-self: start; }
+.h-exp-h { margin: var(--s-6) 0 0; font-size: var(--t-lg); color: var(--ink-2); font-weight: 600; }

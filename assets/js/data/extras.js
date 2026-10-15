@@ -79,3 +79,13 @@ PF.puzzle = [
     ]
   }
 ];
+
+/* About me and recommendations (quoted from LinkedIn, where they are public). */
+PF.about = {
+  title: 'Seven years, four teams.',
+  text: 'I work where the people who need a system meet the teams who build it. For seven years I have turned complex, often policy-driven requirements into specifications that engineers can build, testers can verify and stakeholders can sign off. Most recently that has meant national-scale public-sector platforms for Digital India Corporation (MeitY), where documentation is mandatory and every decision has to stand up to audit. I care about detail, steady stakeholder relationships and releases that make things simpler for the people who use them. Next, I want to own the product as well as the requirements.',
+  quotes: [
+    { q: 'His ability to translate complex requirements into clear, actionable insights, along with his strong stakeholder management, has been instrumental in smooth project delivery. His ownership, proactive communication, and attention to detail truly set him apart.', who: 'Anhad Saini', role: 'Program Director · managed me directly' },
+    { q: 'Abhishek played a pivotal role in bridging the gap between business needs, technical execution, and government compliance. He is, without a doubt, one of the most meticulous documenters I have worked with.', who: 'Himanshu Mewari', role: 'Deputy General Manager, Digital India Corporation · same team' }
+  ]
+};

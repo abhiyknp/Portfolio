@@ -104,7 +104,9 @@
       '</section>' +
 
       '<section data-node aria-labelledby="exp-h">' +
-        '<div class="h-head"><p class="kicker">03 · Experience</p><h2 id="exp-h">Seven years, four teams.</h2></div>' +
+        '<div class="h-about"><div class="h-about-text"><p class="kicker">03 · About me</p><h2 id="exp-h">' + PF.about.title + '</h2><p id="about-p">' + PF.about.text + '</p></div>' +
+          '<div class="h-quotes" aria-label="What people say">' + PF.about.quotes.map(function (q) { return '<figure class="h-quote"><blockquote>' + q.q + '</blockquote><figcaption><strong>' + q.who + '</strong><span>' + q.role + '</span></figcaption></figure>'; }).join('') + '<a class="h-quotes-more" href="https://www.linkedin.com/in/abhiyknp/details/recommendations/" target="_blank" rel="noopener">15 recommendations on LinkedIn ↗</a></div></div>' +
+        '<h3 class="h-exp-h">Experience</h3>' +
         '<div class="h-exp">' +
           '<div><span class="when">Apr 2025 – now</span><div><h3>Ascra Technologies · Business Analyst</h3><p>Rajmarg Pravesh Portal and NHAI DataLake 3.0 for Digital India Corporation (MeitY): 10+ workflow modules, integrations, UAT, triage, release readiness.</p></div></div>' +
           '<div><span class="when">Apr 2021 – Apr 2025</span><div><h3>Intechglobe · Business Analyst</h3><p>Healthcare Management System: end-to-end business analysis, Scrum delivery, dashboards, workshops and training.</p></div></div>' +

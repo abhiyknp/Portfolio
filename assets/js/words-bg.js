@@ -57,7 +57,7 @@
   (function () { var rows = words.map(function (_, i) { return i; }); for (var j = rows.length - 1; j > 0; j--) { var k = Math.floor(rnd() * (j + 1)), t0 = rows[j]; rows[j] = rows[k]; rows[k] = t0; } words.forEach(function (o, i) { o.row = (rows[i] + 0.5) / rows.length; o.dm = 1; }); })();
 
   /* Headings and text on the overview, in page coordinates. Words fade back where they would sit behind them. */
-  var TEXT_SEL = '#home-main h1, #home-main h2, #home-main .lede, #home-main .h-state, #home-main .h-short, #home-main .h-status, #home-main .kicker, #home-main .h-head p, #home-main .h-contact p, #home-main .btn-row > *, #home-main .copy-line > *, #home-main .small, #home-main .h-exp > div, #home-main .h-ba > h3, #home-main .h-ba > p, #home-main .glance, #home-main .h-deeper .kicker';
+  var TEXT_SEL = '#home-main h1, #home-main h2, #home-main .lede, #home-main .h-state, #home-main .h-short, #home-main .h-status, #home-main .kicker, #home-main .h-head p, #home-main .h-contact p, #home-main .btn-row > *, #home-main .copy-line > *, #home-main .small, #home-main .h-exp > div, #home-main .h-ba > h3, #home-main .h-ba > p, #home-main .glance, #home-main .h-deeper .kicker, #home-main .h-about-text p, #home-main .h-exp-h, #home-main .h-quotes-more';
   var rects = [], rectsAt = -1;
   function textRects(now) {
     if (now - rectsAt < 700) return rects; rectsAt = now; rects = [];
