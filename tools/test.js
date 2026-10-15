@@ -50,7 +50,7 @@ const go = async (pg, hash) => { await pg.evaluate((h) => { location.hash = h; }
 
     await go(pg, 'skills'); await overflow(pg, tag, 'skills'); await shot(pg, tag + '-skills');
     await pg.fill('#lib-q', 'JQL'); log(tag, 'search JQL:', await pg.textContent('#lib-count'));
-    await pg.fill('#lib-q', ''); await pg.click('[data-f="area"][data-v="E"]'); log(tag, 'area E:', await pg.textContent('#lib-count'));
+    await pg.fill('#lib-q', ''); await pg.click('.lib-more > summary'); await pg.click('[data-f="area"][data-v="E"]'); log(tag, 'area E:', await pg.textContent('#lib-count'));
     await pg.click('[data-f="ev"][data-v="recommended"]'); log(tag, 'E + recommended:', await pg.textContent('#lib-count'));
     await pg.click('[data-f="area"][data-v="all"]'); await pg.click('[data-f="ev"][data-v="all"]');
     await pg.fill('#lib-q', 'zzzz'); log(tag, 'empty state:', await pg.isVisible('.empty')); await pg.click('[data-act="lib-reset"]');

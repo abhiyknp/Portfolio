@@ -142,12 +142,13 @@
 
   /* ---------------- Skills Library ---------------- */
   var lib = store('pf-lib') || { q: '', area: 'all', ev: 'all' };
+  var CORE = ['discovery', 'elicitation', 'brd', 'frd', 'stories', 'ac', 'rtm', 'process', 'rules', 'backlog', 'jira', 'wireframes', 'api', 'uat', 'workshops'];
   function skillsView() {
-    return '<div class="wrap page"><header class="page-head"><p class="kicker">Deep-dive · Skills Library</p><h1>Skills Library</h1><p class="lede">' + PF.skills.length + ' skills across nine areas. Each opens a 15-part explanation: definition, method, scenario, artifact, mistakes, collaboration, interview question and model answer.</p></header>' +
+    return '<div class="wrap page"><header class="page-head"><p class="kicker">Deep-dive · Skills Library</p><h1>Skills Library</h1><p class="lede">The 15 I use most, up front. ' + (PF.skills.length - CORE.length) + ' more below. Open any skill for the method, an example and interview answers.</p></header>' +
       '<div class="filters"><label class="search" for="lib-q">' + SEARCH_ICON + '<span class="sr-only" hidden>Search skills</span><input id="lib-q" type="search" placeholder="Search skills, tools or techniques, for example JQL, decision table, BharatKosh" value="' + esc(lib.q) + '" autocomplete="off" aria-label="Search skills"></label>' +
-        '<div class="filter-row" role="group" aria-label="Filter by area"><span>Area</span><button class="chip" type="button" data-f="area" data-v="all" aria-pressed="' + (lib.area === 'all') + '">All</button>' +
+        '<details class="lib-more"' + (lib.area !== 'all' || lib.ev !== 'all' ? ' open' : '') + '><summary>Filters</summary><div class="filter-row" role="group" aria-label="Filter by area"><span>Area</span><button class="chip" type="button" data-f="area" data-v="all" aria-pressed="' + (lib.area === 'all') + '">All</button>' +
           Object.keys(AREAS).map(function (k) { return '<button class="chip" type="button" data-f="area" data-v="' + k + '" aria-pressed="' + (lib.area === k) + '" title="' + AREAS[k] + '">' + k + ' · ' + AREAS[k].split(',')[0].split(' and ')[0] + '</button>'; }).join('') + '</div>' +
-        '<div class="filter-row" role="group" aria-label="Filter by evidence"><span>Evidence</span>' + ['all', 'source', 'recommended'].map(function (k) { return '<button class="chip" type="button" data-f="ev" data-v="' + k + '" aria-pressed="' + (lib.ev === k) + '">' + (k === 'all' ? 'All' : EV[k][1]) + '</button>'; }).join('') + '<span class="result-count" id="lib-count" aria-live="polite"></span></div></div>' +
+        '<div class="filter-row" role="group" aria-label="Filter by evidence"><span>Evidence</span>' + ['all', 'source', 'recommended'].map(function (k) { return '<button class="chip" type="button" data-f="ev" data-v="' + k + '" aria-pressed="' + (lib.ev === k) + '">' + (k === 'all' ? 'All' : EV[k][1]) + '</button>'; }).join('') + '<span class="result-count" id="lib-count" aria-live="polite"></span></div></details></div>' +
       '<div id="lib-results" class="stack" style="gap:var(--s-6)"></div></div>';
   }
   function skillMatches(s, q) {
@@ -159,6 +160,14 @@
     var out = document.getElementById('lib-results'); if (!out) return;
     var res = PF.skills.filter(function (s) { return (lib.area === 'all' || s.area === lib.area) && (lib.ev === 'all' || s.ev === lib.ev) && skillMatches(s, lib.q.trim()); });
     document.getElementById('lib-count').textContent = res.length + ' of ' + PF.skills.length + ' skills';
+    if (!lib.q.trim() && lib.area === 'all' && lib.ev === 'all') {
+      /* Default view: the core skills as light cards, everything else as compact links. */
+      var core = CORE.map(skill).filter(Boolean), rest = PF.skills.filter(function (s) { return CORE.indexOf(s.id) < 0; });
+      out.innerHTML = '<section class="area-block"><h2>Core skills</h2><div class="grid g3 lite">' + core.map(function (s) {
+        return '<a class="card lite" href="#skill.' + s.id + '"><span class="area-letter">' + s.area + '</span><h3>' + esc(s.name) + '</h3><p class="small muted">' + esc(s.sum) + '</p></a>';
+      }).join('') + '</div></section><section class="area-block"><h2>Also in the library</h2><div class="chips lib-rest">' + rest.map(function (s) { return '<a class="chip" href="#skill.' + s.id + '">' + esc(s.name) + '</a>'; }).join('') + '</div></section>';
+      return;
+    }
     if (!res.length) { out.innerHTML = '<div class="empty"><p>No skills match "' + esc(lib.q) + '" with these filters.</p><p><button class="btn ghost" type="button" data-act="lib-reset">Clear search and filters</button></p></div>'; return; }
     out.innerHTML = Object.keys(AREAS).map(function (k) {
       var items = res.filter(function (s) { return s.area === k; });
@@ -264,17 +273,18 @@
     kpi: [4, 'Precise definitions of each measure on a dashboard, so everyone calculates it the same way.', 'Managers, analysts, product owner', 'Before building a dashboard, and when measuring outcomes']
   };
   function studioOrder() { var o = []; STAGES.forEach(function (_, k) { PF.artifacts.forEach(function (a) { if (META[a.id] && META[a.id][0] === k) o.push(a); }); }); return o; }
+  var FEATURED = ['brd', 'frd', 'story', 'rtm', 'bpmn', 'decision', 'uat', 'release'];
   function studioView() {
+    var feat = FEATURED.map(art).filter(Boolean);
     return '<div class="wrap page"><header class="page-head"><p class="kicker">Artifact Studio</p><h1 style="font-size:clamp(2.4rem,6vw,4.4rem)">The documents behind the work.</h1>' +
-      '<p class="lede">Examples of the documents a Business Analyst produces, in the order they appear in a project. Open any one to see the example, who uses it and what a good one looks like.</p></header>' +
-      '<ol class="studio-how"><li><b>1</b>Pick a project stage below.</li><li><b>2</b>Open a document to see the full example.</li><li><b>3</b>Use the tabs to look at it from the business, functional, technical and testing sides.</li></ol>' +
-      '<p class="note">Every example was written for this portfolio with invented IDs and sample data. None is a client document.</p>' +
+      '<p class="lede">Eight to start with. Each opens a full sample you can explore. All samples use invented data.</p></header>' +
+      '<div class="grid g4 lite">' + feat.map(function (a) { var m = META[a.id] || [0, a.purpose]; return '<a class="card lite" href="#studio.' + a.id + '"><span class="kicker">' + STAGES[m[0]][0] + '</span><h3>' + esc(a.name) + '</h3><p class="small muted">' + esc(m[1]) + '</p></a>'; }).join('') + '</div>' +
+      '<section class="stack" style="margin-top:var(--s-6)"><h2 style="font-size:var(--t-lg)">All ' + PF.artifacts.length + ', by project stage</h2>' +
       STAGES.map(function (st, k) {
         var items = PF.artifacts.filter(function (a) { return META[a.id] && META[a.id][0] === k; });
-        return '<section class="stage-block" aria-labelledby="stg-' + k + '"><div class="stage-head"><span class="stage-n">Stage ' + (k + 1) + '</span><h2 id="stg-' + k + '">' + st[0] + '</h2><p>' + st[1] + '</p></div><div class="grid g3">' +
-          items.map(function (a) { var m = META[a.id]; return '<a class="card" href="#studio.' + a.id + '"><h3>' + esc(a.name) + '</h3><p class="small">' + esc(m[1]) + '</p><p class="small muted"><b>Used by:</b> ' + esc(m[2]) + '</p><span class="card-foot"><span>Open the example</span><span aria-hidden="true">→</span></span></a>'; }).join('') +
-          '</div></section>';
-      }).join('') + '</div>';
+        return '<div class="stage-block stage-row" aria-labelledby="stg-' + k + '"><h3 id="stg-' + k + '"><span class="stage-n">' + (k + 1) + '</span>' + st[0] + '</h3><div class="chips">' +
+          items.map(function (a) { return '<a class="chip" href="#studio.' + a.id + '">' + esc(a.name) + '</a>'; }).join('') + '</div></div>';
+      }).join('') + '</section></div>';
   }
   function artifactView(id) {
     var a = art(id); if (!a) return notFound();
