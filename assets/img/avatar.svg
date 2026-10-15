@@ -5,8 +5,8 @@
   </defs>
   <rect width="560" height="700" fill="url(#bg)"/>
   <circle cx="280" cy="300" r="210" fill="#8ab8ff" opacity=".07"/>
-  <g fill="none" stroke="#f2b33d" stroke-width="2" opacity=".35"><path d="M60 120 q40 -30 80 0 t80 0"/><path d="M400 560 q30 -25 60 0 t60 0"/></g>
-  <!-- shoulders / suit -->
+  <g class="av-waves" fill="none" stroke="#f2b33d" stroke-width="2" opacity=".35"><path d="M60 120 q40 -30 80 0 t80 0"/><path d="M400 560 q30 -25 60 0 t60 0"/></g>
+  <g class="av-body">
   <path d="M70 700 C80 560 160 505 280 495 C400 505 480 560 490 700 Z" fill="url(#suit)"/>
   <path d="M232 500 L280 620 L328 500 L300 492 L280 510 L260 492 Z" fill="#f1f3f5"/>
   <path d="M268 518 L292 518 L300 640 L280 668 L260 640 Z" fill="#2f5fb8"/>
@@ -14,6 +14,8 @@
   <path d="M232 500 L280 620 L222 700 L170 700 L196 540 Z" fill="#4a525c"/>
   <path d="M328 500 L280 620 L338 700 L390 700 L364 540 Z" fill="#4a525c"/>
   <path d="M372 590 l34 -6 l2 10 l-34 6 Z" fill="#f1f3f5"/>
+  </g>
+  <g class="av-head">
   <!-- neck -->
   <path d="M245 430 L245 500 Q280 522 315 500 L315 430 Z" fill="#c98b62"/>
   <!-- head -->
@@ -26,9 +28,10 @@
   <path d="M186 340 C190 410 226 452 280 456 C334 452 370 410 374 340 C366 372 350 392 330 400 C314 384 300 380 280 380 C260 380 246 384 230 400 C210 392 194 372 186 340 Z" fill="#2a1f19"/>
   <path d="M252 404 Q280 394 308 404 Q280 414 252 404 Z" fill="#a8664a"/>
   <!-- eyes, brows, nose -->
-  <path d="M222 300 q22 -12 42 -2" stroke="#1d1612" stroke-width="7" fill="none" stroke-linecap="round"/>
-  <path d="M296 298 q22 -10 42 2" stroke="#1d1612" stroke-width="7" fill="none" stroke-linecap="round"/>
-  <ellipse cx="244" cy="324" rx="9" ry="7" fill="#1d1612"/>
-  <ellipse cx="316" cy="324" rx="9" ry="7" fill="#1d1612"/>
+  <path class="av-brow-l" d="M222 300 q22 -12 42 -2" stroke="#1d1612" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <path class="av-brow-r" d="M296 298 q22 -10 42 2" stroke="#1d1612" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <ellipse class="av-eye av-eye-l" cx="244" cy="324" rx="9" ry="7" fill="#1d1612"/>
+  <ellipse class="av-eye av-eye-r" cx="316" cy="324" rx="9" ry="7" fill="#1d1612"/>
   <path d="M280 330 q-8 30 -2 40 q6 3 12 0" stroke="#a8664a" stroke-width="4" fill="none" stroke-linecap="round"/>
+  </g>
 </svg>

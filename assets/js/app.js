@@ -66,7 +66,7 @@
     return '<section class="intro intro-thread" id="intro" aria-label="Introduction"></section>' +
       '<div class="home" id="home-main"><svg class="home-thread" aria-hidden="true"><path class="t-bg"/><path class="t-fg"/></svg><div class="wrap">' +
       '<section class="h-hero" id="hero" data-node aria-labelledby="h-title">' +
-        '<figure class="h-photo"><img src="assets/img/avatar.svg" alt="Illustrated avatar of Abhishek Yadav" width="560" height="700" fetchpriority="high"></figure>' +
+        '<figure class="h-photo h-avatar" tabindex="0" aria-label="Illustrated avatar of Abhishek Yadav">' + window.PF_AVATAR + '</figure>' +
         '<span class="h-status"><i></i> Open to Senior Business Analyst, Product Owner and Product Analyst roles</span>' +
         '<h1 id="h-title">Senior IT<br>Business <span>Analyst.</span></h1>' +
         '<p class="h-state">Turning complexity into clarity.</p>' +
