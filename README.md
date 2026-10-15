@@ -32,7 +32,7 @@ No confidential client material is reproduced. IDs, ticket keys, endpoints, sche
 
 ```
 index.html                 page shell (with social-preview tags)
-assets/img/                portrait (abhishek-yadav.webp/.jpg) and social card (og-card.jpg)
+assets/img/                avatar (avatar.svg, also inlined in assets/js/avatar.js), favicon.svg, social card (og-card.jpg)
 assets/Abhishek_Yadav_Business_Analyst_Resume.pdf   résumé for the download buttons
 assets/css/main.css        design tokens (light and dark) and all styles
 assets/js/app.js           router, views, search, filters, tabs, modal, palette, progress
@@ -42,8 +42,6 @@ assets/js/stats.js         GoatCounter visit counts
 assets/js/owner.js         private owner view of the stats (#stats)
 assets/js/loader.js        "chaos to clarity" loader shared by the first-visit screen and #stats
 assets/js/intros.js        scroll intros (the home page uses chaos-to-clarity; the thread and blueprint intros are kept for reference)
-assets/js/intro.js         earlier "request's journey" intro, kept for the concepts page
-concepts/                  design study: direction A with four intro prototypes
 assets/js/words-bg.js      background words: questions to answers to constellation
 assets/js/data/*.js        all content: skills-a/b/c, cases, flows, artifacts, scenarios, extras (slider pairs and puzzle steps), legal (privacy, terms, accessibility)
 tools/serve.sh             local server
@@ -92,7 +90,16 @@ The footer on every page links to the main sections, contact details, the résum
 | To change | Do this |
 |---|---|
 | Résumé | Replace `assets/Abhishek_Yadav_Business_Analyst_Resume.pdf`, keeping the same file name. Both download buttons pick it up. |
-| Profile photo | Replace `assets/img/abhishek-yadav.webp` and `.jpg` (560 × 700, portrait). Rebuild `assets/img/og-card.jpg` (1200 × 630) so link previews match. |
+| Profile photo | The hero shows an illustrated avatar (`assets/js/avatar.js`). To use a photo again, add it to `assets/img/` and in `assets/js/app.js` replace `window.PF_AVATAR` inside `.h-photo` with an `<img>`. Rebuild `assets/img/og-card.jpg` (1200 × 630). |
 | Any text | Edit the files in `assets/js/data/`, or the overview in `home()` in `assets/js/app.js`. |
 | Visitor stats | GoatCounter site `abhiyknp` (`assets/js/stats.js`). The private view is the footer's "Owner's desk". |
 | After any change | Bump the `?v=` tag on the asset links in `index.html` so browsers fetch the new files, then push to `main`. GitHub Pages republishes in a minute or two. |
+
+## Custom domain
+
+1. Add a file named `CNAME` at the repository root containing only the domain (for example `abhishekyadav.in`). The publish workflow copies it into the site.
+2. At your domain registrar, point the domain to GitHub Pages: for an apex domain, A records to 185.199.108.153, 185.199.109.153, 185.199.110.153 and 185.199.111.153; for `www`, a CNAME record to `abhiyknp.github.io`.
+3. In GitHub, Settings → Pages → Custom domain: enter the domain, wait for the DNS check, then tick "Enforce HTTPS".
+4. Update `og:url` and `og:image` in `index.html` to the new domain.
+
+All other links in the site are relative, so nothing else changes.

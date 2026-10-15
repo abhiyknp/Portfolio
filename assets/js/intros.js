@@ -1,10 +1,8 @@
-/* Intro prototypes for Direction A. Each is a pinned stage driven by the scroll position inside its section.
-   1 · Chaos to clarity   3 · The thread is born   5 · Blueprint assembly
-   With reduced motion, each renders its final frame without pinning. */
+/* The overview intro, "Chaos to clarity": a pinned stage driven by the scroll position inside its section.
+   With reduced motion it renders its final frame without pinning. */
 (function () {
   'use strict';
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var NS = 'http://www.w3.org/2000/svg';
   function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
   function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
   function win(t, a, b) { return ease(clamp((t - a) / (b - a), 0, 1)); }
@@ -132,78 +130,5 @@
     ['A question', 214, 64, 0.06, 0.2], ['Decide', 236, 152, 0.2, 0.3], ['Applicant', 22, 236, 0.33, 0.44], ['Reviewer', 208, 262, 0.35, 0.44], ['Approver', 318, 236, 0.37, 0.44],
     ['Clarify', 244, 342, 0.47, 0.55], ['One agreed solution', 214, 506, 0.57, 0.66]
   ];
-  function thread(host) {
-    var stage = host.querySelector('.i-stage'), p = null, narrow = null;
-    function build() {
-      narrow = stage.clientWidth < 640;
-      var TH = narrow ? THREAD_P : THREAD, TL = narrow ? TLABELS_P : TLABELS;
-      Array.prototype.slice.call(stage.children).forEach(function (c) { if (!c.classList.contains('i-skip')) c.remove(); });
-      var svg = '<svg class="i3-svg' + (narrow ? ' tall' : '') + '" viewBox="' + (narrow ? '0 0 400 780' : '0 0 1000 620') + '" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><defs><filter id="i3g" filterUnits="userSpaceOnUse" x="-100" y="-100" width="1200" height="1000"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>' +
-        TH.map(function (q) { return '<path class="i3-ghost" d="' + q.d + '" pathLength="1"/>'; }).join('') +
-        TH.map(function (q) { return '<path class="i3-p' + (q.cls ? ' ' + q.cls : '') + '" d="' + q.d + '" pathLength="1" filter="url(#i3g)"/>'; }).join('') +
-        '<circle class="i3-dot" r="6" cx="' + (narrow ? 200 : 60) + '" cy="' + (narrow ? 20 : 150) + '"/>' +
-        TL.map(function (l) { return '<text class="i3-l" x="' + l[1] + '" y="' + l[2] + '">' + l[0] + '</text>'; }).join('') +
-        (narrow ? '<text class="i3-name" x="200" y="642" text-anchor="middle" style="font-size:46px;letter-spacing:-2px">Abhishek Yadav</text><text class="i3-role" x="200" y="712" text-anchor="middle">Senior IT Business Analyst</text>'
-                : '<text class="i3-name" x="500" y="505" text-anchor="middle">Abhishek Yadav</text><text class="i3-role" x="500" y="578" text-anchor="middle">Senior IT Business Analyst · turning complexity into clarity</text>') + '</svg>';
-      stage.insertAdjacentHTML('beforeend', svg + '<div class="i3-caps">' + TCAPS.map(function (c) { return '<p class="i-cap"><span>' + c[0] + '</span>' + c[1] + '</p>'; }).join('') + '</div><span class="i-cue">Scroll ↓</span>');
-      var paths = stage.querySelectorAll('.i3-p'), labels = stage.querySelectorAll('.i3-l'), caps = stage.querySelectorAll('.i3-caps .i-cap'), dot = stage.querySelector('.i3-dot'), name = stage.querySelector('.i3-name'), role = stage.querySelector('.i3-role'), cue = stage.querySelector('.i-cue');
-      return function render(t) {
-        var tip = null;
-        TH.forEach(function (q, i) {
-          var k = win(t, q.a, q.b); paths[i].style.strokeDashoffset = (1 - k).toFixed(4); paths[i].style.visibility = k > 0 ? 'visible' : 'hidden';
-          if (k > 0 && k < 1) tip = [paths[i], k];
-        });
-        if (tip) { var L = tip[0].getTotalLength(), pt = tip[0].getPointAtLength(L * tip[1]); dot.setAttribute('cx', pt.x.toFixed(1)); dot.setAttribute('cy', pt.y.toFixed(1)); dot.style.opacity = 1; }
-        else dot.style.opacity = t < 0.04 ? 1 : 0;
-        TL.forEach(function (l, i) { labels[i].style.opacity = band(t, l[3], l[4] + 0.5, 0.05).toFixed(3); });
-        caps.forEach(function (c, i) { c.style.opacity = band(t, TCAPS[i][2], TCAPS[i][3]).toFixed(3); });
-        name.style.opacity = win(t, 0.72, 0.84).toFixed(3); role.style.opacity = win(t, 0.78, 0.88).toFixed(3);
-        cue.style.opacity = win(t, 0.86, 0.95).toFixed(3);
-      };
-    }
-    var render = build();
-    p = new Pinned(host, function (t) { render(t); }); p.start();
-    var onR = function () { if ((stage.clientWidth < 640) !== narrow) { render = build(); p.refresh(); } };
-    addEventListener('resize', onR);
-    return function () { p.stop(); removeEventListener('resize', onR); };
-  }
-
-  /* ---------------- 5 · Blueprint assembly ---------------- */
-  function rp(x, y, w, h, r) { return 'M' + (x + r) + ' ' + y + ' H' + (x + w - r) + ' Q' + (x + w) + ' ' + y + ' ' + (x + w) + ' ' + (y + r) + ' V' + (y + h - r) + ' Q' + (x + w) + ' ' + (y + h) + ' ' + (x + w - r) + ' ' + (y + h) + ' H' + (x + r) + ' Q' + x + ' ' + (y + h) + ' ' + x + ' ' + (y + h - r) + ' V' + (y + r) + ' Q' + x + ' ' + y + ' ' + (x + r) + ' ' + y + 'Z'; }
-  function dia(cx, cy, s) { return 'M' + cx + ' ' + (cy - s) + ' L' + (cx + s) + ' ' + cy + ' L' + cx + ' ' + (cy + s) + ' L' + (cx - s) + ' ' + cy + 'Z'; }
-  function blueprint(host) {
-    var stage = host.querySelector('.i-stage'), items = [], LANES = ['APPLICANT', 'REVIEWER', 'APPROVER', 'FINANCE'];
-    LANES.forEach(function (l, i) { var y = 40 + i * 108; items.push({ d: rp(70, y, 860, 96, 6), a: 0.03 + i * 0.03, b: 0.12 + i * 0.03, cls: 'lane', t: [l, 84, y + 18] }); });
-    var steps = [['Apply', 130, 0], ['Docs', 250, 0], ['Review', 330, 1], ['Inspect', 520, 1], ['Recommend', 640, 1], ['Pay · BG', 660, 3], ['eSign', 800, 2]];
-    steps.forEach(function (s, i) { var y = 40 + s[2] * 108 + 34; items.push({ d: rp(s[1], y, 96, 40, 8), a: 0.18 + i * 0.03, b: 0.26 + i * 0.03, cls: 'step', t: [s[0], s[1] + 48, y + 25, 'mid'] }); });
-    items.push({ d: dia(460, 202, 26), a: 0.42, b: 0.5, cls: 'gate', t: ['OK?', 460, 206, 'mid'] });
-    items.push({ d: dia(560, 310, 26), a: 0.45, b: 0.53, cls: 'gate', t: ['Approve?', 560, 314, 'mid'] });
-    items.push({ d: 'M' + 840 + ' ' + 74 + ' m-18 0 a18 18 0 1 0 36 0 a18 18 0 1 0 -36 0', a: 0.47, b: 0.53, cls: 'step', t: ['Issued', 840, 112, 'mid'] });
-    var arrows = ['M226 94 H250', 'M298 114 V140 H340 V182', 'M426 202 H434', 'M486 202 H520', 'M616 202 H640', 'M688 222 V290 H586', 'M560 336 V418 H660', 'M756 418 H778 V310 H800', 'M848 290 V92'];
-    arrows.forEach(function (d, i) { items.push({ d: d, a: 0.53 + i * 0.012, b: 0.6 + i * 0.012, cls: 'arrow' }); });
-    items.push({ d: 'M460 176 V140 H178 V114', a: 0.66, b: 0.74, cls: 'ret', t: ['clarify · clock paused', 300, 132] });
-    items.push({ d: 'M730 438 V472 H684 V438', a: 0.68, b: 0.76, cls: 'ret', t: ['re-upload', 640, 490] });
-    items.push({ d: 'M346 84 L372 62 H400', a: 0.72, b: 0.78, cls: 'lead', t: ['RULE-01 · all mandatory documents', 404, 66, 'note'] });
-    items.push({ d: rp(600, 500, 330, 84, 2) + ' M600 528 H930 M600 556 H930 M780 556 V584', a: 0.76, b: 0.86, cls: 'block' });
-    var TB = [['DRAWING  Permission workflow', 612, 519], ['DRAWN BY  A. Yadav · Business Analyst', 612, 547], ['REV  1.0', 612, 575], ['STATUS  Approved', 792, 575]];
-    var svg = '<svg class="i5-svg" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><defs><marker id="i5a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="i5-ah"/></marker></defs>' +
-      items.map(function (it) { return '<path class="i5-' + it.cls + '" d="' + it.d + '" pathLength="1"' + (it.cls === 'arrow' || it.cls === 'ret' ? ' marker-end="url(#i5a)"' : '') + '/>'; }).join('') +
-      items.map(function (it, i) { return it.t ? '<text class="i5-t ' + (it.t[3] || '') + '" data-i="' + i + '" x="' + it.t[1] + '" y="' + it.t[2] + '"' + (it.t[3] === 'mid' ? ' text-anchor="middle"' : '') + '>' + it.t[0] + '</text>' : ''; }).join('') +
-      TB.map(function (r) { return '<text class="i5-tb" x="' + r[1] + '" y="' + r[2] + '">' + r[0] + '</text>'; }).join('') + '</svg>';
-    stage.insertAdjacentHTML('beforeend', '<div class="i5-wrap">' + svg + '</div><div class="i5-hero"><span class="i-eb">Abhishek Yadav</span><h2>Senior IT Business Analyst.</h2><p>I design how systems should work, before anyone builds them.</p></div><p class="i-cap i5-cap">Drawing a permission workflow, one line at a time.</p><span class="i-cue">Scroll ↓</span>');
-    var paths = stage.querySelectorAll('.i5-svg path[pathLength]'), texts = stage.querySelectorAll('.i5-t'), tbs = stage.querySelectorAll('.i5-tb'), wrap = stage.querySelector('.i5-wrap'), hero = stage.querySelector('.i5-hero'), cap = stage.querySelector('.i5-cap'), cue = stage.querySelector('.i-cue');
-    function render(t) {
-      items.forEach(function (it, i) { var k = win(t, it.a, it.b); paths[i].style.strokeDashoffset = (1 - k).toFixed(4); paths[i].style.visibility = k > 0 ? 'visible' : 'hidden'; });
-      texts.forEach(function (tx) { var it = items[+tx.getAttribute('data-i')]; tx.style.opacity = win(t, it.b - 0.03, it.b + 0.02).toFixed(3); });
-      tbs.forEach(function (tx, i) { tx.style.opacity = win(t, 0.8 + i * 0.015, 0.84 + i * 0.015).toFixed(3); });
-      var s = win(t, 0.86, 0.96), narrow = stage.clientWidth < 760;
-      wrap.style.transform = narrow ? 'translateY(' + (-s * 24) + '%) scale(' + (1 - 0.35 * s).toFixed(3) + ')' : 'translate(' + (s * 26).toFixed(2) + '%,' + (-s * 4).toFixed(2) + '%) scale(' + (1 - 0.42 * s).toFixed(3) + ')';
-      hero.style.opacity = s.toFixed(3); hero.style.transform = 'translateY(' + ((1 - s) * 20).toFixed(1) + 'px)';
-      cap.style.opacity = band(t, -0.1, 0.8).toFixed(3); cue.style.opacity = win(t, 0.9, 0.97).toFixed(3);
-    }
-    var p = new Pinned(host, render); p.start();
-    return function () { p.stop(); };
-  }
-
-  window.PFIntros = { chaos: chaos, thread: thread, blueprint: blueprint };
+  window.PFIntros = { chaos: chaos };
 })();

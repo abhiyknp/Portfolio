@@ -25,6 +25,7 @@ jobs:
         run: |
           mkdir -p _site
           cp -r index.html assets _site/
+          if [ -f CNAME ]; then cp CNAME _site/; fi
           touch _site/.nojekyll
       - uses: actions/upload-pages-artifact@v3
         with:
